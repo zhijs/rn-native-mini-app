@@ -25,8 +25,11 @@ npm install
 
 ### 运行
 ```
-react-native run-ios
-react-native run-android
+// android环境
+npm run ad
+
+// ios
+npm run ios
 
 react-devtools 开启调试器
 react-native log android 输出日志 console.log

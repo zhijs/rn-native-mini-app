@@ -7,7 +7,8 @@
     "test": "jest",
     "openTools": "react-devtools",
     "build": "node build.js",
-    "dev": "react-native run-android"
+    "ad": "react-native run-android",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
     "react": "16.3.1",
