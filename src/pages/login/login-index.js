@@ -5,10 +5,15 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, ImageBackground} from 'react-native';
 import Button from '../../components/button'
 import Footer from './footer'
+import PhoneInput from './phone-input'
 // 点击手机号登陆
-const telLogin = () => {
-  console.log('手机号登陆');
-}
+// const telLogin = () => {
+//   console.log('手机号登陆');
+//   console.log(this)
+//   const { navigate } = this.props.navigation;
+//   navigate('PhoneInput')
+// }
+
 export default class LoginIndex extends Component {
   
   render() {
@@ -23,11 +28,17 @@ export default class LoginIndex extends Component {
           <Button
             btnStyle={style.loginBtn}
             title="手机号码登陆"
-            onPress = {telLogin}
+            onPress = {(() => {
+              const { navigate } = this.props.navigation;
+              alert(this)
+              navigate('PhoneInput')
+            }).bind(this)}
             textStyle={style.btnText}
           />
         </View>
-        <Footer/>
+        <Footer
+          ShowLoginType={true}
+        />
       </View>
     )
   }

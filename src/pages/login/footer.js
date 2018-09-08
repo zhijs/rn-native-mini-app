@@ -6,9 +6,24 @@ import {Platform, StyleSheet, Text, View, ImageBackground} from 'react-native';
 import Svg from '../../components/svg'
 export default class footer extends Component {
   render() {
+    const {
+      ShowLoginType // 是否显示第三方登陆和协议提示
+    } = this.props
+
+    if(!ShowLoginType) {
+      return (
+        <ImageBackground
+          style={style.footerTips}
+          width="100"
+          height="50"
+          source={require("../../assets/images/Group.png")}
+        >
+        </ImageBackground>
+      )
+    } else
     return(
       <View style={style.footer}>
-      <Text style={style.footerTitle}>- - - - - - - - - - - -第三方账号快速登陆- - - - - - - - - - - -</Text>
+       <Text style={style.footerTitle}>- - - - - - - - - - - -第三方账号快速登陆- - - - - - - - - - - -</Text>
       <View style={style.svgContent}>
         <View style={style.svgTab}>
           <Svg
@@ -31,7 +46,7 @@ export default class footer extends Component {
         height="50"
         source={require("../../assets/images/Group.png")}
       >
-        <Text>登陆即表明您同意我们的</Text><Text style={style.protocolText}>&lt;&lt;用户协议&gt;&gt;</Text>
+      <Text>登陆即表明您同意我们的</Text><Text style={style.protocolText}>&lt;&lt;用户协议&gt;&gt;</Text>
       </ImageBackground>
     </View>
     )

@@ -26,7 +26,7 @@ export default class Button extends Component {
     return(
       <TouchableOpacity
         style = {btnStyle}
-        onPress={() => onPress()}
+        onPress={onPress}
       >
         <Text
           style={textStyle}
