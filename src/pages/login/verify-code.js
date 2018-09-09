@@ -29,20 +29,32 @@ export default class VerifyCode extends Component {
             {this.state.VerifyCodeArr.map((code, i) => {
               return(
                 <TextInput
+                  key={i}
                   maxLength={1}
                   style={style.edit}
                   keyboardType="numeric"
-                  ref="verifyItem"
+                  ref={"verifyItem" + i}
                   autoFocus={i === 0 ? true : false}
                   underlineColorAndroid="transparent"
                   onChangeText= {(value) => {
                     let arr = this.state.VerifyCodeArr;
                     arr[i] = value
                     this.setState({VerifyCodeArr: arr})
-                    console.log('verify code')
-                    console.log(this)
-                    // if (i < arr.length - 1 && value !== '') {
-                    //   this.refs.verifyItem[i + 1].focus()
+                    console.log('verify code////////', i)
+                    console.log(this.refs['verifyItem' +　(i +　1)])
+                    if (i < arr.length - 1) {
+                      this.refs['verifyItem' +　(i +　1)].focus()
+                    }
+                  }}
+                  onKeyPress= {(value) => {
+                    // 这里监听验证码删除
+                    // let arr = this.state.VerifyCodeArr;
+                    // arr[i] = value
+                    // this.setState({VerifyCodeArr: arr})
+                    // console.log('verify code////////', i)
+                    // console.log(this.refs['verifyItem' +　(i +　1)])
+                    // if (i < arr.length - 1) {
+                    //   this.refs['verifyItem' +　(i +　1)].focus()
                     // }
                   }}
                 />
