@@ -2,39 +2,40 @@
 *  登陆首页，登陆方式选择页面
 */
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, ImageBackground} from 'react-native';
+import {Platform, StyleSheet, Text, View, ImageBackground, TouchableOpacity} from 'react-native';
 import Button from '../../components/button'
 import Footer from './footer'
 import PhoneInput from './phone-input'
-// 点击手机号登陆
-// const telLogin = () => {
-//   console.log('手机号登陆');
-//   console.log(this)
-//   const { navigate } = this.props.navigation;
-//   navigate('PhoneInput')
-// }
+import commonStyle from '../../utils/common-style'
+
 
 export default class LoginIndex extends Component {
-  
+  constructor(props) {
+    super(props);
+  }
   render() {
+    const { navigate } = this.props.navigation;
     return(
-      <View style={style.container}>
+      <View style={[style.container, commonStyle.pageBg]}>
         <View style={style.header}>
           <View style={style.heaerIcon}>
             <Text style={style.headerText}>21</Text>
           </View>
         </View>
         <View style={style.btnContain}>
-          <Button
-            btnStyle={style.loginBtn}
-            title="手机号码登陆"
-            onPress = {(() => {
-              const { navigate } = this.props.navigation;
-              alert(this)
-              navigate('PhoneInput')
-            }).bind(this)}
-            textStyle={style.btnText}
-          />
+          <TouchableOpacity
+           style = {commonStyle.btnStyle}
+           activeOpacity={0.5}
+           onPress={() => {
+             navigate('phoneInput')
+           }}
+          >
+            <Text
+              style={commonStyle.btnText}
+            >
+              手机号码登陆
+            </Text>
+          </TouchableOpacity>
         </View>
         <Footer
           ShowLoginType={true}
@@ -68,16 +69,5 @@ const style = StyleSheet.create({
   btnContain: {
     flex: 2,
     justifyContent: 'center',
-  },
-    loginBtn: {
-      backgroundColor: '#FFD801',
-      height: 35,
-      margin: 30,
-      borderRadius: 7,
-    },
-    btnText: {
-      lineHeight: 35,
-      textAlign: 'center',
-      color: '#000000'
-    }
+  }
 })

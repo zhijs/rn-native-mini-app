@@ -8,7 +8,8 @@
     "openTools": "react-devtools",
     "build": "node build.js",
     "ad": "react-native run-android",
-    "ios": "react-native run-ios"
+    "ios": "react-native run-ios",
+    "log": "react-native log android"
   },
   "dependencies": {
     "react": "16.3.1",

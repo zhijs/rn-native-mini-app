@@ -1,5 +1,5 @@
 /**
- * 手机号输入页面
+ * 验证码页面
  */
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity} from 'react-native';
@@ -8,49 +8,52 @@ import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { checkTelNumber } from '../../utils/tool'
 
-export default class phoneInput extends Component {
+export default class VerifyCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isTelNumber: false,
-      telNumber: ''
+      isSendCode: true,
+      VerifyCodeArr: ['', '', '', '', '', '']
     }
   }
+
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={[style.container, commonStyle.pageBg]}>
         <View tyle={style.itemContainer}>
-          <Text style={style.opTips}>输入手机号码</Text>
-          <Text style={style.tipPromise}>我们不会泄露您的号码</Text> 
+          <Text style={style.opTips}>输入验证码</Text>
+          <Text style={style.tipPromise}>验证码已发送至您的手机</Text> 
         </View>
         <View style={style.itemContainer}>
          <View style={style.editContainer}>
-            <TextInput
-              maxLength={11}
-              style={style.edit}
-              keyboardType="numeric"
-              autoFocus={true}
-              underlineColorAndroid="transparent"
-              textContentType="telephoneNumber"
-              placeholder="11位手机号码"
-              onChangeText= {(value) => {
-                // 检验是否是合法手机号码
-                if (checkTelNumber(value)) {
-                  this.setState({isTelNumber: true})
-                } else {
-                  this.setState({isTelNumber: false})
-                }
-              }}
-            />
+            {this.state.VerifyCodeArr.map((code, i) => {
+              return(
+                <TextInput
+                  maxLength={1}
+                  style={style.edit}
+                  keyboardType="numeric"
+                  ref="verifyItem"
+                  autoFocus={i === 0 ? true : false}
+                  underlineColorAndroid="transparent"
+                  onChangeText= {(value) => {
+                    let arr = this.state.VerifyCodeArr;
+                    arr[i] = value
+                    this.setState({VerifyCodeArr: arr})
+                    console.log('verify code')
+                    console.log(this)
+                    // if (i < arr.length - 1 && value !== '') {
+                    //   this.refs.verifyItem[i + 1].focus()
+                    // }
+                  }}
+                />
+              )
+            })}
           </View>
           <View style={style.btnContain}>
               <TouchableOpacity
                 style = {this.state.isTelNumber ? commonStyle.btnStyle : commonStyle.btnDisable }
                 onPress={() => {
-                  if (this.state.isTelNumber) {
-                    navigate('VerifyCode')
-                  }
+                  console.log('../')
                 }}
               >
                 <Text
@@ -93,16 +96,16 @@ const style = StyleSheet.create({
     },
   editContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     margin: 30,
     marginTop: 20,
     marginBottom: 10
   },
   edit: {
-    flex: 1,
+    width: 45,
     backgroundColor: '#f4f4f4',
     textAlign:'center',
     color: '#464646',
-    borderRadius: 10
+    borderRadius: 8
   }
 })
