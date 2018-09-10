@@ -1,5 +1,5 @@
 /**
- * 底部 第三放登陆组件footer
+ * 底部 第三方登陆组件footer
  */
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, ImageBackground} from 'react-native';

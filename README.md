@@ -34,6 +34,10 @@ npm run ios
 
 react-devtools 开启调试器
 react-native log android 输出日志 console.log
+
+// 矢量图添加
+路径： assets/svgs/
+执行 npm run build
 ```
 
 ### 代码提交

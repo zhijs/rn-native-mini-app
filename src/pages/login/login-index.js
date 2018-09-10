@@ -5,8 +5,12 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, ImageBackground, TouchableOpacity} from 'react-native';
 import Button from '../../components/button'
 import Footer from './footer'
-import PhoneInput from './phone-input'
+import phoneInput from './phone-input'
 import commonStyle from '../../utils/common-style'
+
+//import passwordInput from './passwd-input'
+
+
 
 
 export default class LoginIndex extends Component {
@@ -18,8 +22,11 @@ export default class LoginIndex extends Component {
     return(
       <View style={[style.container, commonStyle.pageBg]}>
         <View style={style.header}>
-          <View style={style.heaerIcon}>
+
+          <View style={style.headerIcon}>
+
             <Text style={style.headerText}>21</Text>
+
           </View>
         </View>
         <View style={style.btnContain}>
@@ -27,7 +34,7 @@ export default class LoginIndex extends Component {
            style = {commonStyle.btnStyle}
            activeOpacity={0.5}
            onPress={() => {
-             navigate('phoneInput')
+             navigate('passwordInput')
            }}
           >
             <Text
@@ -37,6 +44,9 @@ export default class LoginIndex extends Component {
             </Text>
           </TouchableOpacity>
         </View>
+
+
+
         <Footer
           ShowLoginType={true}
         />
@@ -53,7 +63,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-    heaerIcon: {
+    headerIcon: {
       height: 60,
       width: 60,
       borderRadius: 45,

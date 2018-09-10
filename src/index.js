@@ -8,12 +8,14 @@ import { StackNavigator } from 'react-navigation';
 import LoginIndex from './pages/login/login-index'
 import PhoneInput from './pages/login/phone-input'
 import VerifyCode from './pages/login/verify-code'
+import passwordInput from './pages/login/passwd-input'
 // 导航页
 // 去除调试提醒
 console.ignoredYellowBox = ['Remote debugger']
 const App = StackNavigator({
   LoginIndex : { screen: LoginIndex },
   phoneInput : { screen: PhoneInput },
+  passwordInput : { screen: passwordInput},
   VerifyCode: {screen: VerifyCode},
   Main: {
     screen: LoginIndex,
