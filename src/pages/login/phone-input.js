@@ -12,7 +12,7 @@ export default class phoneInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isTelNumber: false,
+      isTelNumber: true,
       telNumber: ''
     }
   }
