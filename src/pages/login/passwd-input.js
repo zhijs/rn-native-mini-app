@@ -8,68 +8,46 @@ import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { checkTelNumber } from '../../utils/tool'
 
-export default class phoneInput extends Component {
+export default class passwordInput extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isTelNumber: true,
-      telNumber: ''
-    }
   }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={[style.container, commonStyle.pageBg]}>
         <View style={style.itemContainer}>
-          <Text style={style.opTips}>输入手机号码</Text>
-          <Text style={style.tipPromise}>我们不会泄露您的号码</Text> 
+          <Text style={style.opTips}>输入密码</Text>
+          <Text style={style.tipPromise}>6-18个字符</Text>
         </View>
-        <View style={style.itemContainer}>
+
          <View style={style.editContainer}>
             <TextInput
-              maxLength={11}
+              maxLength={18}
+              minLength={6}
               style={style.edit}
               keyboardType="numeric"
               autoFocus={true}
               underlineColorAndroid="transparent"
-              textContentType="telephoneNumber"
-              placeholder="11位手机号码"
-              onChangeText= {(value) => {
-                // 检验是否是合法手机号码
-                if (checkTelNumber(value)) {
-                  this.setState({isTelNumber: true})
-                } else {
-                  this.setState({isTelNumber: false})
-                }
-              }}
+              textContentType="password"
+              placeholder="输入密码"
+
             />
           </View>
-          <View style={style.btnContain}>
-              <TouchableOpacity
-                style = {this.state.isTelNumber ? commonStyle.btnStyle : commonStyle.btnDisable }
-                onPress={() => {
-                  if (this.state.isTelNumber) {
-                    navigate('VerifyCode')
-                  }
-                }}
-              >
-                <Text
-                  style={commonStyle.btnText}
-                >
-                  下一步
-                </Text>
-              </TouchableOpacity>
-          </View>
-        </View>
-        <View style={[style.itemContainer]}>
+
+        <View style={style.itemContainer}>
           <Footer
-            ShowLoginType={false}
+            ShowLoginType={true}
           />
-          </View>
+        </View>
       </View>
     )
   }
 }
+
+
+
 const style = StyleSheet.create({
   container: {
     flex: 1
@@ -104,9 +82,9 @@ const style = StyleSheet.create({
     textAlign:'center',
     color: '#464646',
     borderRadius: 10
-  },
-  footerContainer: {
-    flexDirection: 'row'
-
   }
 })
+
+
+
+

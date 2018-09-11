@@ -32,6 +32,9 @@ npm run ad
 // ios
 npm run ios
 
+// 矢量图添加
+路径： assets/svgs/
+执行 npm run build
 // 模拟器运行
 crtl + m =>　选择 debug js remotely => 打开chrome浏览器 => f12 =>　查看console.log 日志
 ```
