@@ -33,7 +33,7 @@ npm run ad
 npm run ios
 
 // 模拟器运行
-crtl + m =>　选择 remote js debugger => 打开chrome浏览器 => f12 =>　查看console.log 日志
+crtl + m =>　选择 debug js remotely => 打开chrome浏览器 => f12 =>　查看console.log 日志
 ```
 
 ### 代码提交
