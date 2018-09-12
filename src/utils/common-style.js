@@ -25,6 +25,7 @@ export default commonStyle = {
   btnText: {
     lineHeight: 48,
     textAlign: 'center',
-    color: '#000000'
-  }
+    color: '#000000',
+    backgroundColor: '#DADADA',
+  },
 };

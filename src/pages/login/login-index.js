@@ -3,7 +3,6 @@
 */
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, ImageBackground, TouchableOpacity} from 'react-native';
-import Button from '../../components/button'
 import Footer from './footer'
 import phoneInput from './phone-input'
 import commonStyle from '../../utils/common-style'

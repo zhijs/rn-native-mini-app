@@ -2,16 +2,21 @@
  * 手机号输入页面
  */
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity,Image} from 'react-native';
 import Button from '../../components/button'
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
-import { checkTelNumber } from '../../utils/tool'
+
+
 
 export default class passwordInput extends Component {
   constructor(props) {
     super(props);
-  }
+    this.state = {
+        showPwd: false,
+    };
+}
+
 
   render() {
     const { navigate } = this.props.navigation;
@@ -22,8 +27,10 @@ export default class passwordInput extends Component {
           <Text style={style.tipPromise}>6-18个字符</Text>
         </View>
 
-         <View style={style.editContainer}>
-            <TextInput
+
+        
+          <View style={style.editContainer}>
+          <TextInput
               maxLength={18}
               minLength={6}
               style={style.edit}
@@ -31,14 +38,39 @@ export default class passwordInput extends Component {
               autoFocus={true}
               underlineColorAndroid="transparent"
               textContentType="password"
-              placeholder="输入密码"
+              placeholder="输入密码"    
+              secureTextEntry={!this.state.showPwd}
 
+ 
             />
           </View>
 
+
+
+
+
+        <View>
+          <Text style={style.sBtnText}>忘记密码</Text>
+        </View>
+          
+        <View style={style.btnContain}>
+          <TouchableOpacity
+           style = {commonStyle.btnDisable}
+           activeOpacity={0.5}
+          >
+            <Text
+              style={[commonStyle.btnText ,style.btnText]}
+            >
+              下一步
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+
+
         <View style={style.itemContainer}>
           <Footer
-            ShowLoginType={true}
+            ShowLoginType={false}
           />
         </View>
       </View>
@@ -82,7 +114,21 @@ const style = StyleSheet.create({
     textAlign:'center',
     color: '#464646',
     borderRadius: 10
-  }
+  },
+
+  sBtnText: {
+    textAlign: 'right',
+    color: '#444444',
+    fontSize: 14,
+    marginRight: 30,
+  },
+
+  btnText: {
+   backgroundColor:'#DADADA',
+   color:'#FFFFFF',
+   
+  },
+
 })
 
 
