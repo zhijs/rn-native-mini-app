@@ -61,9 +61,9 @@ export default class phoneInput extends Component {
               </TouchableOpacity>
           </View>
         </View>
-        <View style={style.itemContainer}>
+        <View style={[style.itemContainer]}>
           <Footer
-            ShowLoginType={true}
+            ShowLoginType={false}
           />
           </View>
       </View>
@@ -104,5 +104,9 @@ const style = StyleSheet.create({
     textAlign:'center',
     color: '#464646',
     borderRadius: 10
+  },
+  footerContainer: {
+    flexDirection: 'row'
+
   }
 })

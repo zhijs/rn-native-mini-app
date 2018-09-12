@@ -12,13 +12,13 @@ export default class footer extends Component {
 
     if(!ShowLoginType) {
       return (
-        <ImageBackground
-          style={style.footerTips}
-          width="100"
-          height="50"
-          source={require("../../assets/images/Group.png")}
-        >
-        </ImageBackground>
+        <View style={style.onlyBg}>
+          <ImageBackground
+            style={{width: '100%', height: 50, alignSelf: 'flex-end'}}
+            source={require("../../assets/images/Group.png")}
+          >
+          </ImageBackground>
+        </View>
       )
     } else
     return(
@@ -81,5 +81,9 @@ const style = StyleSheet.create({
   },
     protocolText: {
       color: '#cdcdcd'
-    }
+    },
+  onlyBg: {
+    flex: 1,
+    flexDirection: 'column-reverse'
+  }
 })
