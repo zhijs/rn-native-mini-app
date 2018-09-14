@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity} from 'react-native';
-import Button from '../../components/button'
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { checkTelNumber } from '../../utils/tool'
@@ -17,6 +16,7 @@ export default class VerifyCode extends Component {
       remainTime: 0,
       canRendCode: true,
       VerifyCodeArr: ['', '', '', '', '', ''],
+      currentIndex: 0
     };
     this.timer = null
   }
@@ -35,22 +35,27 @@ export default class VerifyCode extends Component {
                 <TextInput
                   key={i}
                   maxLength={1}
-                  style={style.edit}
+                  style={[style.edit, this.state.currentIndex === i ? style.editFocus : '']}
                   keyboardType="numeric"
                   ref={"verifyItem" + i}
                   autoFocus={i === 0 ? true : false}
                   underlineColorAndroid="transparent"
                   onChangeText= {(value) => {
+                    
                     let arr = this.state.VerifyCodeArr;
                     arr[i] = value
                     this.setState({VerifyCodeArr: arr})
-                    if (i < arr.length - 1) {
+                    if (i < arr.length - 1 && value !== '') {
                       this.refs['verifyItem' +　(i +　1)].focus()
+                      this.setState({currentIndex: i + 1})
                     }
                   }}
-                  onKeyPress= {(event) => {
+                  onKeyPress= {({nativeEvent}) => {
                     // 这里监听验证码删除
-                    console.log('verify code onKeyPress i', event);
+                    if (i > 0 && nativeEvent!== undefined && nativeEvent.key === 'Backspace') {
+                      this.refs['verifyItem' +　(i -　1)].focus()
+                      this.setState({currentIndex: i - 1})
+                    }
                   }}
                 />
               )
@@ -61,7 +66,7 @@ export default class VerifyCode extends Component {
                 style = {this.state.canRendCode ? commonStyle.btnStyle : commonStyle.btnDisable }
                 onPress={() => {
                   console.log(navigate)
-                  navigate('UserInfo')
+                  navigate('passwordInput')
                   return;
                    // 这里执行重发验证码操作
                   if (this.timer !== null) return
@@ -134,5 +139,9 @@ const style = StyleSheet.create({
     textAlign:'center',
     color: '#464646',
     borderRadius: 8
+  },
+  editFocus: {
+    borderColor: '#b7b7b7',
+    borderWidth: 1,
   }
 })

@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity} from 'react-native';
-import Button from '../../components/button'
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { checkTelNumber } from '../../utils/tool'
@@ -17,12 +16,10 @@ export default class phoneInput extends Component {
     }
   }
   render() {
-    const { navigate } = this.props.navigation;
     return (
-      <View style={[style.container, commonStyle.pageBg]}>
+      <View style={style.container}>
         <View style={style.itemContainer}>
           <Text style={style.opTips}>输入手机号码</Text>
-          <Text style={style.tipPromise}>我们不会泄露您的号码</Text> 
         </View>
         <View style={style.itemContainer}>
          <View style={style.editContainer}>
@@ -44,28 +41,7 @@ export default class phoneInput extends Component {
               }}
             />
           </View>
-          <View style={style.btnContain}>
-              <TouchableOpacity
-                style = {this.state.isTelNumber ? commonStyle.btnStyle : commonStyle.btnDisable }
-                onPress={() => {
-                  if (this.state.isTelNumber) {
-                    navigate('VerifyCode')
-                  }
-                }}
-              >
-                <Text
-                  style={commonStyle.btnText}
-                >
-                  下一步
-                </Text>
-              </TouchableOpacity>
-          </View>
         </View>
-        <View style={[style.itemContainer]}>
-          <Footer
-            ShowLoginType={false}
-          />
-          </View>
       </View>
     )
   }
@@ -94,19 +70,16 @@ const style = StyleSheet.create({
   editContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    margin: 30,
     marginTop: 20,
-    marginBottom: 10
+    marginLeft: 30,
+    marginRight: 30
   },
   edit: {
     flex: 1,
+    height: 50,
     backgroundColor: '#f4f4f4',
     textAlign:'center',
     color: '#464646',
     borderRadius: 10
-  },
-  footerContainer: {
-    flexDirection: 'row'
-
   }
 })

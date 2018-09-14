@@ -1,7 +1,7 @@
 /**
  * 公共样式导出
  */
-export default commonStyle = {
+export default {
   pageBg: {
     backgroundColor: '#ffffff'
   },
@@ -25,7 +25,6 @@ export default commonStyle = {
   btnText: {
     lineHeight: 48,
     textAlign: 'center',
-    color: '#000000',
-    backgroundColor: '#DADADA',
+    color: '#000000'
   },
 };

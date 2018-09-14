@@ -2,18 +2,23 @@
  * 手机号输入页面
  */
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity,Image} from 'react-native';
-import Button from '../../components/button'
+import {
+  Platform, 
+  StyleSheet, 
+  Text, 
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image
+} from 'react-native';
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
-
-
 
 export default class passwordInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        showPwd: false,
+      showPwd: false,
     };
 }
 
@@ -25,11 +30,8 @@ export default class passwordInput extends Component {
         <View style={style.itemContainer}>
           <Text style={style.opTips}>输入密码</Text>
           <Text style={style.tipPromise}>6-18个字符</Text>
-        </View>
-
-
-        
-          <View style={style.editContainer}>
+        </View>      
+        <View style={style.editContainer}>
           <TextInput
               maxLength={18}
               minLength={6}
@@ -37,18 +39,24 @@ export default class passwordInput extends Component {
               keyboardType="numeric"
               autoFocus={true}
               underlineColorAndroid="transparent"
-              textContentType="password"
-              placeholder="输入密码"    
+              textContentType={this.state.showPwd ? 'password' : 'none'}
+              placeholder="输入密码"
               secureTextEntry={!this.state.showPwd}
-
- 
             />
-          </View>
+            <TouchableOpacity
+              style={style.eyeContainer}
+              onLongPress={() => {
+                console.log('长按眼睛');
+                this.setState({showPwd: true});
+              }}
+            >
+              <Image
+                style={style.pwdEye}
+                source={this.state.showPwd ? require("../../assets/images/eye_open.png") : require("../../assets/images/eye_close.png") }
+              />
+            </TouchableOpacity>
 
-
-
-
-
+        </View>
         <View>
           <Text style={style.sBtnText}>忘记密码</Text>
         </View>
@@ -66,8 +74,6 @@ export default class passwordInput extends Component {
           </TouchableOpacity>
         </View>
 
-
-
         <View style={style.itemContainer}>
           <Footer
             ShowLoginType={false}
@@ -77,8 +83,6 @@ export default class passwordInput extends Component {
     )
   }
 }
-
-
 
 const style = StyleSheet.create({
   container: {
@@ -106,16 +110,24 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     margin: 30,
     marginTop: 20,
-    marginBottom: 10
+    marginBottom: 10,
+    backgroundColor: '#f4f4f4',
+    borderRadius: 10
   },
   edit: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
     textAlign:'center',
-    color: '#464646',
-    borderRadius: 10
+    color: '#464646'
   },
-
+  eyeContainer: {
+    width: 50,
+    justifyContent: 'center',
+  },
+  pwdEye: {
+    width: 28,
+    height: 18,
+    marginRight: 15
+  },
   sBtnText: {
     textAlign: 'right',
     color: '#444444',

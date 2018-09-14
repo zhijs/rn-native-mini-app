@@ -4,48 +4,84 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, ImageBackground, TouchableOpacity} from 'react-native';
 import Footer from './footer'
-import phoneInput from './phone-input'
+import IndexHeader from './login-index.header'
+import PhoneInput from './phone-input'
 import commonStyle from '../../utils/common-style'
 
-//import passwordInput from './passwd-input'
-
-
-
-
+console.log(commonStyle)
+// 页面信息
+const pageData = [
+  {
+    name: 'login-index',
+    ShowLoginType: true, // 是否显示第三方登陆区域
+    nextBtn: {
+      isActive: true, // 下方按钮是否激活
+      text: '手机号登陆' // 按钮显示文本
+    }
+  },
+ {
+   name: 'phone-input',
+   ShowLoginType: true,
+   nextBtn: {
+     isActive: false, // 按钮激活条件
+     text: '下一步',
+     activeByKey: 'telNumber',
+     checkActive: (value) => {
+       
+     }
+   }
+ }
+]
 export default class LoginIndex extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      curentPage: 0,
+      btnState: true,
+      telNumber: ''
+    }
+  }
+  // 根据当前状态返回特定组件
+  getPage(pageIndex) {
+    switch(pageIndex) {
+      case 0:
+        return(
+          <IndexHeader/>
+        )
+        break;
+      case 1:
+        return (
+          <PhoneInput/>
+        )
+    }
+  }
+
+  // 改变当前按钮的状态 激活/禁用
+  setActiveValue(value) {
+    pageData[this.state.curentPage].isActive = value
   }
   render() {
-    const { navigate } = this.props.navigation;
     return(
       <View style={[style.container, commonStyle.pageBg]}>
         <View style={style.header}>
-
-          <View style={style.headerIcon}>
-
-            <Text style={style.headerText}>21</Text>
-
-          </View>
+          {this.getPage(this.state.curentPage)}
         </View>
         <View style={style.btnContain}>
           <TouchableOpacity
-           style = {commonStyle.btnStyle}
+           style = {pageData[this.state.curentPage].nextBtn.isActive ? commonStyle.btnStyle : commonStyle.btnDisable}
            activeOpacity={0.5}
            onPress={() => {
-             navigate('passwordInput')
+             let cur = this.state.curentPage;
+             this.setState({curentPage : cur + 1})
            }}
           >
             <Text
               style={commonStyle.btnText}
             >
-              手机号码登陆
+              {pageData[this.state.curentPage].nextBtn.text}
             </Text>
           </TouchableOpacity>
         </View>
-
-
-
         <Footer
           ShowLoginType={true}
         />
@@ -58,25 +94,10 @@ const style = StyleSheet.create({
     flex: 1
   },
   header:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1
   },
-    headerIcon: {
-      height: 60,
-      width: 60,
-      borderRadius: 45,
-      backgroundColor: '#FFD801'
-    },
-    headerText: {
-      lineHeight: 60,
-      textAlign: 'center',
-      color: '#444444',
-      fontSize: 30,
-      fontWeight: '900'
-    },
   btnContain: {
-    flex: 2,
+    flex: 1,
     justifyContent: 'center',
   }
 })

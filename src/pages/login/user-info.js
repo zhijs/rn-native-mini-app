@@ -10,18 +10,44 @@ import {
   ImageBackground, 
   TouchableOpacity, 
   TextInput,
-  Image
+  Image,
+  DatePickerAndroid
 } from 'react-native';
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
+import { date2str } from '../../utils/tool'
 import Svg from '../../components/svg'
 export default class UserInfoPage extends Component {
   constructor(props) {
     super(props)
     this.manKind = 0;
     this.womenKind = 1;
+    let dateNowStr = date2str(new Date())
     this.state = {
-      gender: 0 // 0-男性， 1-女性
+      gender: 0, // 0-男性， 1-女性,
+      birthDay: dateNowStr,
+      pickerIsOpen: true
+    }
+  }
+  async handleSelectDay () {
+    try {
+      const {action, year, month, day} = await DatePickerAndroid.open({
+        date: new Date()
+      });
+      console.log('select day');
+      console.log(action, year, month, day);
+      console.log(this)
+      console.log('aciotn === dateSetAction', action === 'dateSetAction');
+      if (action === 'dateSetAction') {
+        let monthStr = month > 8 ? month + 1 : `0${month + 1}`;
+        let str = `${year}-${monthStr}-${day}`;
+        this.setState({
+          birthDay: str
+        })
+        console.log('birthday', `${year}-${monthStr}-${day}`);
+      }
+    } catch(e) {
+      
     }
   }
   render() {
@@ -82,19 +108,25 @@ export default class UserInfoPage extends Component {
           </View>
           <View>
             <TouchableOpacity
-              style={[style.editContainer, style.selectBirth]}
+              style={[style.selectBirth]}
               onPress={() => {
+                this.handleSelectDay()
               }}
             >
               <Text
-                style={commonStyle.btnText}
+                style={[style.selectText]}
               >
                 选择生日
               </Text>
               <Text
-                style={commonStyle.arrowText}
+                style={[style.selectText]}
               >
-                >
+                {this.state.birthDay}
+              </Text>
+              <Text
+                style={[style.selectText]}
+              >
+                &gt;
               </Text>
             </TouchableOpacity>
           </View>
@@ -151,8 +183,7 @@ const style = StyleSheet.create({
   avataContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    textAlign: 'center'
+    justifyContent: 'space-evenly'
   },
   avataBtnContainer: {
     marginTop: 20
@@ -181,9 +212,7 @@ const style = StyleSheet.create({
   editContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    margin: 30,
-    marginTop: 20,
-    marginBottom: 8
+    margin: 30
   },
   edit: {
     flex: 1,
@@ -193,6 +222,22 @@ const style = StyleSheet.create({
     borderRadius: 10
   },
   selectBirth: {
-    borderColor: '#989A9C'
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    height: 40,
+    lineHeight: 40,
+    margin: 30,
+    marginTop: 8,
+    marginBottom: 0,
+    borderColor: '#dcdcdc',
+    borderWidth: 1,
+    borderRadius: 8
+  },
+  selectText: {
+    height: 40,
+    lineHeight: 40,
+    color: '#464646',
+    paddingLeft: 20,
+    paddingRight: 20
   }
 })

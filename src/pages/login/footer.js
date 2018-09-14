@@ -43,7 +43,7 @@ export default class footer extends Component {
       <ImageBackground 
         style={style.footerTips}
         width="100"
-        height="50"
+        height="80"
         source={require("../../assets/images/Group.png")}
       >
       <Text>登陆即表明您同意我们的</Text><Text style={style.protocolText}>&lt;&lt;用户协议&gt;&gt;</Text>
@@ -54,7 +54,7 @@ export default class footer extends Component {
 }
 const style = StyleSheet.create({
   footer: {
-    flex: 2,
+    flex: 1,
     justifyContent: 'space-between'
   },
   footerTitle: {
@@ -64,7 +64,7 @@ const style = StyleSheet.create({
     color: '#c0c0c0'
   },
   svgContent: {
-    flex: 2,
+    flex: 3,
     flexDirection: 'row',
     justifyContent: 'center'
   },
@@ -75,7 +75,7 @@ const style = StyleSheet.create({
       marginTop: 10
     },
   footerTips: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'row',
     justifyContent: 'center'
   },
