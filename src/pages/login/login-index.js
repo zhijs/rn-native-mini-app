@@ -16,7 +16,10 @@ const pageData = [
     ShowLoginType: true, // 是否显示第三方登陆区域
     nextBtn: {
       isActive: true, // 下方按钮是否激活
-      text: '手机号登陆' // 按钮显示文本
+      text: '手机号登陆', // 按钮显示文本
+      checkActive: () => {
+        return true;
+      }
     }
   },
  {
@@ -26,8 +29,10 @@ const pageData = [
      isActive: false, // 按钮激活条件
      text: '下一步',
      activeByKey: 'telNumber',
-     checkActive: (value) => {
-       
+     checkActive: () => {
+       console.log('checkActive');
+       console.log(this)
+       return this.state.telNumber !== ''
      }
    }
  }
@@ -41,17 +46,21 @@ export default class LoginIndex extends Component {
       telNumber: ''
     }
   }
+  // 电话号码改变事件
+  telChange(value) {
+    this.setState({telNumber: value})
+  }
   // 根据当前状态返回特定组件
   getPage(pageIndex) {
     switch(pageIndex) {
       case 0:
         return(
-          <IndexHeader/>
+          <IndexHeader />
         )
         break;
       case 1:
         return (
-          <PhoneInput/>
+          <PhoneInput valueChange={this.telChange}/>
         )
     }
   }
@@ -68,7 +77,7 @@ export default class LoginIndex extends Component {
         </View>
         <View style={style.btnContain}>
           <TouchableOpacity
-           style = {pageData[this.state.curentPage].nextBtn.isActive ? commonStyle.btnStyle : commonStyle.btnDisable}
+           style = {pageData[this.state.curentPage].nextBtn.checkActive() ? commonStyle.btnStyle : commonStyle.btnDisable}
            activeOpacity={0.5}
            onPress={() => {
              let cur = this.state.curentPage;
