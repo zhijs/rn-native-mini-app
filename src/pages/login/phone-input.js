@@ -2,9 +2,7 @@
  * 手机号输入页面
  */
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TextInput,TouchableOpacity} from 'react-native';
-import Footer from './footer'
-import commonStyle from '../../utils/common-style'
+import { StyleSheet, Text, View,TextInput } from 'react-native';
 import { checkTelNumber } from '../../utils/tool'
 
 export default class phoneInput extends Component {
@@ -33,10 +31,9 @@ export default class phoneInput extends Component {
               placeholder="11位手机号码"
               onChangeText= {(value) => {
                 // 检验是否是合法手机号码
+                console.log('onChangeText', value)
                 if (checkTelNumber(value)) {
-                  this.setState({isTelNumber: true})
-                } else {
-                  this.setState({isTelNumber: false})
+                  this.props.valueChange(value)
                 }
               }}
             />
