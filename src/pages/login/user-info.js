@@ -3,11 +3,9 @@
  */
 import React, {Component} from 'react';
 import {
-  Platform, 
   StyleSheet, 
   Text, 
   View, 
-  ImageBackground, 
   TouchableOpacity, 
   TextInput,
   Image,
@@ -16,7 +14,6 @@ import {
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { date2str } from '../../utils/tool'
-import Svg from '../../components/svg'
 export default class UserInfoPage extends Component {
   constructor(props) {
     super(props)
@@ -45,6 +42,7 @@ export default class UserInfoPage extends Component {
           birthDay: str
         })
         console.log('birthday', `${year}-${monthStr}-${day}`);
+        this.props.birthDayChange(value)
       }
     } catch(e) {
       
@@ -67,8 +65,9 @@ export default class UserInfoPage extends Component {
             <TouchableOpacity
               style={style.btnContainer}
               onPress={() => {
-                if (this.state.gender === this,this.manKind) return 
+                if (this.state.gender === this.manKind) return 
                 this.setState({gender: this.manKind});
+                this.props.genderChange(this.manKind)
               }}
             >
               <Image
@@ -87,6 +86,7 @@ export default class UserInfoPage extends Component {
               style={style.btnContainer}
               onPress={() => {
                 this.setState({gender: this.womenKind});
+                this.props.genderChange(this.womenKind)
               }}
             >
               <Image
@@ -103,10 +103,11 @@ export default class UserInfoPage extends Component {
               underlineColorAndroid="transparent"
               placeholder="昵称"
               onChangeText= {(value) => {
+                this.props.userNameChange(value);
               }}
             />
           </View>
-          <View>
+          <View style={style.birthSelctContainer}>
             <TouchableOpacity
               style={[style.selectBirth]}
               onPress={() => {
@@ -130,27 +131,6 @@ export default class UserInfoPage extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={style.btnContain}>
-              <TouchableOpacity
-                style = {commonStyle.btnStyle}
-                onPress={() => {
-                  if (this.state.isTelNumber) {
-                    navigate('VerifyCode')
-                  }
-                }}
-              >
-                <Text
-                  style={commonStyle.btnText}
-                >
-                  确定
-                </Text>
-              </TouchableOpacity>
-          </View>
-        </View>
-        <View style={[style.itemContainer, style.item]}>
-          <Footer
-            ShowLoginType={false}
-          />
         </View>
     </View>
     )
@@ -212,7 +192,9 @@ const style = StyleSheet.create({
   editContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    margin: 30
+    margin: 15,
+    marginRight: 30,
+    marginLeft: 30
   },
   edit: {
     flex: 1,
@@ -221,11 +203,13 @@ const style = StyleSheet.create({
     color: '#464646',
     borderRadius: 10
   },
+  birthSelctContainer: {
+    flex: 1
+  },
   selectBirth: {
     justifyContent: 'space-between',
     flexDirection: 'row',
     height: 40,
-    lineHeight: 40,
     margin: 30,
     marginTop: 8,
     marginBottom: 0,

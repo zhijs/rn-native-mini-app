@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 import {
-  Platform, 
   StyleSheet, 
   Text, 
   View,
@@ -11,24 +10,30 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import Footer from './footer'
-import commonStyle from '../../utils/common-style'
 
 export default class passwordInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showPwd: false,
+      isRegister: false
     };
-}
-
+  }
+  getForgetPwdView() {
+    if (this.state.isRegister) {
+      return ( 
+        <View>
+          <Text style={style.sBtnText}>忘记密码</Text>
+        </View>
+      )
+    }
+  }
 
   render() {
-    const { navigate } = this.props.navigation;
     return (
-      <View style={[style.container, commonStyle.pageBg]}>
+      <View style={style.container}>
         <View style={style.itemContainer}>
-          <Text style={style.opTips}>输入密码</Text>
+          <Text style={style.opTips}>{this.state.isRegister ? '输入密码' : '设置密码'}</Text>
           <Text style={style.tipPromise}>6-18个字符</Text>
         </View>      
         <View style={style.editContainer}>
@@ -42,12 +47,17 @@ export default class passwordInput extends Component {
               textContentType={this.state.showPwd ? 'password' : 'none'}
               placeholder="输入密码"
               secureTextEntry={!this.state.showPwd}
+              onChangeText={(value) => {
+                this.props.passwdChange(value)
+              }}
             />
             <TouchableOpacity
               style={style.eyeContainer}
               onLongPress={() => {
-                console.log('长按眼睛');
                 this.setState({showPwd: true});
+              }}
+              onPressOut={() => {
+                this.setState({showPwd: false});
               }}
             >
               <Image
@@ -57,28 +67,7 @@ export default class passwordInput extends Component {
             </TouchableOpacity>
 
         </View>
-        <View>
-          <Text style={style.sBtnText}>忘记密码</Text>
-        </View>
-          
-        <View style={style.btnContain}>
-          <TouchableOpacity
-           style = {commonStyle.btnDisable}
-           activeOpacity={0.5}
-          >
-            <Text
-              style={[commonStyle.btnText ,style.btnText]}
-            >
-              下一步
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={style.itemContainer}>
-          <Footer
-            ShowLoginType={false}
-          />
-        </View>
+        { this.getForgetPwdView()}
       </View>
     )
   }
@@ -91,7 +80,7 @@ const style = StyleSheet.create({
     itemContainer: {
       flex: 1,
       justifyContent: 'center',
-      marginTop: 15
+      marginTop: 30
     },
     opTips: {
       textAlign: 'center',
@@ -109,7 +98,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     margin: 30,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
     backgroundColor: '#f4f4f4',
     borderRadius: 10
@@ -133,13 +122,7 @@ const style = StyleSheet.create({
     color: '#444444',
     fontSize: 14,
     marginRight: 30,
-  },
-
-  btnText: {
-   backgroundColor:'#DADADA',
-   color:'#FFFFFF',
-   
-  },
+  }
 
 })
 

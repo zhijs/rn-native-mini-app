@@ -44,6 +44,14 @@ export default class VerifyCode extends Component {
                       this.refs['verifyItem' +　(i +　1)].focus()
                       this.setState({currentIndex: i + 1})
                     }
+                    // 验证码输入完毕
+                    if (i === arr.length - 1) {
+                      if (this.state.VerifyCodeArr.every((value) => {
+                        return value !== ''
+                      })) {
+                        this.props.checkCode(this.state.VerifyCodeArr)
+                      }
+                    }
                   }}
                   onKeyPress= {({nativeEvent}) => {
                     // 这里监听验证码删除
