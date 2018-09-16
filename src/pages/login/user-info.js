@@ -102,6 +102,7 @@ export default class UserInfoPage extends Component {
               style={style.edit}
               underlineColorAndroid="transparent"
               placeholder="昵称"
+              autoFocus={true}
               onChangeText= {(value) => {
                 this.props.userNameChange(value);
               }}
