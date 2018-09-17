@@ -1,5 +1,5 @@
 const Api = {
-  Test: 'xl-mini_client'
+  Test: 'http://xl-mini_client'
 }
 
 /**
