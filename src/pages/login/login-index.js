@@ -152,6 +152,11 @@ export default class LoginIndex extends Component {
   birthDayChange(value) {
     this.setState({birthDay: value})
   }
+
+  // 检测当前用户是否注册
+  checkRegister() {
+
+  }
   // 根据当前状态返回特定组件
   getPage(pageIndex, direction) {
     switch(pageIndex) {
@@ -250,8 +255,12 @@ export default class LoginIndex extends Component {
              // 当前显示的是验证码页面
              if (this.pageData[cur].name === 'verify-code') {
                this.sendCode()
-             } else if (cur !== this.pageData.length - 1){
-              this.setState({direction : 1})
+             } else if (this.pageData[cur].name === 'phone-input') {
+               // 检测当前用户是否注册
+               this.checkRegister()
+             }
+             if (cur !== this.pageData.length - 1){
+               this.setState({direction : 1})
                this.setState({curentPage : cur + 1})
              }
            }}
