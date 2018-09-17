@@ -1,5 +1,5 @@
 const Api = {
-  Test: 'http://xl-mini_client'
+  Test: 'http://10.10.88.27'
 }
 
 /**
