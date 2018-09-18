@@ -4,31 +4,14 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button} from 'react-native';
-// import { StackNavigator } from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux'
 import LoginIndex from './pages/container/login-container'
 import configureStore from './store/index'
 const store = configureStore({});
 console.log('store', store)
 
-// 导航页
-
-// const App = StackNavigator({
-//   LoginIndex : { screen: LoginIndex },
-//   phoneInput : { screen: PhoneInput },
-//   passwordInput : { screen: passwordInput},
-//   VerifyCode: {screen: VerifyCode},
-//   UserInfo: {screen: UserInfo},
-//   Main: {
-//     screen: LoginIndex,
-//     navigationOptions: ({navigation})=> ({
-//       header: null
-//     })
-//   }
-// }, {
-//   headerMode: 'screen'
-// });
-export default class App extends Component {
+class index extends Component {
   render() {
     return (
       <Provider store={store}>
@@ -37,5 +20,22 @@ export default class App extends Component {
     )
   }
 }
+// 导航页
+
+const App = StackNavigator({
+  LoginIndex : { screen: index },
+  Main: {
+    screen: index,
+    navigationOptions: ({navigation})=> ({
+      header: {
+        visible: true
+      }
+    })
+  }
+}, {
+  headerMode: 'screen'
+});
+
+export default App;
 
 

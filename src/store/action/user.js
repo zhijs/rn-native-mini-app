@@ -26,17 +26,26 @@ export function login(data) {
 // 检测是否注册
 export function checkRegister(number) {
   return (dispatch, getState) => {
-    fetchJSON('/account/is_registered', {}, {phone_number: number})
-      .then((res) => {
-        console.log('是否注册。。',  res)
-        if (res.data.result === 'ok') { // 请求成功
-          let isRegister = res.data.is_registered ? true : false;
-          dispatch({
-            type: actionType.CHECKREGISTER,
-            isRegister
-          })
-        }
+    // fetchJSON('/account/is_registered', {}, {phone_number: number})
+    //   .then((res) => {
+    //     console.log('是否注册。。',  res)
+    //     if (res.data.result === 'ok') { // 请求成功
+    //       let isRegister = res.data.is_registered ? true : false;
+    //       dispatch({
+    //         type: actionType.CHECKREGISTER,
+    //         isRegister
+    //       })
+    //     }
+    //   })
+    setTimeout(() => {
+      dispatch({
+        type: actionType.CHECKREGISTER,
+        isRegister: true
       })
+      dispatch({
+        type
+      })
+    })
   }
 }
 // 注册action

@@ -28,7 +28,6 @@ export default function user(state = initUserData, action) {
        logining: false,
        ...action.data
       }
-      break;
     case actionType.CHECKREGISTER:
       return {
         ...initUserData,

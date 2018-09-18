@@ -23,12 +23,10 @@ console.log(commonStyle)
 export default class LoginIndex extends Component {
   constructor(props) {
     super(props);
-    console.log('login', this.props.login)
     this.state = {
-      curentPage: 0,
       btnState: true,
       telNumber: '',
-      isNumber: true,
+      isNumber: false,
       isLoginBtn: true,
       isRegister: false, // 当前用户是否注册
       isSendCode: true, // 是否已经发送验证码
@@ -107,6 +105,7 @@ export default class LoginIndex extends Component {
   }
   // 监听用户回退事件
   componentDidMount() {
+    console.log('props', this.props)
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -249,15 +248,16 @@ export default class LoginIndex extends Component {
   render() {
     return(
       <View style={[style.container, commonStyle.pageBg]}>
-        <View style={this.pageData[this.state.curentPage].pageStyle}>
-          {this.getPage(this.state.curentPage, this.state.direction)}
+        <View style={this.pageData[this.props.page.index].pageStyle}>
+          {this.getPage(this.props.page.index, this.state.direction)}
         </View>
         <View style={style.btnContain}>
           <TouchableOpacity
-            style = {this.state[this.pageData[this.state.curentPage].nextBtn.activeByKey] ? commonStyle.btnStyle : commonStyle.btnDisable}
+            style = {this.state[this.pageData[this.props.page.index].nextBtn.activeByKey] ? commonStyle.btnStyle : commonStyle.btnDisable}
             activeOpacity={0.5}
             onPress={() => {
-              let cur = this.state.curentPage;
+              let cur = this.props.page.index;
+              let i = 1; 
               if (!this.state[this.pageData[cur].nextBtn.activeByKey])  return;
               // 当前显示的是验证码页面
               let nextPage = false;
@@ -267,14 +267,14 @@ export default class LoginIndex extends Component {
                   break; 
                 case 'phone-input':
                   this.checkRegister();
+                  console.log('this.props.user.isRegister', this.props.user.isRegister)
+                  if (this.props.user.isRegister) {
+                    i = 2
+                  }
                   nextPage = true
                   break;
                 case 'verify-code':
                   
-              }
-              if (nextPage){
-                this.setState({direction : 1})
-                this.setState({curentPage : cur + 1})
               }
             }}
           >

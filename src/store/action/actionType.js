@@ -10,5 +10,7 @@
    CHECKREGISTER: 'check-rigister',
    GET_TEL_CODE: 'get_tel_code', // 获取验证码
    SEND_CODE: 'send_code', // 发送验证码
-   RESET_PWD: 'reset_password' // 重置密码
+   RESET_PWD: 'reset_password', // 重置密码
+   PAGE_NEXT: 'page_next',
+   PAGE_PRE: 'page_pre'
  }
