@@ -4,24 +4,42 @@
 import actionType from '../action/actionType';
 
 const initUserData = {
-  isLogin: false
+  name: '',
+  logining: false,
+  isLogin: false,
+  numberIsRisk: false,
+  isRegister: false,
+  TelNumber: '',
+  gender: 'male'
 };
 
 export default function user(state = initUserData, action) {
   switch(action.type) {
-    case actionType.LOGIN:
+    case actionType.LOGINPRE:
+      return {
+        ...initUserData,
+        logining: true
+      }
+    case actionType.LOGINED:
     case actionType.REGISTER:
       return {
        ...initUserData,
        isLogin: true,
+       logining: false,
        ...action.data
       }
       break;
+    case actionType.CHECKREGISTER:
+      return {
+        ...initUserData,
+        isRegister: action.isRegister
+      }
     case actionType.LOGOTOUT: 
       return {
         ...initUserData,
-        isLogin: false
+        isLogin: false,
       }
-      
+    default :
+      return initUserData
   }
 }

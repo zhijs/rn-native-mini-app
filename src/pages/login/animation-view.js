@@ -17,7 +17,7 @@ export default class SlideAnimation extends Component {
       this.state.fadeAnim,            // 动画中的变量值
       {
         toValue: 0,                   // 平移距离最后变为0
-        duration: 400,              // 让动画持续一段时间
+        duration: 40,              // 让动画持续一段时间
       }
     ).start();                        // 开始执行动画
   }

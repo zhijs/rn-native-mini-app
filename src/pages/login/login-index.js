@@ -10,7 +10,7 @@ import {
   BackHandler
 } 
 from 'react-native';
-
+import { checkNumber, sendCode} from '../../api/mobile-msg'
 import Footer from './footer'
 import IndexHeader from './login-index.header'
 import PhoneInput from './phone-input'
@@ -23,10 +23,11 @@ console.log(commonStyle)
 export default class LoginIndex extends Component {
   constructor(props) {
     super(props);
+    console.log('login', this.props.login)
     this.state = {
       curentPage: 0,
       btnState: true,
-      telNumber: '15989512453',
+      telNumber: '',
       isNumber: true,
       isLoginBtn: true,
       isRegister: false, // 当前用户是否注册
@@ -83,7 +84,7 @@ export default class LoginIndex extends Component {
         ShowLoginType: false,
         nextBtn: {
           isActive: false,
-          text: this.state.isRegister ? '登录' : '下一步',
+          text: this.props.isRegister ? '登录' : '下一步',
           activeByKey: 'passwd'
         },
         pageStyle: {
@@ -131,6 +132,7 @@ export default class LoginIndex extends Component {
   // 电话号码改变事件
   telChange(value) {
     this.setState({telNumber: value, isNumber: true})
+    checkNumber(this.state.numer)
   }
 
   // 密码框输入改变事件
@@ -155,7 +157,11 @@ export default class LoginIndex extends Component {
 
   // 检测当前用户是否注册
   checkRegister() {
-
+    this.props.checkRegister(this.state.telNumber);
+    console.log('检测是否注册---当前state');
+    if (!this.props.user.isRegister) {
+      this._sendCode();
+    }
   }
   // 根据当前状态返回特定组件
   getPage(pageIndex, direction) {
@@ -229,9 +235,10 @@ export default class LoginIndex extends Component {
      }, 1000)
   }
   //发送验证码逻辑
-  sendCode() {
+  _sendCode() {
     if (this.state.remainTime > 0) return
     this.setTimer();
+    sendCode(this.state.telNumber);
   }
 
   // 验证码验证逻辑
@@ -247,23 +254,29 @@ export default class LoginIndex extends Component {
         </View>
         <View style={style.btnContain}>
           <TouchableOpacity
-           style = {this.state[this.pageData[this.state.curentPage].nextBtn.activeByKey] ? commonStyle.btnStyle : commonStyle.btnDisable}
-           activeOpacity={0.5}
-           onPress={() => {
-             let cur = this.state.curentPage;
-
-             // 当前显示的是验证码页面
-             if (this.pageData[cur].name === 'verify-code') {
-               this.sendCode()
-             } else if (this.pageData[cur].name === 'phone-input') {
-               // 检测当前用户是否注册
-               this.checkRegister()
-             }
-             if (cur !== this.pageData.length - 1){
-               this.setState({direction : 1})
-               this.setState({curentPage : cur + 1})
-             }
-           }}
+            style = {this.state[this.pageData[this.state.curentPage].nextBtn.activeByKey] ? commonStyle.btnStyle : commonStyle.btnDisable}
+            activeOpacity={0.5}
+            onPress={() => {
+              let cur = this.state.curentPage;
+              if (!this.state[this.pageData[cur].nextBtn.activeByKey])  return;
+              // 当前显示的是验证码页面
+              let nextPage = false;
+              switch(this.pageData[cur].name){
+                case 'login-index': 
+                  nextPage = true;
+                  break; 
+                case 'phone-input':
+                  this.checkRegister();
+                  nextPage = true
+                  break;
+                case 'verify-code':
+                  
+              }
+              if (nextPage){
+                this.setState({direction : 1})
+                this.setState({curentPage : cur + 1})
+              }
+            }}
           >
             <Text
               style={commonStyle.btnText}
