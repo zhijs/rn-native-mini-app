@@ -59,7 +59,7 @@ export default class LoginIndex extends Component {
           activeByKey: 'isLoginBtn'
         },
         pageStyle: {
-          flex:1
+          flex: 1
         }
       },
       {
@@ -71,7 +71,7 @@ export default class LoginIndex extends Component {
           activeByKey: 'isNumber',
         },
         pageStyle: {
-          flex:1
+          flex: 4
         }
       },
       {
@@ -107,7 +107,7 @@ export default class LoginIndex extends Component {
           activeByKey: 'hasName'
         },
         pageStyle: {
-          flex: 4
+          flex: 5
         }
       }
     ]
@@ -184,20 +184,34 @@ export default class LoginIndex extends Component {
         break;
       case 1:
         return (
-          <SlideAnimation style={style.header} key={`PhoneInput${direction}`} direction={direction}>
-            <PhoneInput valueChange={(value) => { this.telChange(value) }}/>
-          </SlideAnimation>
+          <KeyboardAvoidingView
+            behavior="height" 
+            enabled
+            style ={this.pageData[pageIndex].pageStyle}
+            contentContainerStyle= {style.header}
+          >
+            <SlideAnimation style={style.header} key={`PhoneInput${direction}`} direction={direction}>
+              <PhoneInput valueChange={(value) => { this.telChange(value) }}/>
+            </SlideAnimation>
+          </KeyboardAvoidingView>
         )
         break;
       case 2:
         return (
-          <SlideAnimation style={style.header} key={`VerifyCode${direction}`} direction={direction}>
-            <VerifyCode 
-              verifyCodeChange={(value) => { this.codeChange(value) }} 
-              isSendCode={this.state.isSendCode} 
-              checkCode={(value) => {this.checkCode(value)}}
-            />
-          </SlideAnimation>
+          <KeyboardAvoidingView
+            behavior="height" 
+            enabled
+            style ={this.pageData[pageIndex].pageStyle}
+            contentContainerStyle= {style.header}
+          >
+            <SlideAnimation style={style.header} key={`VerifyCode${direction}`} direction={direction}>
+              <VerifyCode 
+                verifyCodeChange={(value) => { this.codeChange(value) }} 
+                isSendCode={this.state.isSendCode} 
+                checkCode={(value) => {this.checkCode(value)}}
+              />
+            </SlideAnimation>
+          </KeyboardAvoidingView>
         )
         break;
       case 3:
@@ -212,13 +226,20 @@ export default class LoginIndex extends Component {
         break;
       case 4:
         return (
-          <SlideAnimation style={style.header} key={`UserInfo${direction}`} direction={direction}>
-            <UserInfo 
-              userNameChange={(value) => { this.userNameChange(value) }}
-              genderChange={(value) => { this.genderChange(value) }}
-              birthDayChange={(value) => {this.birthDayChange(value)}}
-            />
-          </SlideAnimation>
+          <KeyboardAvoidingView
+            behavior="height" 
+            enabled
+            style ={this.pageData[pageIndex].pageStyle}
+            contentContainerStyle= {style.header}
+          >
+            <SlideAnimation style={style.header} key={`UserInfo${direction}`} direction={direction}>
+              <UserInfo 
+                userNameChange={(value) => { this.userNameChange(value) }}
+                genderChange={(value) => { this.genderChange(value) }}
+                birthDayChange={(value) => {this.birthDayChange(value)}}
+              />
+            </SlideAnimation>
+          </KeyboardAvoidingView>
         )
         break;
     }
@@ -286,17 +307,7 @@ export default class LoginIndex extends Component {
       <View
         style={[style.container, commonStyle.pageBg]}
       >
-        <KeyboardAvoidingView
-          behavior="height" 
-          enabled
-          style ={style.header}
-        >
-          <View
-            style ={style.header}
-          >
-            {this.getPage(this.props.page.index, this.state.direction)}
-          </View>
-        </KeyboardAvoidingView>
+        {this.getPage(this.props.page.index, this.state.direction)}
         <View style={style.btnContain}>
           <TouchableOpacity
             style = {this.state[this.pageData[this.props.page.index].nextBtn.activeByKey] ? commonStyle.btnStyle : commonStyle.btnDisable}

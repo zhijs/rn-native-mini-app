@@ -2,7 +2,7 @@
  * 手机号输入页面
  */
 import React, {Component} from 'react';
-import { StyleSheet, Text, View,TextInput } from 'react-native';
+import { StyleSheet, Text, View,TextInput, KeyboardAvoidingView  } from 'react-native';
 import { checkTelNumber } from '../../utils/tool'
 
 export default class phoneInput extends Component {
@@ -20,7 +20,12 @@ export default class phoneInput extends Component {
           <Text style={style.opTips}>输入手机号码</Text>
         </View>
         <View style={style.itemContainer}>
-         <View style={style.editContainer}>
+          <KeyboardAvoidingView
+              behavior="height" 
+              enabled
+              style ={style.editContainer}
+              contentContainerStyle = {style.editContainer}
+          >
             <TextInput
               maxLength={11}
               style={style.edit}
@@ -31,12 +36,14 @@ export default class phoneInput extends Component {
               placeholder="11位手机号码"
               onChangeText= {(value) => {
                 // 检验是否是合法手机号码
+                console.log('onChangeText', value)
                 if (checkTelNumber(value)) {
                   this.props.valueChange(value)
                 }
+
               }}
             />
-          </View>
+          </KeyboardAvoidingView>
         </View>
       </View>
     )

@@ -101,43 +101,41 @@ export default class UserInfoPage extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <KeyboardAvoidingView style={[style.selectContainer, style.item]}>
-          <View style={style.editContainer}> 
-            <TextInput
-              style={style.edit}
-              underlineColorAndroid="transparent"
-              placeholder="昵称"
-              autoFocus={true}
-              onChangeText= {(value) => {
-                this.props.userNameChange(value);
-              }}
-            />
-          </View>
-          <View style={style.birthSelctContainer}>
-            <TouchableOpacity
-              style={[style.selectBirth]}
-              onPress={() => {
-                this.handleSelectDay()
-              }}
-            >
-              <Text
-                style={[style.selectText]}
+        <View style={style.item}>
+          <TextInput
+            style={style.edit}
+            underlineColorAndroid="transparent"
+            placeholder="昵称"
+            autoFocus={true}
+            onChangeText= {(value) => {
+              this.props.userNameChange(value);
+            }}
+          />
+        </View>
+        <View style={style.item}>
+              <TouchableOpacity
+                style={[style.selectBirth]}
+                onPress={() => {
+                  this.handleSelectDay()
+                }}
               >
-                选择生日
-              </Text>
-              <Text
-                style={[style.selectText]}
-              >
-                {this.state.birthDay}
-              </Text>
-              <Text
-                style={[style.selectText]}
-              >
-                &gt;
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
+                <Text
+                  style={[style.selectText]}
+                >
+                  选择生日
+                </Text>
+                <Text
+                  style={[style.selectText]}
+                >
+                  {this.state.birthDay}
+                </Text>
+                <Text
+                  style={[style.selectText]}
+                >
+                  &gt;
+                </Text>
+              </TouchableOpacity>
+            </View>
     </View>
     )
   }
