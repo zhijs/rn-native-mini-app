@@ -1,6 +1,6 @@
 import axios from 'axios'
 const Api = {
-  Test: 'http://10.10.254.213:7776'
+  Test: 'http://10.10.88.27'
 }
 
 const XL_Api = {
@@ -12,15 +12,13 @@ const XL_Api = {
  * @param {header} Object  - 附加头部
  * @param {data} Object - 请求json数据
  */
-export function fetchJSON(url, header, data) {
+export function fetchJSON(url, headers = {}, data = {}) {
   let _url = `${Api.Test}${url}`
-  headers = Object.assign({'Content-Type': 'application/json'})
+  headers = Object.assign({}, headers, {'Content-Type': 'application/json'})
   console.log('请求接口....', _url);
   return axios.post(_url,
     data,
-    {
-      headers
-    }
+    headers
   )
 }
 
@@ -30,13 +28,11 @@ export function fetchJSON(url, header, data) {
  * @param {*} header 
  * @param {*} data 
  */
-export function fetchXL(url, header, data) {
+export function fetchXL(url, header = {}, data = {}) {
   let _url = `${XL_Api.Test}${url}`
-  headers = Object.assign({'Content-Type': 'application/json'})
+  headers = Object.assign({}, headers, {'Content-Type': 'application/json'})
   return axios.post(_url, data,
-    {
-      headers
-    }
+    headers
   ).catch((e) => {
     console.log('请求出错', e)
   })

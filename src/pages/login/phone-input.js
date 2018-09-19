@@ -31,7 +31,6 @@ export default class phoneInput extends Component {
               placeholder="11位手机号码"
               onChangeText= {(value) => {
                 // 检验是否是合法手机号码
-                console.log('onChangeText', value)
                 if (checkTelNumber(value)) {
                   this.props.valueChange(value)
                 }

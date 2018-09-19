@@ -27,4 +27,7 @@ export default {
     textAlign: 'center',
     color: '#000000'
   },
+  warmText: {
+    color: '#F26161'
+  }
 };

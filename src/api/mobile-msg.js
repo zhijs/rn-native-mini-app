@@ -1,18 +1,26 @@
-import md5 from 'md5'
+import md5 from 'md5';
+import DeviceInfo from 'react-native-device-info';
 import { fetchXL } from './_fetch';
 
 const bizNo = '200027';
 const content  = '21验证码{}'
-
+const needCode = true
+const expireSeconds = 60
+const deviceId = DeviceInfo.getDeviceId()
+console.log('DeviceInfo', DeviceInfo);
 // 发送验证码
 export function sendCode(mobile) {
   let data = {
     bizNo,
     mobile,
     content,
-    signMsg: getSignMsg({bizNo, mobile, content})
+    needCode,
+    expireSeconds
   }
-  return fetchXL('/concurrent-sms.json', {}, data)
+  let _url = getSignMsg(data)
+  //
+  return Promise.resolve({data: {code: 0}})
+  return fetchXL(`/concurrent-sms.json?${_url}`)
 }
 
 // 验证码检验
@@ -22,11 +30,9 @@ export function verifyCode(mobile, verifyCode) {
     mobile,
     verifyCode
   }
-  return fetchXL('/risk/mobile.json', {}, {
-    bizNo,
-    mobile,
-    signMsg: getSignMsg(data)
-  })
+  let _url = getSignMsg(data)
+  return Promise.resolve({data: {code: 0}})
+  return fetchXL(`/risk/mobile.json?${_url}`);
 }
 
 // 号码检验
@@ -62,7 +68,7 @@ function getSignMsg(data) {
   let stringA = arr.join('&');
   console.log(stringA)
   let stringSignTemp = `${stringA}pAXF6T25oc9h`;
-  console.log('stringSignTemp', stringSignTemp)
   let signMsg = md5(stringSignTemp).toUpperCase();
-  return `${signMsg}`
+  console.log('signMsg', signMsg)
+  return `${stringA}&signMsg=${signMsg}`
 }

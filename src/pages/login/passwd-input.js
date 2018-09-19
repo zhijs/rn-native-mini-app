@@ -10,17 +10,19 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
+import commonStyle from '../../utils/common-style'
 
 export default class passwordInput extends Component {
+
   constructor(props) {
     super(props);
-    this.state = {
+    this.state ={
       showPwd: false,
-      isRegister: false
-    };
+      pawIsValid: false
+    }
   }
   getForgetPwdView() {
-    if (this.state.isRegister) {
+    if (this.props.isRegister) {
       return ( 
         <View>
           <Text style={style.sBtnText}>忘记密码</Text>
@@ -33,8 +35,8 @@ export default class passwordInput extends Component {
     return (
       <View style={style.container}>
         <View style={style.itemContainer}>
-          <Text style={style.opTips}>{this.state.isRegister ? '输入密码' : '设置密码'}</Text>
-          <Text style={style.tipPromise}>6-18个字符</Text>
+          <Text style={style.opTips}>{this.props.isRegister ? '输入密码' : '设置密码'}</Text>
+          <Text style={[style.tipPromise, this.state.pawIsValid ? '' : commonStyle.warmText]}>{this.state.pawIsValid ? '6-18个字符' : '请输入6-18个字符'}</Text>
         </View>      
         <View style={style.editContainer}>
           <TextInput
@@ -48,7 +50,12 @@ export default class passwordInput extends Component {
               placeholder="输入密码"
               secureTextEntry={!this.state.showPwd}
               onChangeText={(value) => {
-                this.props.passwdChange(value)
+                if (value.length >= 6 && value.length <= 18) {
+                  this.setState({pawIsValid: true})
+                  this.props.passwdChange(value)
+                } else {
+                  this.setState({pawIsValid: false})
+                }
               }}
             />
             <TouchableOpacity

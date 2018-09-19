@@ -11,13 +11,13 @@ export default function page(state = indexPage, action) {
   switch(action.type) {
     case actionType.PAGE_NEXT:
       return {
-        index: indexPage + action.index
+        index: state.index + action.index
       }
     case actionType.PAGE_PRE: 
       return {
-        index: indexPage - action.index
+        index: state.index - action.index
       }
     default:
-      return indexPage;
+      return state;
   }
 }

@@ -9,27 +9,32 @@ import {
   TouchableOpacity, 
   TextInput,
   Image,
-  DatePickerAndroid
+  DatePickerAndroid,
+  KeyboardAvoidingView
 } from 'react-native';
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { date2str } from '../../utils/tool'
 export default class UserInfoPage extends Component {
   constructor(props) {
+    let year = (new Date).getFullYear();
     super(props)
     this.manKind = 0;
     this.womenKind = 1;
     let dateNowStr = date2str(new Date())
+    this.minDate = new Date(`${year - 18}-01-01`);
     this.state = {
       gender: 0, // 0-男性， 1-女性,
       birthDay: dateNowStr,
-      pickerIsOpen: true
+      pickerIsOpen: true,
+      userInfoArr: []
     }
   }
   async handleSelectDay () {
     try {
       const {action, year, month, day} = await DatePickerAndroid.open({
-        date: new Date()
+        date: new Date(),
+        minDate: this.minDate
       });
       console.log('select day');
       console.log(action, year, month, day);
@@ -96,7 +101,7 @@ export default class UserInfoPage extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={[style.selectContainer, style.item]}>
+        <KeyboardAvoidingView style={[style.selectContainer, style.item]}>
           <View style={style.editContainer}> 
             <TextInput
               style={style.edit}
@@ -132,7 +137,7 @@ export default class UserInfoPage extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
     </View>
     )
   }

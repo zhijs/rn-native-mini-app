@@ -2,7 +2,6 @@ import loginIndex from '../login/login-index';
 import { connect } from 'react-redux'
 import actionType from '../../store/action/actionType'
 import * as userAction from '../../store/action/user'
-import * as pageAction from '../../store/action/log'
 import user from '../../store/reducer/user'
 const mapStateToProps = (state) => {
   console.log('mapStateToProps')
@@ -20,6 +19,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     checkRegister: (number) => {
       dispatch(userAction.checkRegister(number))
+    },
+    sigin: (data) => {
+      dispatch({
+        type: actionType.REGISTER,
+        data
+      })
     },
     pageAdd: (page) => {
       dispatch({
