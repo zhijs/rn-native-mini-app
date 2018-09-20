@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import actionType from '../../store/action/actionType'
 import * as userAction from '../../store/action/user'
 import user from '../../store/reducer/user'
+import { withNavigation } from 'react-navigation';
 const mapStateToProps = (state) => {
   console.log('mapStateToProps')
   console.log(state)
@@ -46,4 +47,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
   }
 }
-export default loginContain = connect(mapStateToProps, mapDispatchToProps)(loginIndex)
+export default loginContain = connect(mapStateToProps, mapDispatchToProps)(withNavigation(loginIndex))

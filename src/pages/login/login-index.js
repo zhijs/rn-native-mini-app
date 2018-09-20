@@ -330,7 +330,10 @@ export default class LoginIndex extends Component {
               let nextPage = false;
               switch(this.pageData[cur].name){
                 case 'login-index': 
-                  this.props.pageAdd(1)
+                  // this.props.pageAdd(1)
+                  const { navigate } = this.props.navigation
+                  console.log('navigate...........',  navigate)
+                  this.props.navigation.navigate('Chat')
                   break; 
                 case 'phone-input':
                   console.log('this.is_registered', this.is_registered)

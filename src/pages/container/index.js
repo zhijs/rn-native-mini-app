@@ -1,32 +1,27 @@
-/**
- * 这里统一注入store
- */
-import configureStore from '../../store/index'
-import React, {Component} from 'react';
-import { Navigation } from 'react-native-navigation';
-import LoginContainer from './login-container' 
-import ChatContainer from './chat-container' 
+import AppNavigator from '../..router';
+import { connect } from 'react-redux';
+import { addNavigationHelpers } from "react-navigation";
 
-export default (store, Provider) => {
-  Navigation.registerComponent('xl_client.Login', () => LoginContainer, store, Provider);
-	Navigation.registerComponent('xl_client.Chat', () => ChatContainer, store, Provider);
+export function navReducer(state, action) {
+  const newState = AppNavigator.router.getStateForAction(action, state);
+  return newState || state;
+};
+
+const mapStateToProps = (state) => ({
+  nav: state.nav
+});
+
+class App extends Component {
+  render() {
+      return (
+          <AppNavigator
+              navigation={addNavigationHelpers({
+                  dispatch: this.props.dispatch,
+                  state: this.props.nav
+              })}
+          />
+      );
+  }
 }
-// export const LoginIndex = class LoginIndex extends Component {
-//   render() {
-//     return ( 
-//       <Provider store={store}>
-//         <LoginContainer />
-//       </Provider>
-//     )
-//   }
-// }
 
-// export const Chat = class Chat extends Component {
-//   render() {
-//     return ( 
-//       <Provider store={store}>
-//        <ChatContainer />
-//       </Provider>
-//     )
-//   }
-// }
+export const Root = connect(mapStateToProps)(App);
