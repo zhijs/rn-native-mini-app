@@ -16,7 +16,7 @@ from 'react-native';
 import { date2str } from '../../utils/tool'
 import { checkNumber, sendCode, verifyCode} from '../../api/mobile-msg'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { sign } from '../../api/user'
+import { sign, checkRegister, login } from '../../api/user'
 import md5 from 'md5';
 import Footer from './footer'
 import IndexHeader from './login-index.header'
@@ -30,14 +30,18 @@ console.log(commonStyle)
 export default class LoginIndex extends Component {
   constructor(props) {
     super(props);
+    // 状态码
+    this.PWD_ERROR = 2
     this.state = {
       btnState: true,
       telNumber: '',
+      rightPwd: true,
       isNumber: false,
       isLoginBtn: true,
       isRegister: false, // 当前用户是否注册
       isSendCode: false, // 是否已经发送验证码
       remainTime: 0, // 验证码倒计时
+      canReSend: false,
       passwd: '',
       userInfoBtn: true,
       hasName: false,
@@ -48,6 +52,7 @@ export default class LoginIndex extends Component {
       direction: 1 // ui切换方向 direction: 1 向前切换， 0 向后切换
     }
     this.timer = null; // 用于验证码倒计时
+
     // 页面信息
     this.pageData = [
       {
@@ -71,7 +76,7 @@ export default class LoginIndex extends Component {
           activeByKey: 'isNumber',
         },
         pageStyle: {
-          flex: 4
+          flex: 1
         }
       },
       {
@@ -80,7 +85,7 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: false,
           text: '重发验证码',
-          activeByKey: 'isSendCode'
+          activeByKey: 'remainTime'
         },
         pageStyle: {
           flex:1
@@ -104,10 +109,10 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: true,
           text: '确定',
-          activeByKey: 'hasName'
+          activeByKey: 'canReSend'
         },
         pageStyle: {
-          flex: 5
+          flex: 4
         }
       }
     ]
@@ -116,33 +121,21 @@ export default class LoginIndex extends Component {
   componentDidMount() {
     console.log('props', this.props)
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    // this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide',this.keyboardDidHide);
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    // this.keyboardWillHideListener && this.keyboardWillHideListener.remove();
   }
 
-  keyboardDidShow() {
-    this._scrollView.scrollTo({x:0, y:200, animated:true});
-  }
-
-  keyboardDidHide() {
-    this._scrollView.scrollTo({x:0, y:200, animated:true});
-  }
   // 用户点击回退按钮
   handleBackPress = () => {
     console.log('点击了返回键')
-    if (this.state.curentPage === 0) {
+    if (this.props.page.index === 0) {
       // 直接退出程序
       BackHandler.exitApp();
       return true
     } else {
-      let cur = this.state.curentPage;
-      this.setState({direction: 0})
-      this.setState({curentPage: cur - 1})
-      console.log('当前页面', cur)
+      this.props.pageBack(1);
       return true
     }
     return true
@@ -150,7 +143,14 @@ export default class LoginIndex extends Component {
   // 电话号码改变事件
   telChange(value) {
     this.setState({telNumber: value, isNumber: true})
-    this.props.checkRegister(this.state.telNumber);
+    checkRegister({phone_number: value})
+      .then((res) => {
+        console.log('是否注册',  res)
+        if (res.data.result === 'ok') {
+          this.setState({isRegister: res.data.is_registered})
+          this.props.checkRegister(res.data.is_registered)
+        }
+      })
   }
 
   // 密码框输入改变事件
@@ -184,34 +184,20 @@ export default class LoginIndex extends Component {
         break;
       case 1:
         return (
-          <KeyboardAvoidingView
-            behavior="height" 
-            enabled
-            style ={this.pageData[pageIndex].pageStyle}
-            contentContainerStyle= {style.header}
-          >
-            <SlideAnimation style={style.header} key={`PhoneInput${direction}`} direction={direction}>
-              <PhoneInput valueChange={(value) => { this.telChange(value) }}/>
-            </SlideAnimation>
-          </KeyboardAvoidingView>
+          <SlideAnimation style={style.header} key={`PhoneInput${direction}`} direction={direction}>
+            <PhoneInput valueChange={(value) => { this.telChange(value) }}/>
+          </SlideAnimation>
         )
         break;
       case 2:
         return (
-          <KeyboardAvoidingView
-            behavior="height" 
-            enabled
-            style ={this.pageData[pageIndex].pageStyle}
-            contentContainerStyle= {style.header}
-          >
-            <SlideAnimation style={style.header} key={`VerifyCode${direction}`} direction={direction}>
-              <VerifyCode 
-                verifyCodeChange={(value) => { this.codeChange(value) }} 
-                isSendCode={this.state.isSendCode} 
-                checkCode={(value) => {this.checkCode(value)}}
-              />
-            </SlideAnimation>
-          </KeyboardAvoidingView>
+          <SlideAnimation style={style.header} key={`VerifyCode${direction}`} direction={direction}>
+            <VerifyCode 
+              verifyCodeChange={(value) => { this.codeChange(value) }} 
+              isSendCode={this.state.isSendCode} 
+              checkCode={(value) => {this.checkCode(value)}}
+            />
+          </SlideAnimation>
         )
         break;
       case 3:
@@ -219,27 +205,21 @@ export default class LoginIndex extends Component {
           <SlideAnimation style={style.header} key={`PasswdInput${direction}`} direction={direction}>
             <PasswdInput 
               passwdChange={(value) => { this.pwdChange(value) }}
-              isRegister={this.props.user.isRegister}
+              isRegister={this.state.isRegister}
+              rightPwd = {this.state.rightPwd}
             />
           </SlideAnimation>
         )
         break;
       case 4:
-        return (
-          <KeyboardAvoidingView
-            behavior="height" 
-            enabled
-            style ={this.pageData[pageIndex].pageStyle}
-            contentContainerStyle= {style.header}
-          >
-            <SlideAnimation style={style.header} key={`UserInfo${direction}`} direction={direction}>
-              <UserInfo 
-                userNameChange={(value) => { this.userNameChange(value) }}
-                genderChange={(value) => { this.genderChange(value) }}
-                birthDayChange={(value) => {this.birthDayChange(value)}}
-              />
-            </SlideAnimation>
-          </KeyboardAvoidingView>
+        return (        
+          <SlideAnimation style={style.header} key={`UserInfo${direction}`} direction={direction}>
+            <UserInfo 
+              userNameChange={(value) => { this.userNameChange(value) }}
+              genderChange={(value) => { this.genderChange(value) }}
+              birthDayChange={(value) => {this.birthDayChange(value)}}
+            />
+          </SlideAnimation>
         )
         break;
     }
@@ -283,7 +263,7 @@ export default class LoginIndex extends Component {
       .then((res) => {
         if (res.data.code === 0) {
           clearInterval(this.timer);
-          this.setState({remainTime: 0})
+          this.setState({remainTime: 0, canReSend: true})
           this.props.pageAdd(1); // 跳转页面
         }
       })
@@ -299,15 +279,44 @@ export default class LoginIndex extends Component {
       dob: this.state.birthDay
     }
     sign(data).then((res) => {
-      console.log('注册成功', res);
+      if (res.data.result === 'ok') {
+        this.props.sigin(data);
+      }
+    })
+  }
+  
+  // 登陆操作
+  handleLogin() {
+    const { navigate } = this.props.navigation;
+    login({
+      phone_number: this.state.telNumber,
+      password: this.state.passwd
+    }).then((res) => {
+      console.log('login----', res)
+      if (res.data.result === 'ok') {
+        if (res.data.status === this.PWD_ERROR) {
+          this.setState({rightPwd: false});
+        } else if (res.data.status === 0) {
+          this.props.logined({
+            uid: res.data.uid,
+            gender: res.data.gender,
+            nickname: res.data.nickname,
+            dob: res.data.dob
+          })
+          navigate('Chat');
+        }
+      }
     })
   }
   render() {
+    console.log('props----', this.props);
     return(
       <View
         style={[style.container, commonStyle.pageBg]}
-      >
-        {this.getPage(this.props.page.index, this.state.direction)}
+      > 
+        <View style={this.pageData[this.props.page.index].pageStyle}>
+          {this.getPage(this.props.page.index, this.state.direction)}
+        </View>
         <View style={style.btnContain}>
           <TouchableOpacity
             style = {this.state[this.pageData[this.props.page.index].nextBtn.activeByKey] ? commonStyle.btnStyle : commonStyle.btnDisable}
@@ -324,16 +333,23 @@ export default class LoginIndex extends Component {
                   this.props.pageAdd(1)
                   break; 
                 case 'phone-input':
-                  console.log('this.props.user.isRegister', this.props.user.isRegister)
-                  if (!this.props.user.isRegister) {
-                    this._sendCode();
+                  console.log('this.is_registered', this.is_registered)
+                  if (this.state.isRegister) {
+                    this.props.pageAdd(2)
+                  } else {
+                    this.props.pageAdd(1)
                   }
                   break;
                 case 'verify-code':
                   this._sendCode();
                   break;
                 case 'passwd-input':
-                  this.props.pageAdd(1);
+                  // 已经注册，执行登陆操作
+                  if (this.state.isRegister){
+                    this.handleLogin();
+                  } else {
+                    this.props.pageAdd(1);
+                  }
                   break;
                 case 'user-info':
                   this.sigin(); // 注册

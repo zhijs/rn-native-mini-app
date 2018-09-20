@@ -15,6 +15,7 @@ import {
 import Footer from './footer'
 import commonStyle from '../../utils/common-style'
 import { date2str } from '../../utils/tool'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 export default class UserInfoPage extends Component {
   constructor(props) {
     let year = (new Date).getFullYear();
@@ -56,6 +57,7 @@ export default class UserInfoPage extends Component {
   render() {
     return (
       <View style={[style.container, commonStyle.pageBg]}>
+        <KeyboardAwareScrollView>
         <View tyle={[style.itemContainer, style.item]}>
           <Text style={style.opTips}>完善个人信息</Text>
           <Text style={style.tipPromise}>确定后性别不可修改</Text> 
@@ -101,7 +103,7 @@ export default class UserInfoPage extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={style.item}>
+        <View style={style.editContainer}>
           <TextInput
             style={style.edit}
             underlineColorAndroid="transparent"
@@ -136,6 +138,7 @@ export default class UserInfoPage extends Component {
                 </Text>
               </TouchableOpacity>
             </View>
+          </KeyboardAwareScrollView>
     </View>
     )
   }
@@ -216,7 +219,7 @@ const style = StyleSheet.create({
     height: 40,
     margin: 30,
     marginTop: 8,
-    marginBottom: 0,
+    marginBottom: 8,
     borderColor: '#dcdcdc',
     borderWidth: 1,
     borderRadius: 8

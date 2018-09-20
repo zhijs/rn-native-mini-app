@@ -4,7 +4,6 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View,TextInput, KeyboardAvoidingView  } from 'react-native';
 import { checkTelNumber } from '../../utils/tool'
-
 export default class phoneInput extends Component {
   constructor(props) {
     super(props);
@@ -19,12 +18,10 @@ export default class phoneInput extends Component {
         <View style={style.itemContainer}>
           <Text style={style.opTips}>输入手机号码</Text>
         </View>
-        <View style={style.itemContainer}>
           <KeyboardAvoidingView
-              behavior="height" 
-              enabled
-              style ={style.editContainer}
-              contentContainerStyle = {style.editContainer}
+            behavior="height" 
+            enabled
+            style ={style.editContainer}
           >
             <TextInput
               maxLength={11}
@@ -44,7 +41,6 @@ export default class phoneInput extends Component {
               }}
             />
           </KeyboardAvoidingView>
-        </View>
       </View>
     )
   }

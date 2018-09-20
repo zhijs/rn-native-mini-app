@@ -30,13 +30,22 @@ export default class passwordInput extends Component {
       )
     }
   }
+  getTipsText() {
+    // 注册密码输入
+    if (!this.props.isRegister) {
+      return this.state.pawIsValid ? '6-18个字符' : '请输入6-18个字符'
+    } else{
+      return this.props.rightPwd ? '' : '密码错误，请重新输入' 
+    }
+  }
 
   render() {
     return (
       <View style={style.container}>
         <View style={style.itemContainer}>
           <Text style={style.opTips}>{this.props.isRegister ? '输入密码' : '设置密码'}</Text>
-          <Text style={[style.tipPromise, this.state.pawIsValid ? '' : commonStyle.warmText]}>{this.state.pawIsValid ? '6-18个字符' : '请输入6-18个字符'}</Text>
+          <Text style={[style.tipPromise, (!this.state.pawIsValid || !this.props.rightPwd) ? commonStyle.warmText : '']}>
+            {this.getTipsText()}</Text>
         </View>      
         <View style={style.editContainer}>
           <TextInput

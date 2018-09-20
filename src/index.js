@@ -4,38 +4,41 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button} from 'react-native';
-import { StackNavigator } from 'react-navigation';
-import { Provider } from 'react-redux'
-import LoginIndex from './pages/container/login-container'
+import {Provider} from "react-redux";
 import configureStore from './store/index'
+import registerScreens from './pages/container/index'
+
 const store = configureStore({});
-console.log('store', store)
+registerScreens(store, Provider);
+import {
+  LoginIndex,
+  Chat
+} from './pages/container/index'
 
-class index extends Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <LoginIndex />
-      </Provider>
-    )
-  }
-}
-// 导航页
 
-const App = StackNavigator({
-  LoginIndex : { screen: index },
-  Main: {
-    screen: index,
-    navigationOptions: ({navigation})=> ({
-      header: {
-        visible: true
-      }
-    })
-  }
-}, {
-  headerMode: 'screen'
+// const App = createStackNavigator({
+//   LoginIndex : { screen: LoginIndex},
+//   Chat: {screen: Chat},
+//   Main: {
+//     screen: LoginIndex,
+//     navigationOptions: ({navigation})=> ({
+//       header: {
+//         visible: false
+//       }
+//     })
+//   }
+// }, {
+//   headerMode: 'screen'
+// });
+
+ const App  = Navigation.startSingleScreenApp({
+  screen: {
+  screen: 'xl_client.Login.Login', // unique ID registered with Navigation.registerScreen
+  title: 'Welcome', // title of the screen as appears in the nav bar (optional)
+  navigatorStyle: {}, // override the navigator style for the screen, see "Styling the navigator" below (optional)
+  navigatorButtons: {} // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
+  },
 });
-
 export default App;
 
 

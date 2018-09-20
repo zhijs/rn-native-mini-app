@@ -14,11 +14,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    login: (data) => {
-      dispatch(userAction.login(data))
+    logined: (data) => {
+      dispatch({
+        type: actionType.LOGINED,
+        data
+      })
     },
-    checkRegister: (number) => {
-      dispatch(userAction.checkRegister(number))
+    checkRegister: (isRegister) => {
+      dispatch({
+        type: actionType.CHECKREGISTER,
+        isRegister
+      })
     },
     sigin: (data) => {
       dispatch({
