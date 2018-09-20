@@ -1,11 +1,9 @@
-import AppNavigator from '../..router';
+import AppNavigator from '../../router';
 import { connect } from 'react-redux';
-import { addNavigationHelpers } from "react-navigation";
+import React, {Component} from 'react';
+import { createNavigationReducer } from "react-navigation-redux-helpers";
 
-export function navReducer(state, action) {
-  const newState = AppNavigator.router.getStateForAction(action, state);
-  return newState || state;
-};
+export const navReducer = createNavigationReducer(AppNavigator)
 
 const mapStateToProps = (state) => ({
   nav: state.nav
@@ -15,10 +13,6 @@ class App extends Component {
   render() {
       return (
           <AppNavigator
-              navigation={addNavigationHelpers({
-                  dispatch: this.props.dispatch,
-                  state: this.props.nav
-              })}
           />
       );
   }

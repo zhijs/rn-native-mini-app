@@ -6,7 +6,9 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 export default class Chat extends Component {
   render() {
     return (
-      <View>{'聊天页面'}</View>
+      <View>
+        <Text>LI...............</Text>
+      </View>
     )
   }
 }
