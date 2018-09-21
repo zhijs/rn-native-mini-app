@@ -1,6 +1,6 @@
 import axios from 'axios'
 const Api = {
-  Test: 'http://10.10.254.213'
+  Test: 'http://211.159.182.124'
 }
 
 const XL_Api = {
