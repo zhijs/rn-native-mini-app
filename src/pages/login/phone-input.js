@@ -3,7 +3,6 @@
  */
 import React, {Component} from 'react';
 import { StyleSheet, Text, View,TextInput, KeyboardAvoidingView  } from 'react-native';
-import { checkTelNumber } from '../../utils/tool'
 export default class phoneInput extends Component {
   constructor(props) {
     super(props);
