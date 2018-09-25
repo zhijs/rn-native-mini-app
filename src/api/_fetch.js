@@ -12,9 +12,9 @@ const XL_Api = {
  * @param {header} Object  - 附加头部
  * @param {data} Object - 请求json数据
  */
-export function fetchJSON(url, headers = {}, data = {}) {
+export function fetchJSON(url, header = {}, data = {}) {
   let _url = `${Api.Test}${url}`
-  headers = Object.assign({}, headers, {'Content-Type': 'application/json'})
+  let headers = Object.assign({}, header, {'Content-Type': 'application/json'})
   console.log('请求接口....', _url);
   return axios.post(_url,
     data,
@@ -30,7 +30,7 @@ export function fetchJSON(url, headers = {}, data = {}) {
  */
 export function fetchXL(url, header = {}, data = {}) {
   let _url = `${XL_Api.Test}${url}`
-  headers = Object.assign({}, headers, {'Content-Type': 'application/json'})
+  let headers = Object.assign({}, header, {'Content-Type': 'application/json'})
   return axios.post(_url, data,
     headers
   ).catch((e) => {

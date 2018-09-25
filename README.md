@@ -37,6 +37,12 @@ npm run ios
 执行 npm run build
 // 模拟器运行
 crtl + m =>　选择 debug js remotely => 打开chrome浏览器 => f12 =>　查看console.log 日志
+
+// 打包测试android apk
+执行
+  cd android 
+  ./gradlew assembleRelease
+  会在app/build/outputs/ 目录下生成 app-release.apk 将这个文件复制到android上，安装即可运行
 ```
 
 ### 代码提交

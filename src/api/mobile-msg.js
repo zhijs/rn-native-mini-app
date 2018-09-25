@@ -18,9 +18,10 @@ export function sendCode(mobile) {
     expireSeconds
   }
   let _url = getSignMsg(data)
-  //
-  return Promise.resolve({data: {code: 0}})
   return fetchXL(`/concurrent-sms.json?${_url}`)
+    .catch((e) => {
+      console.log('发送验证码错误', res);
+    })
 }
 
 // 验证码检验
@@ -31,7 +32,6 @@ export function verifyCode(mobile, verifyCode) {
     verifyCode
   }
   let _url = getSignMsg(data)
-  return Promise.resolve({data: {code: 0}})
   return fetchXL(`/risk/mobile.json?${_url}`);
 }
 

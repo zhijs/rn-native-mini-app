@@ -52,7 +52,6 @@ export default class passwordInput extends Component {
               maxLength={18}
               minLength={6}
               style={style.edit}
-              keyboardType="numeric"
               autoFocus={true}
               underlineColorAndroid="transparent"
               textContentType={this.state.showPwd ? 'password' : 'none'}
@@ -61,10 +60,10 @@ export default class passwordInput extends Component {
               onChangeText={(value) => {
                 if (value.length >= 6 && value.length <= 18) {
                   this.setState({pawIsValid: true})
-                  this.props.passwdChange(value)
                 } else {
                   this.setState({pawIsValid: false})
                 }
+                this.props.passwdChange(value)
               }}
             />
             <TouchableOpacity

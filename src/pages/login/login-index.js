@@ -13,7 +13,7 @@ import {
   Keyboard
 } 
 from 'react-native';
-import { date2str } from '../../utils/tool'
+import { date2str, checkTelNumber } from '../../utils/tool'
 import { checkNumber, sendCode, verifyCode} from '../../api/mobile-msg'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { sign, checkRegister, login } from '../../api/user'
@@ -41,6 +41,7 @@ export default class LoginIndex extends Component {
       isRegister: false, // 当前用户是否注册
       isSendCode: false, // 是否已经发送验证码
       remainTime: 0, // 验证码倒计时
+      canResendCode: false,
       canReSend: false,
       passwd: '',
       userInfoBtn: true,
@@ -85,7 +86,7 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: false,
           text: '重发验证码',
-          activeByKey: 'remainTime'
+          activeByKey: 'canResendCode'
         },
         pageStyle: {
           flex:1
@@ -135,15 +136,23 @@ export default class LoginIndex extends Component {
       BackHandler.exitApp();
       return true
     } else {
-      this.props.pageBack(1);
+      if (this.state.isRegister && this.pageData[this.props.page.index] === 'passwd-input') {
+        this.props.pageBack(2);
+      } else {
+        this.props.pageBack(1);
+      }
       return true
     }
     return true
   }
   // 电话号码改变事件
   telChange(value) {
-    this.setState({telNumber: value, isNumber: true})
-    checkRegister({phone_number: value})
+    if (!checkTelNumber(value)) {
+      this.setState({telNumber: value, isNumber: false})
+      return;
+    } else {
+      this.setState({telNumber: value, isNumber: true})
+      checkRegister({phone_number: value})
       .then((res) => {
         console.log('是否注册',  res)
         if (res.data.result === 'ok') {
@@ -151,11 +160,16 @@ export default class LoginIndex extends Component {
           this.props.checkRegister(res.data.is_registered)
         }
       })
+    }
   }
 
   // 密码框输入改变事件
   pwdChange(value) {
-    this.setState({passwd: md5(value)})
+    if (value === '') {
+      this.setState({passwd: ''});
+    } else {
+      this.setState({passwd: md5(value)});
+    }
   }
 
   // 完善用户信息界面相关监听
@@ -229,13 +243,15 @@ export default class LoginIndex extends Component {
   setTimer() {
     if (this.timer !== null) return
     let count = 0
+    this.setState({canResendCode: false});
     this.timer = setInterval( () => {
       count++
       this.setState({remainTime: 60 - count})
       if (count === 60) {
         clearInterval(this.timer)
         this.setState({
-          remainTime: 0
+          remainTime: 0,
+          canResendCode: true
         })
         this.timer = null
       }
@@ -246,6 +262,7 @@ export default class LoginIndex extends Component {
     if (this.state.remainTime > 0) return
     this.setTimer();
     sendCode(this.state.telNumber).then((res) => {
+      console.log('发送验证码', res);
       if (res.data.code === 0) {
         console.log('发送验证码成功', res);
         this.props.pageAdd(1)
@@ -340,11 +357,11 @@ export default class LoginIndex extends Component {
                   if (this.state.isRegister) {
                     this.props.pageAdd(2)
                   } else {
-                    this.props.pageAdd(1)
+                    this._sendCode();
                   }
                   break;
                 case 'verify-code':
-                  this._sendCode();
+                  this.checkCode();
                   break;
                 case 'passwd-input':
                   // 已经注册，执行登陆操作
