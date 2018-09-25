@@ -50,7 +50,6 @@ export default class LoginIndex extends Component {
       gender: 'male', // 0-男性， 1-女性, 
       birthDay: date2str(new Date()),
       canRegister: false, // 用户信息是否填写完整
-      direction: 1 // ui切换方向 direction: 1 向前切换， 0 向后切换
     }
     this.timer = null; // 用于验证码倒计时
 
@@ -332,7 +331,7 @@ export default class LoginIndex extends Component {
         style={[style.container, commonStyle.pageBg]}
       > 
         <View style={this.pageData[this.props.page.index].pageStyle}>
-          {this.getPage(this.props.page.index, this.state.direction)}
+          {this.getPage(this.props.page.index, this.props.page.direction)}
         </View>
         <View style={style.btnContain}>
           <TouchableOpacity

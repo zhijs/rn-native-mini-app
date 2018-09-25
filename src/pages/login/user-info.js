@@ -35,7 +35,8 @@ export default class UserInfoPage extends Component {
     try {
       const {action, year, month, day} = await DatePickerAndroid.open({
         date: new Date(),
-        minDate: this.minDate
+        maxDate: this.maxDate,
+        mode: 'spinner'
       });
       console.log('select day');
       console.log(action, year, month, day);
