@@ -49,8 +49,7 @@ export default class LoginIndex extends Component {
       hasName: false,
       userName: '', // 用户名
       gender: 'male', // 0-男性， 1-女性, 
-      birthDay: date2str(new Date()),
-      canRegister: false, // 用户信息是否填写完整
+      birthDay: date2str(new Date())
     }
     this.timer = null; // 用于验证码倒计时
 
@@ -110,7 +109,7 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: true,
           text: '确定',
-          activeByKey: 'canRegister'
+          activeByKey: 'hasName'
         },
         pageStyle: {
           flex: 4
@@ -179,8 +178,7 @@ export default class LoginIndex extends Component {
 
   // 完善用户信息界面相关监听
   userNameChange(value) {
-    this.setState({userName: value, hasName: true})
-
+    this.setState({userName: value, hasName: value === '' ? false : true})
   }
 
   // 性别改变
@@ -238,6 +236,7 @@ export default class LoginIndex extends Component {
               userNameChange={(value) => { this.userNameChange(value) }}
               genderChange={(value) => { this.genderChange(value) }}
               birthDayChange={(value) => {this.birthDayChange(value)}}
+              userName = {this.state.userName}
             />
           </SlideAnimation>
         )
@@ -314,6 +313,7 @@ export default class LoginIndex extends Component {
   
   // 用户注册
   sigin() {
+    if (this.state.userName === '') return;
     let data = {
       phone_number: this.state.telNumber,
       password: this.state.passwd,

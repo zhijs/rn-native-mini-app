@@ -35,24 +35,20 @@ export default class UserInfoPage extends Component {
     try {
       const {action, year, month, day} = await DatePickerAndroid.open({
         date: new Date(),
-        maxDate: this.maxDate,
-        mode: 'spinner'
+        maxDate: this.maxDate
       });
       console.log('select day');
       console.log(action, year, month, day);
-      console.log(this)
-      console.log('aciotn === dateSetAction', action === 'dateSetAction');
-      if (action === 'dateSetAction') {
+      if (action !== DatePickerAndroid.dismissedAction) {
         let monthStr = month > 8 ? month + 1 : `0${month + 1}`;
         let str = `${year}-${monthStr}-${day}`;
         this.setState({
           birthDay: str
         })
-        console.log('birthday', `${year}-${monthStr}-${day}`);
-        this.props.birthDayChange(value)
+        this.props.birthDayChange(str)
       }
-    } catch(e) {
-      
+    } catch({code, message}) {
+      console.warn('Cannot open date picker', message);
     }
   }
   render() {
@@ -118,8 +114,9 @@ export default class UserInfoPage extends Component {
             underlineColorAndroid="transparent"
             placeholder="昵称"
             autoFocus={true}
+            value = {this.props.userName}
             onChangeText= {(value) => {
-              this.props.userNameChange(value);
+              this.props.userNameChange(value.trim());
             }}
           />
         </View>

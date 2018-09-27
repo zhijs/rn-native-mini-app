@@ -58,13 +58,13 @@ export default class passwordInput extends Component {
               secureTextEntry={!this.state.showPwd}
               onChangeText={(value) => {
                 let pawIsValid = false;
-                if (value.length >= 6 && value.length <= 18) {
+                if (value.trim().length >= 6 && value.trim().length <= 18) {
                   pawIsValid = true;
                 } else {
                   pawIsValid = false;
                 }
                 this.props.passwdChange({
-                  value: value,
+                  value: value.trim(),
                   pawIsValid
                 })
               }}
