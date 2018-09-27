@@ -30,9 +30,9 @@ export default class phoneInput extends Component {
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
               placeholder="11位手机号码"
+              value={this.props.phone_number}
               onChangeText= {(value) => {
                 // 检验是否是合法手机号码
-                console.log('onChangeText', value)
                 this.props.valueChange(value)
 
               }}

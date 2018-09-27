@@ -6,9 +6,8 @@ import {
 export default class SlideAnimation extends Component {
   constructor(props) {
     super(props)
-    let startValue = this.props.direction ? 500 : -500
     this.state = {
-      fadeAnim: new Animated.Value(startValue),  // 组件初始化在最右端，不可见
+      fadeAnim: new Animated.Value(this.props.direction ? 500 : -500),  // 组件初始化在最右端，不可见
     }
   }
 

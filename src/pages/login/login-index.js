@@ -10,7 +10,8 @@ import {
   BackHandler,
   KeyboardAvoidingView,
   ScrollView,
-  Keyboard
+  Keyboard,
+  ToastAndroid
 } 
 from 'react-native';
 import { date2str, checkTelNumber } from '../../utils/tool'
@@ -42,8 +43,8 @@ export default class LoginIndex extends Component {
       isSendCode: false, // 是否已经发送验证码
       remainTime: 0, // 验证码倒计时
       canResendCode: false,
-      canReSend: false,
       passwd: '',
+      pawIsValid: false,
       userInfoBtn: true,
       hasName: false,
       userName: '', // 用户名
@@ -97,7 +98,7 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: false,
           text: this.props.user.isRegister ? '登录' : '下一步',
-          activeByKey: 'passwd'
+          activeByKey: 'pawIsValid'
         },
         pageStyle: {
           flex:1
@@ -109,7 +110,7 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: true,
           text: '确定',
-          activeByKey: 'canReSend'
+          activeByKey: 'canRegister'
         },
         pageStyle: {
           flex: 4
@@ -163,11 +164,16 @@ export default class LoginIndex extends Component {
   }
 
   // 密码框输入改变事件
-  pwdChange(value) {
-    if (value === '') {
-      this.setState({passwd: ''});
+  pwdChange(data) {
+    if (data.pawIsValid) {
+      this.setState({
+        pawIsValid: data.pawIsValid,
+        passwd: md5(data.value)
+      })
     } else {
-      this.setState({passwd: md5(value)});
+      this.setState({
+        pawIsValid: data.pawIsValid
+      })
     }
   }
 
@@ -198,7 +204,7 @@ export default class LoginIndex extends Component {
       case 1:
         return (
           <SlideAnimation style={style.header} key={`PhoneInput${direction}`} direction={direction}>
-            <PhoneInput valueChange={(value) => { this.telChange(value) }}/>
+            <PhoneInput valueChange={(value) => { this.telChange(value) }} phone_number = {this.state.telNumber}/>
           </SlideAnimation>
         )
         break;
@@ -220,6 +226,7 @@ export default class LoginIndex extends Component {
               passwdChange={(value) => { this.pwdChange(value) }}
               isRegister={this.state.isRegister}
               rightPwd = {this.state.rightPwd}
+              pawIsValid = {this.state.pawIsValid}
             />
           </SlideAnimation>
         )
@@ -244,6 +251,7 @@ export default class LoginIndex extends Component {
     let count = 0
     this.setState({canResendCode: false});
     this.timer = setInterval( () => {
+      console.log('倒计时---');
       count++
       this.setState({remainTime: 60 - count})
       if (count === 60) {
@@ -258,13 +266,17 @@ export default class LoginIndex extends Component {
   }
   //发送验证码逻辑
   _sendCode() {
-    if (this.state.remainTime > 0) return
+    if (this.state.remainTime > 0 && this.state.isRegister && this.pageData[this.props.page.index] === 'passwd-input') {
+      this.props.pageAdd(1);
+    }
     this.setTimer();
     sendCode(this.state.telNumber).then((res) => {
       console.log('发送验证码', res);
+      console.log('code === 103', res.data.code === 103)
       if (res.data.code === 0) {
-        console.log('发送验证码成功', res);
-        this.props.pageAdd(1)
+        if (this.pageData[this.props.page.index].name === 'phone-input') {
+          this.props.pageAdd(1);
+        }
         this.setState({
           isSendCode: true
         })
@@ -279,8 +291,23 @@ export default class LoginIndex extends Component {
       .then((res) => {
         if (res.data.code === 0) {
           clearInterval(this.timer);
-          this.setState({remainTime: 0, canReSend: true})
+          this.setState({remainTime: 0, canResendCode: true})
           this.props.pageAdd(1); // 跳转页面
+        } else if(res.data.code === 103) {
+          // 验证码错误
+          ToastAndroid.showWithGravity(
+            "验证码错误",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+        } else if (res.data.code === 102) {
+          ToastAndroid.showWithGravity(
+            "验证码已失效",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+          clearInterval(this.timer);
+          this.setState({remainTime: 0, canResendCode: true})
         }
       })
   }
@@ -347,9 +374,6 @@ export default class LoginIndex extends Component {
               switch(this.pageData[cur].name){
                 case 'login-index': 
                   this.props.pageAdd(1)
-                  // const { navigate } = this.props.navigation
-                  // console.log('navigate...........',  navigate)
-                  // this.props.navigation.navigate('Chat')
                   break; 
                 case 'phone-input':
                   console.log('this.is_registered', this.is_registered)
@@ -360,7 +384,7 @@ export default class LoginIndex extends Component {
                   }
                   break;
                 case 'verify-code':
-                  this.checkCode();
+                  this._sendCode();
                   break;
                 case 'passwd-input':
                   // 已经注册，执行登陆操作
@@ -369,6 +393,7 @@ export default class LoginIndex extends Component {
                   } else {
                     this.props.pageAdd(1);
                   }
+                  this.setState({pawIsValid: false})
                   break;
                 case 'user-info':
                   this.sigin(); // 注册

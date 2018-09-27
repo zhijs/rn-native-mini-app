@@ -17,8 +17,7 @@ export default class passwordInput extends Component {
   constructor(props) {
     super(props);
     this.state ={
-      showPwd: false,
-      pawIsValid: false
+      showPwd: false
     }
   }
   getForgetPwdView() {
@@ -33,7 +32,7 @@ export default class passwordInput extends Component {
   getTipsText() {
     // 注册密码输入
     if (!this.props.isRegister) {
-      return this.state.pawIsValid ? '6-18个字符' : '请输入6-18个字符'
+      return this.props.pawIsValid ? '6-18个字符' : '请输入6-18个字符'
     } else{
       return this.props.rightPwd ? '' : '密码错误，请重新输入' 
     }
@@ -44,7 +43,7 @@ export default class passwordInput extends Component {
       <View style={style.container}>
         <View style={style.itemContainer}>
           <Text style={style.opTips}>{this.props.isRegister ? '输入密码' : '设置密码'}</Text>
-          <Text style={[style.tipPromise, (!this.state.pawIsValid || !this.props.rightPwd) ? commonStyle.warmText : '']}>
+          <Text style={[style.tipPromise, (!this.props.pawIsValid || !this.props.rightPwd) ? commonStyle.warmText : '']}>
             {this.getTipsText()}</Text>
         </View>      
         <View style={style.editContainer}>
@@ -58,12 +57,16 @@ export default class passwordInput extends Component {
               placeholder="输入密码"
               secureTextEntry={!this.state.showPwd}
               onChangeText={(value) => {
+                let pawIsValid = false;
                 if (value.length >= 6 && value.length <= 18) {
-                  this.setState({pawIsValid: true})
+                  pawIsValid = true;
                 } else {
-                  this.setState({pawIsValid: false})
+                  pawIsValid = false;
                 }
-                this.props.passwdChange(value)
+                this.props.passwdChange({
+                  value: value,
+                  pawIsValid
+                })
               }}
             />
             <TouchableOpacity

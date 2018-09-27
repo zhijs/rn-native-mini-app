@@ -5,8 +5,6 @@ import * as userAction from '../../store/action/user'
 import user from '../../store/reducer/user'
 import { withNavigation } from 'react-navigation';
 const mapStateToProps = (state) => {
-  console.log('mapStateToProps')
-  console.log(state)
   return {
     user: state.user,
     page: state.page

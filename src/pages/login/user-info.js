@@ -65,13 +65,8 @@ export default class UserInfoPage extends Component {
         </View>
         <View style={[style.avataContainer, style.item]}>
           <View style={[style.avataBtnContainer, style.manContainer]}>
-            <Image
-              style={style.avatar}
-              source={this.state.gender === this.manKind ? require("../../assets/images/man_1.png") : require("../../assets/images/man_0.png")}
-            />
-            <Text style={style.avatarText}>男生</Text>
-            <TouchableOpacity
-              style={style.btnContainer}
+          <TouchableOpacity
+              style={style.itemContainer}
               onPress={() => {
                 if (this.state.gender === this.manKind) return 
                 this.setState({gender: this.manKind});
@@ -79,28 +74,41 @@ export default class UserInfoPage extends Component {
               }}
             >
               <Image
-                style={style.btnImg}
-                source={this.state.gender === this.manKind ?  require("../../assets/images/selected.png") : require("../../assets/images/un-selected.png")}
+                style={style.avatar}
+                source={this.state.gender === this.manKind ? require("../../assets/images/man_1.png") : require("../../assets/images/man_0.png")}
               />
+              <Text style={style.avatarText}>男生</Text>
+              <View
+                style = {style.btnContainer}
+              >
+                <Image
+                  style={style.btnImg}
+                  source={this.state.gender === this.manKind ?  require("../../assets/images/selected.png") : require("../../assets/images/un-selected.png")}
+                />
+              </View>
             </TouchableOpacity>
           </View>
           <View style={[style.avataBtnContainer, style.womanContainer]}>
-            <Image
-              style={style.avatar}
-              source={this.state.gender === this.womenKind ? require("../../assets/images/woman_1.png") :  require("../../assets/images/woman_0.png")}
-            />
-            <Text style={style.avatarText}>女生</Text>
             <TouchableOpacity
-              style={style.btnContainer}
-              onPress={() => {
-                this.setState({gender: this.womenKind});
-                this.props.genderChange(this.womenKind)
-              }}
-            >
+                style={style.itemContainer}
+                onPress={() => {
+                  this.setState({gender: this.womenKind});
+                  this.props.genderChange(this.womenKind)
+                }}
+              >
               <Image
-                style={style.btnImg}
-                source={this.state.gender === this.womenKind ? require("../../assets/images/selected.png") :  require("../../assets/images/un-selected.png")}
+                style={style.avatar}
+                source={this.state.gender === this.womenKind ? require("../../assets/images/woman_1.png") :  require("../../assets/images/woman_0.png")}
               />
+              <Text style={style.avatarText}>女生</Text>
+              <View
+                style = {style.btnContainer}
+              >
+                <Image
+                  style={style.btnImg}
+                  source={this.state.gender === this.womenKind ? require("../../assets/images/selected.png") :  require("../../assets/images/un-selected.png")}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         </View>

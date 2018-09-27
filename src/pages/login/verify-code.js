@@ -35,6 +35,7 @@ export default class VerifyCode extends Component {
                       ref={"verifyItem" + i}
                       autoFocus={i === 0 ? true : false}
                       underlineColorAndroid="transparent"
+                      value= {code}
                       onChangeText= {(value) => {
                         
                         let arr = this.state.VerifyCodeArr;
@@ -46,6 +47,7 @@ export default class VerifyCode extends Component {
                         }
                         // 验证码输入完毕
                         if (i === arr.length - 1) {
+                          console.log('VerifyCodeArr', this.state.VerifyCodeArr);
                           if (this.state.VerifyCodeArr.every((value) => {
                             return value !== ''
                           })) {
@@ -55,9 +57,22 @@ export default class VerifyCode extends Component {
                       }}
                       onKeyPress= {({nativeEvent}) => {
                         // 这里监听验证码删除
+                        console.log('onKeyPress', nativeEvent)
+
                         if (i > 0 && nativeEvent!== undefined && nativeEvent.key === 'Backspace') {
-                          this.refs['verifyItem' +　(i -　1)].focus()
-                          this.setState({currentIndex: i - 1})
+                          let arr = this.state.VerifyCodeArr;
+                          let curent = 0
+                          if(arr[i] !== '') {
+                            arr[i] = '';
+                            this.refs['verifyItem' +　i].focus()
+                            curent = i
+                          } else {
+                            this.refs['verifyItem' +　(i -　1)].focus()
+                            // this.refs['verifyItem' +　(i -　1)].value = ''
+                            arr[i - 1] = '';
+                            curent = i - 1
+                          }
+                          this.setState({VerifyCodeArr: arr, currentIndex: curent})
                         }
                       }}
                     />
