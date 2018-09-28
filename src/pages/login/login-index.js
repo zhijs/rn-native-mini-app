@@ -33,6 +33,7 @@ export default class LoginIndex extends Component {
     super(props);
     // 状态码
     this.PWD_ERROR = 2
+    this.allTime = 60; // 倒计时时长
     this.state = {
       btnState: true,
       telNumber: '',
@@ -213,6 +214,7 @@ export default class LoginIndex extends Component {
               verifyCodeChange={(value) => { this.codeChange(value) }} 
               isSendCode={this.state.isSendCode} 
               checkCode={(value) => {this.checkCode(value)}}
+              canResendCode={this.state.canResendCode}
             />
           </SlideAnimation>
         )
@@ -252,8 +254,8 @@ export default class LoginIndex extends Component {
     this.timer = setInterval( () => {
       console.log('倒计时---');
       count++
-      this.setState({remainTime: 60 - count})
-      if (count === 60) {
+      this.setState({remainTime: this.allTime - count})
+      if (this.allTime === count) {
         clearInterval(this.timer)
         this.setState({
           remainTime: 0,
@@ -289,7 +291,8 @@ export default class LoginIndex extends Component {
     verifyCode(this.state.telNumber, code)
       .then((res) => {
         if (res.data.code === 0) {
-          clearInterval(this.timer);
+          this.timer && clearInterval(this.timer);
+          this.timer = null;
           this.setState({remainTime: 0, canResendCode: true})
           this.props.pageAdd(1); // 跳转页面
         } else if(res.data.code === 103) {
@@ -305,7 +308,7 @@ export default class LoginIndex extends Component {
             ToastAndroid.SHORT,
             ToastAndroid.CENTER
           );
-          clearInterval(this.timer);
+          this.timer && clearInterval(this.timer);
           this.setState({remainTime: 0, canResendCode: true})
         }
       })

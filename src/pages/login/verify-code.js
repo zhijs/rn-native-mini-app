@@ -22,7 +22,7 @@ export default class VerifyCode extends Component {
         <KeyboardAwareScrollView>
           <View tyle={style.itemContainer}>
             <Text style={style.opTips}>输入验证码</Text>
-            <Text style={style.tipPromise}>{this.props.isSendCode ? '验证码已发送至您的手机' : '' }</Text> 
+            {<Text style={[style.tipPromise, this.props.canResendCode ? style.hide : '']}>{this.props.isSendCode ? '验证码已发送至您的手机' : '' }</Text>}
           </View>
           <View style={style.editContainer}>
                 {this.state.VerifyCodeArr.map((code, i) => {
@@ -124,5 +124,8 @@ const style = StyleSheet.create({
   editFocus: {
     borderColor: '#b7b7b7',
     borderWidth: 1,
+  },
+  hide: {
+    display: 'none'
   }
 })
