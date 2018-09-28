@@ -22,11 +22,9 @@ export default class UserInfoPage extends Component {
     super(props)
     this.manKind = 0;
     this.womenKind = 1;
-    let dateNowStr = date2str(new Date(`${year - 18}-01-01`))
     this.maxDate = new Date(`${year - 18}-01-01`);
     this.state = {
       gender: 0, // 0-男性， 1-女性,
-      birthDay: dateNowStr,
       pickerIsOpen: true,
       userInfoArr: []
     }
@@ -135,7 +133,7 @@ export default class UserInfoPage extends Component {
                 <Text
                   style={[style.selectText]}
                 >
-                  {this.state.birthDay}
+                  {this.props.birthDay}
                 </Text>
                 <Text
                   style={[style.selectText]}

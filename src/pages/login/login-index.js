@@ -17,7 +17,7 @@ from 'react-native';
 import { date2str, checkTelNumber } from '../../utils/tool'
 import { checkNumber, sendCode, verifyCode} from '../../api/mobile-msg'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { sign, checkRegister, login } from '../../api/user'
+import { sign, checkRegister, login, updateAccount } from '../../api/user'
 import md5 from 'md5';
 import Footer from './footer'
 import IndexHeader from './login-index.header'
@@ -47,10 +47,10 @@ export default class LoginIndex extends Component {
       passwd: '',
       pawIsValid: false,
       userInfoBtn: true,
-      hasName: false,
+      canRegister: false,
       userName: '', // 用户名
       gender: 'male', // 0-男性， 1-女性, 
-      birthDay: date2str(new Date())
+      birthDay: ''
     }
     this.timer = null; // 用于验证码倒计时
 
@@ -110,7 +110,7 @@ export default class LoginIndex extends Component {
         nextBtn: {
           isActive: true,
           text: '确定',
-          activeByKey: 'hasName'
+          activeByKey: 'canRegsiter'
         },
         pageStyle: {
           flex: 4
@@ -136,7 +136,7 @@ export default class LoginIndex extends Component {
       BackHandler.exitApp();
       return true
     } else {
-      if (this.state.isRegister && this.pageData[this.props.page.index] === 'passwd-input') {
+      if (this.props.user.isRegister && this.pageData[this.props.page.index].name === 'passwd-input') {
         this.props.pageBack(2);
       } else {
         this.props.pageBack(1);
@@ -179,7 +179,11 @@ export default class LoginIndex extends Component {
 
   // 完善用户信息界面相关监听
   userNameChange(value) {
-    this.setState({userName: value, hasName: value === '' ? false : true})
+    let canRegister = false;
+    if (value !== '' && this.state.birthDay !== '') {
+      canRegister = true;
+    }
+    this.setState({userName: value, canRegister})
   }
 
   // 性别改变
@@ -189,7 +193,10 @@ export default class LoginIndex extends Component {
 
   // 出生日期改变
   birthDayChange(value) {
-    this.setState({birthDay: value})
+    if (value !== '' && this.state.userName !== '') {
+      canRegister = true;
+    }
+    this.setState({birthDay: value, canRegister})
   }
 
   // 根据当前状态返回特定组件
@@ -239,6 +246,7 @@ export default class LoginIndex extends Component {
               genderChange={(value) => { this.genderChange(value) }}
               birthDayChange={(value) => {this.birthDayChange(value)}}
               userName = {this.state.userName}
+              birthDay = {this.state.birthDay}
             />
           </SlideAnimation>
         )
@@ -316,21 +324,34 @@ export default class LoginIndex extends Component {
   
   // 用户注册
   sigin() {
-    if (this.state.userName === '') return;
     let data = {
       phone_number: this.state.telNumber,
-      password: this.state.passwd,
-      gender: this.state.gender,
-      nickname: this.state.userName,
-      dob: this.state.birthDay
+      password: this.state.passwd
     }
     sign(data).then((res) => {
+      console.log('注册', res);
       if (res.data.result === 'ok') {
         this.props.sigin(data);
+        this.props.pageAdd(1)
       }
     })
   }
   
+  updateUser() {
+    const { navigate } = this.props.navigation;
+    let data = {
+      uid: this.props.user.uid,
+      gender: this.state.gender,
+      nickname: this.state.userName,
+      dob: this.state.birthDay
+    }
+    updateAccount(data).then((res) => {
+      if (res.data.result === 'ok') {
+        this.props.sigin(data);
+        navigate('Tab');
+      }
+    })
+  }
   // 登陆操作
   handleLogin() {
     const { navigate } = this.props.navigation;
@@ -349,7 +370,7 @@ export default class LoginIndex extends Component {
             nickname: res.data.nickname,
             dob: res.data.dob
           })
-          navigate('Chat');
+          navigate('Tab');
         }
       }
     })
@@ -394,12 +415,14 @@ export default class LoginIndex extends Component {
                   if (this.state.isRegister){
                     this.handleLogin();
                   } else {
-                    this.props.pageAdd(1);
+                    this.sigin(); // 注册
                   }
                   this.setState({pawIsValid: false})
                   break;
                 case 'user-info':
-                  this.sigin(); // 注册
+                  if (this.state.gender !== '' && this.state.birthDay !== '') {
+                    this.updateUser(); // 更新用户信息
+                  }
               }
             }}
           >

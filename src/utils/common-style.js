@@ -29,5 +29,14 @@ export default {
   },
   warmText: {
     color: '#F26161'
+  },
+  tabItemActive: {
+    width: 50,
+    height: 60,
+    marginBottom: 20,
+  },
+  tabItem: {
+    width: 20,
+    height: 20
   }
 };
