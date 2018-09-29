@@ -11,16 +11,6 @@ import Match from './pages/container/match-container'
 import Square from './pages/container/square-container'
 import {Image, StyleSheet } from 'react-native';
 import commonStyle from './utils/common-style'
-
-// const TabBarComponent =  class TabBarComponent extends Component {
-//   render() {
-//     return(
-//       <BottomTabBar {...this.props} 
-//         style = {{overflow: 'visiable'}}
-//       />
-//     )
-//   }
-// }
 const Tab = createBottomTabNavigator(
   {
     chat: {
@@ -80,7 +70,7 @@ const AppNavigator = createStackNavigator(
     Tab
   },
   {
-    initialRouteName: 'LoginIndex',
+    initialRouteName: 'Tab',
   }
 );
 export default AppNavigator;

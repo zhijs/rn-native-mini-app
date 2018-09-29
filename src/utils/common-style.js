@@ -32,8 +32,7 @@ export default {
   },
   tabItemActive: {
     width: 50,
-    height: 60,
-    marginBottom: 20,
+    height: 60
   },
   tabItem: {
     width: 20,
