@@ -4,16 +4,20 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground} from 'react-native';
 import commonStyle from '../utils/common-style'
+import Card from '../components/card'
 import SwipeCards from 'react-native-swipe-cards';
+import DislikevView from '../components/match/dislike-view'
+import LikevView from '../components/match/like-view'
 export default class Chat extends Component {
   constructor(props) {
     super(props);
-    // this.handleDisLike = this.handleDisLike.bind(this)
-    // this.btnlikeImg = this.btnlikeImg.bind(this)
     this.state = {
-      card: {
-        name: 'userImg', image: '../assets/images/user.jpg',
-      }
+      card: [
+        {img: 'http://world.people.com.cn/NMediaFile/2016/1208/MAIN201612081356000022613618149.jpg'},
+        {img: 'http://seopic.699pic.com/photo/40006/5720.jpg_wh1200.jpg'},
+        {img: 'http://world.people.com.cn/NMediaFile/2016/1208/MAIN201612081356000022613618149.jpg'},
+        {img: 'http://seopic.699pic.com/photo/40006/5720.jpg_wh1200.jpg'},
+      ]
     }
   }
 
@@ -41,26 +45,20 @@ export default class Chat extends Component {
         <View style={style.content}>
             <SwipeCards
               cards={this.state.card}
-              style = {{flex: 1}}
+              style = {{width: '100%', height: '100%'}}
+              showYup={true}
+              showNope = {true}
+              noView = {<DislikevView/>}
+              yupView = {<LikevView/>}
+              yupStyle = {style.slideIcon}
+              nopeStyle = {style.slideIcon}
+              renderCard={(cardData) => <Card {...cardData} />}
             >
-              <ImageBackground
-                style= {style.othderBg}
-                imageStyle={style.bgImgageStyle}
-                source ={require('../assets/images/user.jpg')}
-              >
-                <View style={style.ptContainer}>
-                  <Image
-                    style = {style.ptIcon}
-                    source ={require('../assets/images/pt-icon.png')}
-                  />
-                  <Text style={style.ptNum}>5</Text>
-                </View>
-              </ImageBackground>
             </SwipeCards>
-            <View style={style.imgBtn}>
+            {/* <View style={style.imgBtn}>
                 <TouchableOpacity
                   style={style.btnDislikeContainer}
-                  onPress={this.handleDisLike}
+                  onPress={this.handleDisLike.bind(this)}
                 >
                     <Image
                       style = {style.btnDislikeImg}
@@ -76,37 +74,7 @@ export default class Chat extends Component {
                       style = {style.btnlikeImg}
                     />
                 </TouchableOpacity>
-            </View>
-            <View style={style.userInfoContainer}>
-                <Text style={style.username}>文艺小清新</Text>
-                <View style={style.genderAgeContainer}>
-                  <Image
-                    style = {style.gender}
-                    source ={require('../assets/images/boy.png')}
-                  />
-                  <Text
-                    style = {style.ageText}
-                  >
-                    21
-                  </Text>
-                </View>
-            </View>
-            <View style={style.othderinfo}>
-                <View style={style.distanceContainer}>
-                  <Image
-                    style = {style.distanceIcon}
-                    source ={require('../assets/images/location.png')}
-                  />
-                  <Text style={style.distance}>300m</Text>
-                </View>
-                <View style={style.videoContainer}>
-                  <Image
-                    style = {style.videoIcon}
-                    source ={require('../assets/images/video-icon.png')}
-                  />
-                  <Text style={style.videoTime}>6s</Text>
-                </View>
-            </View>
+            </View> */}
         </View>
       </View>
     )
@@ -165,30 +133,6 @@ const style = StyleSheet.create({
   bgImgageStyle: {
     borderRadius: 10
   },
-  ptContainer: {
-    position: 'absolute',
-    flexDirection: 'row',
-    top: 5,
-    right: 10,
-    width: 50,
-    height: 30,
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: '#9f8f86',
-    borderColor: '#9f9187'
-  },
-  ptIcon: {
-    width: 20,
-    height: 14,
-    marginTop: 8,
-    marginLeft: 3
-  },
-  ptNum: {
-    lineHeight: 30,
-    color: '#FFFFFF',
-    textAlign: 'center',
-    flexGrow: 1
-  },
   imgBtn: {
     width: '100%',
     height: 60,
@@ -202,9 +146,11 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
-  btnDislikeImg: {
-    width: 70,
-    height: 50
+  slideIcon: {
+    position: 'absolute',
+    bottom: 200,
+    borderWidth: 0,
+    padding: 0
   },
   likeContainer: {
     flex: 1,
@@ -215,74 +161,5 @@ const style = StyleSheet.create({
   btnlikeImg: {
     width: 70,
     height: 50
-  },
-  userInfoContainer: {
-    height: 60,
-    marginTop: 5
-  },
-  username: {
-    fontWeight: '700',
-    fontSize: 18,
-    color: '#444444',
-    textAlign: 'center'
-  },
-  genderAgeContainer: {
-    height: 28,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  gender: {
-    width: 26,
-    height: 20
-  },
-  ageText: {
-    height: 20,
-    marginLeft: 8,
-    padding: 1,
-    width: 26,
-    borderRadius: 8,
-    color: '#ffffff',
-    textAlign: 'center',
-    backgroundColor: '#bb65ff'
-  },
-  othderinfo: {
-    height: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  distanceContainer: {
-    width: 60,
-    height: 16,
-    marginTop: 7,
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
-  },
-  distanceIcon: {
-    width: 10,
-    height: 20,
-    marginLeft: 10
-  },
-  distance: {
-    marginLeft: 5,
-    color: '#e1e1e1'
-  },
-  videoContainer: {
-    borderColor: '#eaeaea',
-    padding: 5,
-    borderWidth: 1,
-    width: 60,
-    height: 30,
-    borderRadius: 5,
-    marginRight: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  videoIcon: {
-    width: 25,
-    height: 20
-  },
-  videoTime: {
-    marginLeft: 10,
-    color: '#e1e1e1'
-  },
+  }
 })
