@@ -9,6 +9,7 @@ import LoginIndex from './pages/container/login-container'
 import Chat from './pages/container/chat-container'
 import Match from './pages/container/match-container'
 import Square from './pages/container/square-container'
+import Upload from './pages/container/upload-container'
 import {Image, StyleSheet } from 'react-native';
 import commonStyle from './utils/common-style'
 const Tab = createBottomTabNavigator(
@@ -67,10 +68,19 @@ const Tab = createBottomTabNavigator(
 const AppNavigator = createStackNavigator(
   {
     LoginIndex,
+    Upload: {
+      screen: Upload,
+      navigationOptions: {
+        title: '上传照片及其语音',
+        headerStyle: {
+          textAlign: 'center'
+        }
+      }
+    },
     Tab
   },
   {
-    initialRouteName: 'Tab',
+    initialRouteName: 'Upload',
   }
 );
 export default AppNavigator;
