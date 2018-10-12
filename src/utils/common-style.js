@@ -37,5 +37,8 @@ export default {
   tabItem: {
     width: 20,
     height: 20
+  },
+  textCenter: {
+    textAlign: 'center'
   }
 };
