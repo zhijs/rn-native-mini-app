@@ -3,15 +3,20 @@
  */
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, ImageBackground} from 'react-native';
+import { getFriend } from '../api/friend'
 import commonStyle from '../utils/common-style'
 import Card from '../components/card'
 import SwipeCards from 'react-native-swipe-cards';
 import DislikevView from '../components/match/dislike-view'
 import LikevView from '../components/match/like-view'
-export default class Chat extends Component {
+import { Api } from '../api/_fetch';
+// userID 11
+export default class Match extends Component {
   constructor(props) {
     super(props);
+    this.imgPre = 'http://'
     this.state = {
+      myId: 11,
       card: [
         {img: 'http://world.people.com.cn/NMediaFile/2016/1208/MAIN201612081356000022613618149.jpg'},
         {img: 'http://seopic.699pic.com/photo/40006/5720.jpg_wh1200.jpg'},
@@ -20,7 +25,29 @@ export default class Chat extends Component {
       ]
     }
   }
-
+  componentWillMount() {
+    console.log('Match componentWillMount --', this.state.myId)
+    getFriend({uid: this.state.myId})
+      .then((res) => {
+        console.log('get friend success', res)
+        if (res.data && res.data.result === 'ok') {
+          let uids = [];
+          let nowYear = (new Date).getFullYear + 1
+          let usersInfo = res.data.info.map((item) => {
+            let itemYear = (new Date(item.dob)).getFullYear + 1
+            let user = {
+              uid: item.uid,
+              nickname: item.nickname,
+              phone_number: item.phone_number,
+              age: nowYear -  itemYear,
+              profile_photo_src: `${Api}${item.profile_photo_src}`,
+              gender: item.gender,
+              audioSrc: item.audio_src
+            }
+          })
+        }
+      })
+  }
   handleDisLike() {
     console.log('不喜欢')
   }
@@ -55,26 +82,6 @@ export default class Chat extends Component {
               renderCard={(cardData) => <Card {...cardData} />}
             >
             </SwipeCards>
-            {/* <View style={style.imgBtn}>
-                <TouchableOpacity
-                  style={style.btnDislikeContainer}
-                  onPress={this.handleDisLike.bind(this)}
-                >
-                    <Image
-                      style = {style.btnDislikeImg}
-                      source ={require('../assets/images/dislike.png')}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={style.likeContainer}
-                  onPress={this.handleLike}
-                >
-                    <Image
-                      source ={require('../assets/images/like.png')}
-                      style = {style.btnlikeImg}
-                    />
-                </TouchableOpacity>
-            </View> */}
         </View>
       </View>
     )

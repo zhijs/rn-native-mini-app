@@ -12,5 +12,7 @@
    SEND_CODE: 'send_code', // 发送验证码
    RESET_PWD: 'reset_password', // 重置密码
    PAGE_NEXT: 'page_next',
-   PAGE_PRE: 'page_pre'
+   PAGE_PRE: 'page_pre',
+   SET_NEW_FRIEND: 'set_new_friend',
+   SET_NEW_LINKE_ME: 'set_new_like_me'
  }

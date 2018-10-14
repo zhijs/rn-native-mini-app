@@ -7,7 +7,7 @@ import commonStyle from '../utils/common-style'
 export default class Chat extends Component {
   render() {
     return (
-      <View>
+      <View style = {[commonStyle.pageBg]}>
         <Text>聊天页面</Text>
       </View>
     )

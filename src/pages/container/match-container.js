@@ -7,4 +7,20 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default ChatContainer = connect(mapStateToProps)(withNavigation(match));
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    setFriend: (data) => {
+      dispatch({
+        type: actionType.SET_NEW_FRIEND,
+        data
+      })
+    },
+    addLikeMe: (user) => {
+      dispatch({
+        type: actionType.SET_NEW_LINKE_ME,
+        isRegister
+      })
+    }
+  }
+}
+export default ChatContainer = connect(mapStateToProps, mapDispatchToProps)(withNavigation(match));

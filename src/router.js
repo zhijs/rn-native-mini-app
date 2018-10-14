@@ -3,19 +3,66 @@
  *
  */
 import React, {Component} from 'react';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation'
-import {BottomTabBar } from 'react-navigation-tabs'
+import { createStackNavigator, createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation'
 import LoginIndex from './pages/container/login-container'
 import Chat from './pages/container/chat-container'
 import Match from './pages/container/match-container'
+import MatchList from './pages/container/match-list-container'
 import Square from './pages/container/square-container'
 import Upload from './pages/container/upload-container'
 import {Image, StyleSheet } from 'react-native';
 import commonStyle from './utils/common-style'
+
+// 聊天页面上方Tab
+const chatTab = createMaterialTopTabNavigator(
+  {
+    matchList: {
+      screen: MatchList,
+      navigationOptions: {
+        tabBarLabel: '配对',
+      }
+    },
+    chat: {
+      screen: Chat,
+      navigationOptions: {
+        tabBarLabel: '聊天',
+      }  
+    }
+  },
+  {
+    
+    tabBarOptions: {
+      showLabel: true,
+      style: {
+        backgroundColor: '#E8E8EF',
+        height: 40,
+        width: 120,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      },
+      tabStyle: {
+        width: 60,
+        lineHeight: 40
+      },
+      indicatorStyle: {
+        width: 30,
+        height: 5,
+        marginLeft: 15 
+      },
+      labelStyle: {
+        color: '#515151',
+        textAlign: 'right'
+      },
+      activeTintColor: '#000000'
+    },
+    swipeEnabled: false,
+    animationEnabled: false,
+  }
+)
 const Tab = createBottomTabNavigator(
   {
     chat: {
-      screen: Chat,
+      screen: chatTab,
       navigationOptions: {
         tabBarLabel: "聊天",
         showIcon: true,
@@ -46,9 +93,10 @@ const Tab = createBottomTabNavigator(
     },
     Square: {
       screen: Square,
-    }
+    },
   },
   {
+    initialRouteName: 'Match',
     tabBarOptions: {
       showIcon: true,
       showLabel: true,
@@ -56,14 +104,13 @@ const Tab = createBottomTabNavigator(
       style: {
         backgroundColor: '#fff',
         borderTopColor: '#ccc',
-        height: 60,
+        height: 50,
         overflow:'visible'
       }
     },
-    // tabBarComponent: TabBarComponent,
     swipeEnabled: false,
     animationEnabled: false,
-  }
+  },
 );
 const AppNavigator = createStackNavigator(
   {
@@ -80,7 +127,7 @@ const AppNavigator = createStackNavigator(
     Tab
   },
   {
-    initialRouteName: 'Upload',
+    initialRouteName: 'Tab',
   }
 );
 export default AppNavigator;

@@ -1,5 +1,5 @@
 import axios from 'axios'
-const Api = {
+export const Api = {
   Test: 'http://211.159.182.124'
 }
 
