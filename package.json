@@ -20,6 +20,7 @@
     "react-native-device-info": "^0.22.5",
     "react-native-image-crop-picker": "^0.21.2",
     "react-native-keyboard-aware-scroll-view": "^0.7.2",
+    "react-native-sound": "^0.10.9",
     "react-native-svg": "^5.5.1",
     "react-native-svg-uri": "^1.2.3",
     "react-native-swipe-cards": "^0.1.1",

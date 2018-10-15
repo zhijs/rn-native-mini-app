@@ -2,16 +2,20 @@
  * 导航配置
  *
  */
-import React, {Component} from 'react';
-import { createStackNavigator, createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation'
-import LoginIndex from './pages/container/login-container'
-import Chat from './pages/container/chat-container'
-import Match from './pages/container/match-container'
-import MatchList from './pages/container/match-list-container'
-import Square from './pages/container/square-container'
-import Upload from './pages/container/upload-container'
-import {Image, StyleSheet } from 'react-native';
-import commonStyle from './utils/common-style'
+import React, { Component } from "react";
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+  createMaterialTopTabNavigator
+} from "react-navigation";
+import LoginIndex from "./pages/container/login-container";
+import Chat from "./pages/container/chat-container";
+import Match from "./pages/container/match-container";
+import MatchList from "./pages/container/match-list-container";
+import Square from "./pages/container/square-container";
+import Upload from "./pages/container/upload-container";
+import { Image, StyleSheet } from "react-native";
+import commonStyle from "./utils/common-style";
 
 // 聊天页面上方Tab
 const chatTab = createMaterialTopTabNavigator(
@@ -19,46 +23,46 @@ const chatTab = createMaterialTopTabNavigator(
     matchList: {
       screen: MatchList,
       navigationOptions: {
-        tabBarLabel: '配对',
+        tabBarLabel: "配对",
+        tabBarOnPress: ({ navigation }) => {
+          console.log(navigation);
+        }
       }
     },
     chat: {
       screen: Chat,
       navigationOptions: {
-        tabBarLabel: '聊天',
-      }  
+        tabBarLabel: "聊天"
+      }
     }
   },
   {
-    
     tabBarOptions: {
       showLabel: true,
       style: {
-        backgroundColor: '#E8E8EF',
+        backgroundColor: "#E8E8EF",
         height: 40,
         width: 120,
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        marginLeft: "auto",
+        marginRight: "auto"
       },
       tabStyle: {
-        width: 60,
-        lineHeight: 40
+        width: 60
       },
       indicatorStyle: {
         width: 30,
         height: 5,
-        marginLeft: 15 
+        marginLeft: 15
       },
       labelStyle: {
-        color: '#515151',
-        textAlign: 'right'
+        color: "#515151"
       },
-      activeTintColor: '#000000'
+      activeTintColor: "#000000"
     },
-    swipeEnabled: false,
-    animationEnabled: false,
+    swipeEnabled: true
+    // animationEnabled: false
   }
-)
+);
 const Tab = createBottomTabNavigator(
   {
     chat: {
@@ -68,11 +72,15 @@ const Tab = createBottomTabNavigator(
         showIcon: true,
         tabBarIcon: ({ focused, tintColor }) => {
           return (
-            <Image 
-              source = { focused ? require('./assets/images/chat-active.png') : require('./assets/images/chat.png')}
-              style = {focused ? commonStyle.tabItemActive : commonStyle.tabItem}
+            <Image
+              source={
+                focused
+                  ? require("./assets/images/chat-active.png")
+                  : require("./assets/images/chat.png")
+              }
+              style={focused ? commonStyle.tabItemActive : commonStyle.tabItem}
             />
-          )
+          );
         }
       }
     },
@@ -83,34 +91,54 @@ const Tab = createBottomTabNavigator(
         showIcon: true,
         tabBarIcon: ({ focused, tintColor }) => {
           return (
-            <Image 
-              source = { focused ? require('./assets/images/match-active.png') : require('./assets/images/match.png')}
-              style = {focused ? commonStyle.tabItemActive : commonStyle.tabItem}
+            <Image
+              source={
+                focused
+                  ? require("./assets/images/match-active.png")
+                  : require("./assets/images/match.png")
+              }
+              style={focused ? commonStyle.tabItemActive : commonStyle.tabItem}
             />
-          )
+          );
         }
       }
     },
     Square: {
       screen: Square,
-    },
+      navigationOptions: {
+        tabBarLabel: "广场",
+        showIcon: true,
+        tabBarIcon: ({ focused, tintColor }) => {
+          return (
+            <Image
+              source={
+                focused
+                  ? require("./assets/images/square-active.png")
+                  : require("./assets/images/square.png")
+              }
+              style={focused ? commonStyle.tabItemActive : commonStyle.tabItem}
+            />
+          );
+        }
+      }
+    }
   },
   {
-    initialRouteName: 'Match',
+    initialRouteName: "Match",
     tabBarOptions: {
       showIcon: true,
       showLabel: true,
-      tabBarPosition: 'bottom',
+      tabBarPosition: "bottom",
       style: {
-        backgroundColor: '#fff',
-        borderTopColor: '#ccc',
+        backgroundColor: "#fff",
+        borderTopColor: "#ccc",
         height: 50,
-        overflow:'visible'
+        overflow: "visible"
       }
     },
     swipeEnabled: false,
-    animationEnabled: false,
-  },
+    animationEnabled: false
+  }
 );
 const AppNavigator = createStackNavigator(
   {
@@ -118,16 +146,22 @@ const AppNavigator = createStackNavigator(
     Upload: {
       screen: Upload,
       navigationOptions: {
-        title: '上传照片及其语音',
+        title: "上传照片及其语音",
         headerStyle: {
-          textAlign: 'center'
+          textAlign: "center"
         }
       }
     },
-    Tab
+    Tab: {
+      screen: Tab,
+      headerBackTitleVisible: false,
+      navigationOptions: {
+        header: null
+      }
+    }
   },
   {
-    initialRouteName: 'Tab',
+    initialRouteName: "LoginIndex"
   }
 );
 export default AppNavigator;
