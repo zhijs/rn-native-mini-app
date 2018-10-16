@@ -3,13 +3,11 @@
  */
 import React, { Component } from "react";
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   Image,
-  TouchableOpacity,
-  ImageBackground
+  TouchableOpacity
 } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
 import commonStyle from "../utils/common-style";
@@ -18,6 +16,7 @@ import SwipeCards from "react-native-swipe-cards";
 import DislikevView from "../components/match/dislike-view";
 import LikevView from "../components/match/like-view";
 import { Api } from "../api/_fetch";
+import MessageBox from "../components/message-box";
 // userID 11
 export default class Match extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ export default class Match extends Component {
             age: nowYear - itemYear || "18",
             profile_photo_src:
               item.profile_photo_src === ""
-                ? "http://world.people.com.cn/NMediaFile/2016/1208/MAIN201612081356000022613618149.jpg"
+                ? "http://211.159.182.124/resource/image/ge/1539702991.jpeg"
                 : `${Api.Test}${item.profile_photo_src}`,
             gender: item.gender || "male",
             audioSrc:
@@ -87,6 +86,11 @@ export default class Match extends Component {
   render() {
     return (
       <View style={[commonStyle.pageBg, style.container]}>
+        <MessageBox
+          visiable = {true}
+        >
+
+        </MessageBox>
         <View style={style.header}>
           <View style={style.avatarContainer}>
             <Image
