@@ -337,6 +337,8 @@ export default class LoginIndex extends Component {
     sign(data).then(res => {
       console.log("注册", res);
       if (res.data.result === "ok") {
+        data.is_registered = true
+        data.uid = res.data.uid;
         this.props.sigin(data);
         this.props.pageAdd(1);
       }
@@ -346,8 +348,7 @@ export default class LoginIndex extends Component {
   updateUser() {
     const { navigate } = this.props.navigation;
     let data = {
-      // uid: this.props.user.uid,
-      uid: 11,
+      uid: this.props.user.uid,
       gender: this.state.gender,
       nickname: this.state.userName,
       dob: this.state.birthDay
