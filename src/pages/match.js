@@ -22,12 +22,11 @@ import { Api } from "../api/_fetch";
 export default class Match extends Component {
   constructor(props) {
     super(props);
+    this.Card = null;
     this.state = { myId: 11 };
   }
   componentWillMount() {
-    getFriend({
-      uid: this.props.user.uid
-    }).then(res => {
+    getFriend({ uid: this.state.myId }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("getFriends", res);
         let uids = [];
@@ -49,7 +48,8 @@ export default class Match extends Component {
               item.audio_src === ""
                 ? "http://211.159.182.124/resource/audio/1539532499.mp3"
                 : `${Api.Test}${item.audio_src}`,
-            pics: item.pic_srcs
+            pics: item.pic_srcs,
+            getCardChild: this.getCardChild.bind(this)
           };
           this.props.addNewFriend(item.uid);
           this.props.setFriendAll(user);
@@ -59,15 +59,23 @@ export default class Match extends Component {
     });
   }
   handleDisLike(card) {
-    dislikeFriend({ from: this.props.user.uid, to: card.uid }).then(res => {
+    console.log("Card,,,", this.Card);
+    console.log("card..", card);
+    this.Card.sound.stop();
+    dislikeFriend({ from: this.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("不喜欢成功");
       }
     });
   }
+  getCardChild(card) {
+    console.log("获取子对象", card.sound);
+    this.Card = card;
+  }
 
   handleLike(card) {
-    likeFriend({ from: this.props.user.uid, to: card.uid }).then(res => {
+    this.Card.sound.stop();
+    likeFriend({ from: this.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         if (res.data.is_friend) {
           this.props.addLikeMe(card.uid);

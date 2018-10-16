@@ -161,7 +161,7 @@ const AppNavigator = createStackNavigator(
     }
   },
   {
-    initialRouteName: "LoginIndex"
+    initialRouteName: "Tab"
   }
 );
 export default AppNavigator;

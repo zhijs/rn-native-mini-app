@@ -12,22 +12,19 @@ import Sound from "react-native-sound";
 export default class Card extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      duration: 0
-    };
+    this.state = { duration: 0 };
     console.log("Card", this.props);
     this.sound = new Sound(this.props.audioSrc, null, error => {
       if (!error) {
         let duration = this.sound.getDuration();
         this.setState({ duration: duration });
+        this.sound.setNumberOfLoops(0);
         console.log("this duration...", this.sound.getDuration());
       } else {
         console.log("加载声音资源失败", error);
       }
     });
-
-    // this.durration = this.sound.getDuration();
-    // console.log("this duration...", this.state);
+    this.props.getCardChild(this);
   }
   _getGenderIcon(gender) {
     if (this.props.gender === "male") {
@@ -45,6 +42,13 @@ export default class Card extends Component {
         />
       );
     }
+  }
+  stopVideo() {
+    this.sound.stop();
+  }
+  componentWillUnmount() {
+    console.log("card componentWillUnmount");
+    this.sound.pause();
   }
   render() {
     return (
@@ -246,7 +250,7 @@ const style = StyleSheet.create({
     justifyContent: "flex-start"
   },
   distanceIcon: {
-    width: 10,
+    width: 12,
     height: 20,
     marginLeft: 10
   },

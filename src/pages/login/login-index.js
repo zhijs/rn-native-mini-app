@@ -346,12 +346,14 @@ export default class LoginIndex extends Component {
   updateUser() {
     const { navigate } = this.props.navigation;
     let data = {
-      uid: this.props.user.uid,
+      // uid: this.props.user.uid,
+      uid: 11,
       gender: this.state.gender,
       nickname: this.state.userName,
       dob: this.state.birthDay
     };
     updateAccount(data).then(res => {
+      console.log('更新用户信息', res)
       if (res.data.result === "ok") {
         this.props.sigin(data);
         navigate("Tab");
