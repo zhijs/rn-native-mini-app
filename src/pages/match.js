@@ -17,15 +17,20 @@ import DislikevView from "../components/match/dislike-view";
 import LikevView from "../components/match/like-view";
 import { Api } from "../api/_fetch";
 import MessageBox from "../components/message-box";
-// userID 11
+
 export default class Match extends Component {
   constructor(props) {
     super(props);
     this.Card = null;
-    this.state = { myId: 11 };
+    this.state = {
+      matchSuccess: false,
+      modalShow: false,
+      matchName: '文艺小清新'
+    }
+    this.state = { myId: 37 };
   }
   componentWillMount() {
-    getFriend({ uid: this.state.myId }).then(res => {
+    getFriend({ uid:  this.state.myId }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("getFriends", res);
         let uids = [];
@@ -39,16 +44,15 @@ export default class Match extends Component {
             phone_number: item.phone_number,
             age: nowYear - itemYear || "18",
             profile_photo_src:
-              item.profile_photo_src === ""
-                ? "http://211.159.182.124/resource/image/ge/1539702991.jpeg"
-                : `${Api.Test}${item.profile_photo_src}`,
+            item.pic_srcs.length === 0
+                ? "http://211.159.182.124/resource/image/1539702991.jpeg"
+                : `${Api.Test}${item.pic_srcs[0]}`,
             gender: item.gender || "male",
             audioSrc:
               item.audio_src === ""
                 ? "http://211.159.182.124/resource/audio/1539532499.mp3"
                 : `${Api.Test}${item.audio_src}`,
-            pics: item.pic_srcs,
-            getCardChild: this.getCardChild.bind(this)
+            pics: item.pic_srcs
           };
           this.props.addNewFriend(item.uid);
           this.props.setFriendAll(user);
@@ -58,10 +62,8 @@ export default class Match extends Component {
     });
   }
   handleDisLike(card) {
-    console.log("Card,,,", this.Card);
-    console.log("card..", card);
     this.Card.sound.stop();
-    dislikeFriend({ from: this.state.myId, to: card.uid }).then(res => {
+    dislikeFriend({ from:  this.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("不喜欢成功");
       }
@@ -74,7 +76,7 @@ export default class Match extends Component {
 
   handleLike(card) {
     this.Card.sound.stop();
-    likeFriend({ from: this.state.myId, to: card.uid }).then(res => {
+    likeFriend({ from:  tthis.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         if (res.data.is_friend) {
           this.props.addLikeMe(card.uid);
@@ -83,13 +85,70 @@ export default class Match extends Component {
     });
     console.log("like");
   }
+  
+  // 关闭浮层
+  modalClose() {
+    this.setState({
+      modalShow: false
+    }) 
+  }
+
+  // 获取浮层内容元素
+  getModalChild(myImg, otherName, otherImg) {
+    return(
+     <View style = {style.matchSuccessContainer}>
+        <View style = {style.titleContainer}>
+           <Image
+             style = {style.titleBg}
+             source = {require('../assets/images/match-success-bg.png')}
+           />
+        </View>
+        <Text style = {style.tips}>你与{otherName}互相喜欢了对方</Text>
+        <View style = {style.twoAvatarContainer}>
+            <Image
+              style = {[style.avatarItem, style.modalAvatarMy]}
+              source = {require('../assets/images/user.jpg')}
+            />
+            <Image
+              style = {[style.avatarItem, style.modalAvatarYou]}
+              source = {require('../assets/images/user.jpg')}
+            />
+        </View>
+        <View style = {style.modalBtnContainer}>
+          <TouchableOpacity 
+            style = {[style.modalBtn, style.cancelBtnContainer]}
+            onPress = {() => {
+              console.log('再看看', this)
+              this.setState({modalShow: false})
+            }}
+          >
+             <Text style = {style.modalBtnText}>再看看</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style = {[style.modalBtn, style.comfirmBtnContainer]}
+            onPress = {() => {
+              const { navigate } = this.props.navigation;
+              console.log(this.props.navigation)
+              navigate('chat')
+              this.setState({modalShow: false})
+            }}
+          >
+             <Text style = {style.modalBtnText}>发消息</Text>
+          </TouchableOpacity>
+        </View>
+     </View>
+    )  
+  }
+
   render() {
     return (
       <View style={[commonStyle.pageBg, style.container]}>
         <MessageBox
-          visiable = {true}
+          modalClose = {this.modalClose.bind(this)}
+          visiable = {this.state.modalShow}
+          contentHeight = {'60%'}
+          childView = {this.getModalChild(this)}
         >
-
         </MessageBox>
         <View style={style.header}>
           <View style={style.avatarContainer}>
@@ -117,7 +176,7 @@ export default class Match extends Component {
             handleYup={this.handleLike.bind(this)}
             yupStyle={style.slideIcon}
             nopeStyle={style.slideIcon}
-            renderCard={cardData => <Card {...cardData} />}
+            renderCard={cardData => <Card {...cardData} getCardChild = {this.getCardChild.bind(this)} />}
           />
         </View>
       </View>
@@ -198,5 +257,67 @@ const style = StyleSheet.create({
   btnlikeImg: {
     width: 70,
     height: 50
+  },
+  // 浮层样式
+  matchSuccessContainer: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  titleContainer: {
+    width: '50%',
+    marginLeft: '25%',
+    height: 30
+  },
+  titleBg: {
+    width: '100%',
+    height: 30
+  },
+  tips: {
+    color: '#818182',
+    padding: 10,
+    textAlign: 'center'
+  },
+  twoAvatarContainer: {
+    margin: 25,
+    height: 80,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 55
+  },
+  avatarItem: {
+    width: 80,
+    height: 80,
+    borderRadius: 40
+  },
+  modalAvatarMy: {
+    marginRight: 10
+  },
+  modalAvatarYou: {
+    marginLeft: 10
+  },
+  modalBtnContainer: {
+    flex: 1
+  },
+  modalBtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  modalBtn: {
+    width: '40%',
+    height: 36,
+    borderRadius: 3
+  },
+  cancelBtnContainer: {
+    borderColor: '#818182',
+    backgroundColor: '#f8f9fb',
+    borderWidth: 1
+  },
+  comfirmBtnContainer: {
+    backgroundColor: '#ffe100'
+  },
+  modalBtnText:{
+    flex: 1, 
+    textAlign: 'center', 
+    lineHeight: 36
   }
 });

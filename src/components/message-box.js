@@ -16,50 +16,69 @@ export default class MessageBox extends Component {
   constructor(props) {
     super(props)
   }
-  // 弹出框关闭事件
-  modalClose() {
-
-  }
   render() {
     return(
       <Modal
         animationType = {'slide'}
         transparent = {true}
         presentationStyle = {'overFullScreen'}
-        visible = {this.props.visible}
-      >
-        <TouchableOpacity
-          onPress = {this.modalClose}
-          style = {style.closeBtnContainer}
+        visible = {this.props.visiable}
+        onRequestClose = {() => {
+          this.props.modalClose();
+        }}
+      >  
+        <View
+          style = {style.bg}
         >
-          <Image
-            style = {style.closeBtn}
-            source = {require('../assets/images/close-btn.png')}
+          <View
+            style = {[style.modalContent, { height: this.props.contentHeight}]}
           >
-          </Image>
-          <View>
-            <Text>倒数带上多所多所多所多</Text>
-          </View>
-        </TouchableOpacity>
+            <TouchableOpacity
+              onPress = {() => {
+                this.props.modalClose();
+              }}
+              style = {style.closeBtnContainer}
+            >
+              <Image
+                style = {style.closeBtn}
+                source = {require('../assets/images/close-btn.png')}
+              >
+              </Image>
+            </TouchableOpacity>
+             <View style = {{flex: 1, marginTop: 25}}>
+                {this.props.childView}
+              </View>
+            </View>
+        </View>
       </Modal>
     )
   }
 }
 
 const style = StyleSheet.create({
-  modalContainer: {
-    width: 80,
-    height: 300,
-    position: 'absolute'
+  bg: {
+    backgroundColor:'rgba(0, 0, 0, 0.3)',
+    width: '100%',
+    height: '100%'
+  },
+  modalContent: {
+    width: '70%',
+    height: '70%',
+    marginLeft: '15%',
+    marginTop: '15%',
+    backgroundColor: '#ffffff',
+    position: 'relative',
+    borderRadius: 6
   },
   closeBtnContainer: {
-    flex: 1,
     position: 'absolute',
+    width: 25,
+    height: 25,
     top: 8,
     right: 8
   },
   closeBtn: {
-    width: 20,
-    height: 20
+    width: 25,
+    height: 25
   }
 })

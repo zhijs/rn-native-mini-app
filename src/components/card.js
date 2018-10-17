@@ -55,7 +55,7 @@ export default class Card extends Component {
       <View style={style.cardContainer}>
         <Image
           style={style.cardImage}
-          source={{ uri: `${Api.Test}/${this.props.pics[0]}` }}
+          source={{ uri: this.props.profile_photo_src}}
           borderRadius={15}
         />
         <View style={style.ptContainer}>
