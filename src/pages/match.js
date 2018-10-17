@@ -25,7 +25,8 @@ export default class Match extends Component {
     this.state = {
       matchSuccess: false,
       modalShow: false,
-      matchName: '文艺小清新'
+      matchUserName: '文艺小清新',
+      matchUserImg: 'http://211.159.182.124/resource/image/1539702991.jpeg'
     }
     this.state = { myId: 37 };
   }
@@ -79,6 +80,10 @@ export default class Match extends Component {
     likeFriend({ from:  tthis.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         if (res.data.is_friend) {
+          this.setState({
+            matchUserName: card.nickname,
+            matchUserImg: card.profile_photo_src
+          })
           this.props.addLikeMe(card.uid);
         }
       }
@@ -111,7 +116,7 @@ export default class Match extends Component {
             />
             <Image
               style = {[style.avatarItem, style.modalAvatarYou]}
-              source = {require('../assets/images/user.jpg')}
+              source = {{uri: otherImg}}
             />
         </View>
         <View style = {style.modalBtnContainer}>
@@ -147,7 +152,7 @@ export default class Match extends Component {
           modalClose = {this.modalClose.bind(this)}
           visiable = {this.state.modalShow}
           contentHeight = {'60%'}
-          childView = {this.getModalChild(this)}
+          childView = {this.getModalChild(null, this.state.matchUserName, this.state.matchUserImg)}
         >
         </MessageBox>
         <View style={style.header}>
