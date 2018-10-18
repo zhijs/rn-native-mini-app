@@ -6,7 +6,8 @@ import React, { Component } from "react";
 import {
   createStackNavigator,
   createBottomTabNavigator,
-  createMaterialTopTabNavigator
+  createMaterialTopTabNavigator,
+  Text
 } from "react-navigation";
 import LoginIndex from "./pages/container/login-container";
 import Chat from "./pages/container/chat-container";
@@ -14,6 +15,8 @@ import Match from "./pages/container/match-container";
 import MatchList from "./pages/container/match-list-container";
 import Square from "./pages/container/square-container";
 import Upload from "./pages/container/upload-container";
+import linkeMe from "./pages/container/likeme-container"
+import linkeMeTitle from "./pages/container/likeme-title-container"
 import { Image, StyleSheet } from "react-native";
 import commonStyle from "./utils/common-style";
 
@@ -24,9 +27,6 @@ const chatTab = createMaterialTopTabNavigator(
       screen: MatchList,
       navigationOptions: {
         tabBarLabel: "配对",
-        tabBarOnPress: ({ navigation }) => {
-          console.log(navigation);
-        }
       }
     },
     chat: {
@@ -124,7 +124,7 @@ const Tab = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: "Match",
+    initialRouteName: "chat",
     tabBarOptions: {
       showIcon: true,
       showLabel: true,
@@ -158,10 +158,17 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    linkeMe: {
+      screen: linkeMe,
+      headerBackTitleVisible: true,
+      navigationOptions: {
+        headerTitle: linkeMeTitle
+      }
     }
   },
   {
-    initialRouteName: "Tab"
+    initialRouteName: "linkeMe"
   }
 );
 export default AppNavigator;

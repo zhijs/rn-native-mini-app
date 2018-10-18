@@ -10,13 +10,14 @@ import {
 import commonStyle from "../utils/common-style";
 import { Api } from "../api/_fetch";
 import { relative } from "path";
+import MatchItem from '../components/match/match-item'
 export default class matchList extends Component {
   render() {
     return (
-      <View style={[commonStyle.pageBg, style.container]}>
+      <View style={[style.container]}>
         <View style={style.linkeMeContainer}>
-          <TouchableOpacity style={{ flex: 1, flexDirection: "row" }}>
-            <View style={style.iconContainer}>
+          <TouchableOpacity style={[{ flex: 1, flexDirection: "row" }]}>
+            <View style={[style.iconContainer]}>
               <Image
                 source={require("../assets/images/like-me.png")}
                 style={style.likeIcon}
@@ -29,14 +30,17 @@ export default class matchList extends Component {
           </TouchableOpacity>
         </View>
         <View style={style.matchContainer}>
-          <Text style={style.matchNum} />
-          
+          <Text style={style.matchNum}> 1个配对</Text>
+          <MatchItem/>
         </View>
       </View>
     );
   }
 }
 const style = StyleSheet.create({
+  contentBg: {
+   backgroundColor: '#ffffff'
+  },
   container: {
     flex: 1,
     marginBottom: 10,
@@ -45,7 +49,8 @@ const style = StyleSheet.create({
   linkeMeContainer: {
     height: 70,
     padding: 10,
-    marginBottom: 8
+    marginBottom: 8,
+    backgroundColor: '#ffffff'
   },
   likeIcon: {
     width: 50,
@@ -63,7 +68,11 @@ const style = StyleSheet.create({
     marginTop: 8
   },
   matchContainer: {
-    marginTop: 8,
-
+    backgroundColor: '#ffffff',
+    marginTop: 10,
+  },
+  matchNum: {
+    paddingLeft: 16,
+    paddingTop: 10
   }
 });
