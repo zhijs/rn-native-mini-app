@@ -59,8 +59,8 @@ const chatTab = createMaterialTopTabNavigator(
       },
       activeTintColor: "#000000"
     },
-    swipeEnabled: true
-    // animationEnabled: false
+    swipeEnabled: true,
+    animationEnabled: false
   }
 );
 const Tab = createBottomTabNavigator(

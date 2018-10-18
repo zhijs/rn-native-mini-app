@@ -30,6 +30,7 @@ export default class matchList extends Component {
         </View>
         <View style={style.matchContainer}>
           <Text style={style.matchNum} />
+          
         </View>
       </View>
     );
@@ -38,7 +39,8 @@ export default class matchList extends Component {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative"
+    marginBottom: 10,
+    paddingBottom: 8,
   },
   linkeMeContainer: {
     height: 70,
@@ -59,5 +61,9 @@ const style = StyleSheet.create({
   },
   likeMeNum: {
     marginTop: 8
+  },
+  matchContainer: {
+    marginTop: 8,
+
   }
 });
