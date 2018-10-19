@@ -63,7 +63,7 @@ export default class Card extends Component {
             style={style.ptIcon}
             source={require("../assets/images/pt-icon.png")}
           />
-          <Text style={style.ptNum}>{this.props.pics.length}</Text>
+          <Text style={style.ptNum}>{this.props.pics === null ? 0 : this.props.pics.length}</Text>
         </View>
         <View style={style.userInfoContainer}>
           <Text style={style.username}>{this.props.nickname}</Text>

@@ -16,9 +16,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addNewFriend: data => {
       dispatch({ type: actionType.SET_NEW_FRIEND, data });
-    },
-    addLikeMe: data => {
-      dispatch({ type: actionType.SET_NEW_LINKE_ME, data });
     }
   };
 };

@@ -161,14 +161,14 @@ const AppNavigator = createStackNavigator(
     },
     linkeMe: {
       screen: linkeMe,
-      headerBackTitleVisible: true,
+      headerBackTitleVisible: false,
       navigationOptions: {
         headerTitle: linkeMeTitle
       }
     }
   },
   {
-    initialRouteName: "linkeMe"
+    initialRouteName: "Tab"
   }
 );
 export default AppNavigator;

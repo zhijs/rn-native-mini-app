@@ -14,13 +14,14 @@ export function checkTelNumber(value) {
  * 
  * @param {}
  * date Date Object
- * return string  eg：'2018-08-10'
+ * splitStr String 
+ * return string  eg：'2018-08-10' if splitStr === '-'
  */
-export function date2str(date) {
+export function date2str(date, splitStr = '-') {
   if (!date || Object.prototype.toString.call(date) !== '[object Date]') {
     throw new Error('date is not Date instance');
   }
   let mouth = date.getMonth() > 8 ?  date.getMonth() + 1 : `0${date.getMonth() + 1}`;
   let day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;
-  return `${date.getFullYear()}-${mouth}-${day}`;
+  return `${date.getFullYear()}${splitStr}${mouth}${splitStr}${day}`;
 }

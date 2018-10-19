@@ -34,18 +34,18 @@ export default class Match extends Component {
     getFriend({ uid:  this.state.myId }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("getFriends", res);
-        let uids = [];
+        let user = {};
+        let newFriend = [];
         let nowYear = new Date().getFullYear() + 1;
         res.data.info.forEach(item => {
           let itemYear = new Date(item.dob).getFullYear() + 1;
-          let user = {};
-          user[item.uid] = {
+          user[`${item.uid}`] = {
             uid: item.uid,
             nickname: item.nickname === "" ? "未知" : item.nickname,
             phone_number: item.phone_number,
             age: nowYear - itemYear || "18",
             profile_photo_src:
-            item.pic_srcs.length === 0
+            (item.pic_srcs === null || item.pic_srcs.length === 0 )
                 ? "http://211.159.182.124/resource/image/1539702991.jpeg"
                 : `${Api.Test}${item.pic_srcs[0]}`,
             gender: item.gender || "male",
@@ -55,10 +55,12 @@ export default class Match extends Component {
                 : `${Api.Test}${item.audio_src}`,
             pics: item.pic_srcs
           };
-          this.props.addNewFriend(item.uid);
-          this.props.setFriendAll(user);
+          if (!this.props.friend.new.includes(item.uid)) {
+            newFriend.push(item.uid);
+          }
         });
-        this.props.friend;
+        this.props.addNewFriend(newFriend)
+        this.props.setFriendAll(user);
       }
     });
   }

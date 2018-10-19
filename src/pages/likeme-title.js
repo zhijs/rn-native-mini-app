@@ -4,12 +4,16 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 export default class LikeMeTitle extends Component {
+  constructor(props) {
+    super(props);
+    console.log('LikeMeTitle', this.props)
+  }
   render() {
     return (
       <View style = {style.likeMeContainer}>
         <Text style = {style.likeText}>谁喜欢了我</Text>
         <View style = {style.likeIconContainer}>
-           <Text style = {style.likeMeNum}>1344</Text>
+           <Text style = {style.likeMeNum}>{this.props.friend.likeMe.length}</Text>
            <Image
              style = {style.likeIcon}
              source = {require('../assets/images/like-me-icon.png')}

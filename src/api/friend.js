@@ -22,3 +22,15 @@ export function likeFriend(data) {
     console.log("喜欢对方失败", e);
   });
 }
+
+export function getLikeMeList(data) {
+  return fetchJSON("/friend/list/apply_to_me", {}, data).catch(e => {
+    console.log("获取喜欢我的列表失败", e);
+  });
+}
+
+export function getFriendList(data) {
+  return fetchJSON("/friend/list", {}, data).catch(e => {
+    console.log("获取好友列表失败", e);
+  });
+}

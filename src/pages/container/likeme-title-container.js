@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation';
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+    user: state.user,
+    friend: state.friend
   }
 }
 

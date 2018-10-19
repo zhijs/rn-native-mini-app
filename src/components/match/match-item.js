@@ -122,7 +122,6 @@ const style = StyleSheet.create({
     fontSize: 12
   },
   dateAndStateContainer: {
-    fontSize: 12,
     marginRight: 10,
     justifyContent: 'center'
   },

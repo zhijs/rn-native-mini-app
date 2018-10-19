@@ -15,5 +15,6 @@ module.exports = {
   PAGE_PRE: "page_pre",
   SET_FRIEND_ALL: "set_friend_all",
   SET_NEW_FRIEND: "set_new_friend",
-  SET_NEW_LINKE_ME: "set_new_like_me"
+  SET_NEW_LINKE_ME: "set_new_like_me",
+  SET_MATCH_FRIEND: 'set_match_friend'
 };
