@@ -121,7 +121,8 @@ export default class LikeView extends Component {
     return users.map((item) => {
       return (
         <Image
-          source = {{uri: item.img}}
+          key = {item.uid}
+          source = {{uri: item.profile_photo_src}}
           style = {style.imgItem}
         >
         </Image>
@@ -139,16 +140,16 @@ export default class LikeView extends Component {
       <View style = {style.itemContainer}>
         <Text style = {style.itemDate}>
          {
-           this.getDayText(this.state.date)
+           this.getDayText(this.props.item.date)
          } 
         </Text>
         <View style = {style.usersImgContainer}>
          {
-           this.getShowImgs(this.state.users)
+           this.getShowImgs(this.props.item.users)
          }
         </View>
           {
-            this.getArrow(this.state.users)
+            this.getArrow(this.props.item.users)
           }
       </View>
     )

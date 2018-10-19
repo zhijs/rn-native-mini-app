@@ -16,6 +16,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addNewFriend: data => {
       dispatch({ type: actionType.SET_NEW_FRIEND, data });
+    },
+    addMatchFriend: data => {
+      dispatch({ type: actionType.SET_MATCH_FRIEND, data });
     }
   };
 };

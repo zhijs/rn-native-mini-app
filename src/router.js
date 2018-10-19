@@ -124,7 +124,7 @@ const Tab = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: "chat",
+    initialRouteName: "Match",
     tabBarOptions: {
       showIcon: true,
       showLabel: true,
@@ -168,7 +168,7 @@ const AppNavigator = createStackNavigator(
     }
   },
   {
-    initialRouteName: "Tab"
+    initialRouteName: "LoginIndex"
   }
 );
 export default AppNavigator;

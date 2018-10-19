@@ -31,7 +31,7 @@ export default class Match extends Component {
     this.state = { myId: 37 };
   }
   componentWillMount() {
-    getFriend({ uid:  this.state.myId }).then(res => {
+    getFriend({ uid: this.props.user.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("getFriends", res);
         let user = {};
@@ -66,7 +66,7 @@ export default class Match extends Component {
   }
   handleDisLike(card) {
     this.Card.sound.stop();
-    dislikeFriend({ from:  this.state.myId, to: card.uid }).then(res => {
+    dislikeFriend({ from: this.props.user.uid, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("不喜欢成功");
       }
@@ -79,14 +79,17 @@ export default class Match extends Component {
 
   handleLike(card) {
     this.Card.sound.stop();
-    likeFriend({ from:  tthis.state.myId, to: card.uid }).then(res => {
+    likeFriend({ from: this.props.user.uid, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         if (res.data.is_friend) {
           this.setState({
             matchUserName: card.nickname,
-            matchUserImg: card.profile_photo_src
+            matchUserImg: card.profile_photo_src,
+            modalShow: true
           })
-          this.props.addLikeMe(card.uid);
+          if (!this.props.friend.match.includes(card.uid)) {
+            this.props.addMatchFriend([card.uid]); 
+          }
         }
       }
     });
