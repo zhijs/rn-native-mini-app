@@ -1,4 +1,4 @@
-import chat from '../chat';
+import chatDetail from '../chat-detail';
 import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation';
 import actionType from "../../store/action/actionType";
@@ -9,19 +9,18 @@ const mapStateToProps = (state) => {
     message: state.message
   }
 }
-
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    setFriendAll: data => {
-      dispatch({ type: actionType.SET_FRIEND_ALL, data });
-    },
     addChatFriend: data => {
       dispatch({ type: actionType.SET_CHAT_FRIEND, data });
     },
-    addMsg: data => {
+    setMessageAll: data => {
       dispatch({ type: actionType.SET_MSG_ALL, data });
-    }
+    },
+    addFriendMsg:data => {
+      dispatch({ type: actionType.ADD_NEW_MSG, data });
+    },
   };
 };
 
-export default ChatContainer = connect(mapStateToProps)(withNavigation(chat));
+export default chatDetailContainer = connect(mapStateToProps, mapDispatchToProps)(withNavigation(chatDetail));

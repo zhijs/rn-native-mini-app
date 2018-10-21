@@ -11,6 +11,7 @@ import {
 } from "react-navigation";
 import LoginIndex from "./pages/container/login-container";
 import Chat from "./pages/container/chat-container";
+import ChatDetail from "./pages/container/chat-detail-container";
 import Match from "./pages/container/match-container";
 import MatchList from "./pages/container/match-list-container";
 import Square from "./pages/container/square-container";
@@ -124,7 +125,7 @@ const Tab = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: "Match",
+    initialRouteName: "chat",
     tabBarOptions: {
       showIcon: true,
       showLabel: true,
@@ -165,10 +166,13 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         headerTitle: linkeMeTitle
       }
+    },
+    ChatDetail: {
+      screen: ChatDetail
     }
   },
   {
-    initialRouteName: "LoginIndex"
+    initialRouteName: "Tab"
   }
 );
 export default AppNavigator;

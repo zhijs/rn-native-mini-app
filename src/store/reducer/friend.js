@@ -4,7 +4,8 @@ const initFriend = {
   all: {},
   likeMe: [],
   new: [],
-  match: []
+  match: [],
+  chat: []
 };
 
 export default function friend(state = initFriend, action) {
@@ -27,6 +28,14 @@ export default function friend(state = initFriend, action) {
 
     case actionType.SET_MATCH_FRIEND:
       newState.match  = [...newState.match, ...action.data]
+      return newState;
+    
+    case actionType.SET_CHAT_FRIEND:
+      newState.chat  = [...newState.chat, ...action.data]
+    return newState;
+    
+    case actionType.ADD_NEW_MSG:
+      newState.all[action.data.uid].msgs.push(action.data.msgId)
       return newState;
     default:
       return state;

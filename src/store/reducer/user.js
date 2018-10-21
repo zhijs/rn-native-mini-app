@@ -10,7 +10,8 @@ const initUserData = {
   TelNumber: '',
   gender: 'male',
   dob: '',
-  uid: ''
+  uid: '',
+  msg:[]
 };
 
 export default function user(state = initUserData, action) {
@@ -37,6 +38,11 @@ export default function user(state = initUserData, action) {
       return {
         ...state,
         isLogin: false,
+      }
+    case actionType.SET_MY_MSG:
+      let newState = Object.assign({}, state); 
+      if (!newState.msgs.includes(action.data)) {
+        newState.msgs.push(action.data)
       }
     default :
       return state

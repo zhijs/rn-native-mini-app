@@ -10,6 +10,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
+import { sendMsg } from '../api/message'
 import commonStyle from "../utils/common-style";
 import Card from "../components/card";
 import SwipeCards from "react-native-swipe-cards";
@@ -24,14 +25,14 @@ export default class Match extends Component {
     this.Card = null;
     this.state = {
       matchSuccess: false,
-      modalShow: false,
+      modalShow: true,
       matchUserName: '文艺小清新',
       matchUserImg: 'http://211.159.182.124/resource/image/1539702991.jpeg'
     }
-    this.state = { myId: 37 };
+    this.state = { myId: 47 };
   }
   componentWillMount() {
-    getFriend({ uid: this.props.user.uid }).then(res => {
+    getFriend({ uid: this.state.myId }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("getFriends", res);
         let user = {};
@@ -66,7 +67,7 @@ export default class Match extends Component {
   }
   handleDisLike(card) {
     this.Card.sound.stop();
-    dislikeFriend({ from: this.props.user.uid, to: card.uid }).then(res => {
+    dislikeFriend({ from: this.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("不喜欢成功");
       }
@@ -79,7 +80,7 @@ export default class Match extends Component {
 
   handleLike(card) {
     this.Card.sound.stop();
-    likeFriend({ from: this.props.user.uid, to: card.uid }).then(res => {
+    likeFriend({ from: this.state.myId, to: card.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         if (res.data.is_friend) {
           this.setState({
@@ -93,7 +94,6 @@ export default class Match extends Component {
         }
       }
     });
-    console.log("like");
   }
   
   // 关闭浮层
@@ -128,7 +128,6 @@ export default class Match extends Component {
           <TouchableOpacity 
             style = {[style.modalBtn, style.cancelBtnContainer]}
             onPress = {() => {
-              console.log('再看看', this)
               this.setState({modalShow: false})
             }}
           >
@@ -138,7 +137,6 @@ export default class Match extends Component {
             style = {[style.modalBtn, style.comfirmBtnContainer]}
             onPress = {() => {
               const { navigate } = this.props.navigation;
-              console.log(this.props.navigation)
               navigate('chat')
               this.setState({modalShow: false})
             }}

@@ -5,7 +5,8 @@ import actionType from "../../store/action/actionType";
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    friend: state.friend
+    friend: state.friend,
+    message: state.message
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -18,7 +19,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addMatchFriend: data => {
       dispatch({ type: actionType.SET_MATCH_FRIEND, data });
-    }
+    },
+    addChatFriend: data => {
+      dispatch({ type: actionType.SET_CHAT_FRIEND, data });
+    },
+    setMessageAll: data => {
+      dispatch({ type: actionType.SET_MSG_ALL, data });
+    },
   };
 };
 export default (MatchList = connect(mapStateToProps, mapDispatchToProps)(withNavigation(matchList)));

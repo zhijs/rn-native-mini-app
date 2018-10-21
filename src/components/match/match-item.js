@@ -9,9 +9,11 @@ import {
   Image,
   Text
 } from 'react-native'
+import { date2str } from "../../utils/tool";
 
 export default class MatchItem extends Component {
   constructor(props) {
+    console.log('MatchItem----', props)
     super(props)
     this.state = {
       avartar: 'http://211.159.182.124/resource/image/1539770238.jpeg',
@@ -45,6 +47,34 @@ export default class MatchItem extends Component {
       </View>
     )
   }
+
+  // 获取时间文本
+  getDayText(dateStr) {
+    let date = new Date(dateStr);
+    let now = new Date();
+    if (date.toDateString() === now.toDateString()) {
+      return '今天';
+    } else if ((now.getFullYear() === date.getFullYear()) && (now.getMonth() === date.getMonth()) && ((now.getDate() - date.getDate()) === 1)) {
+      return '昨天';
+    }
+    return dateStr;
+  }
+
+  // 获取对话文本
+  getContentText() {
+    let msgId = 0;
+    if (this.props.item.msgs.length === 0) return '暂无消息'
+    if (this.props.item.msgs.length === 2) {
+      msgId =  this.props.item.msgs[0]
+    } else {
+      msgId = this.props.item.msgs[this.props.item.msgs.length - 1]
+    }
+    if (this.props.messageAll[msgId].msg_type === 'chat_game') {
+      return '游戏结果'
+    } else {
+      return  this.props.messageAll[msgId].msg_body
+    }
+  }
   render() {
     return(
       <View style = {style.container}>
@@ -52,22 +82,23 @@ export default class MatchItem extends Component {
               <View style = {style.avatarContainer}>
                 <Image
                   style = {style.avatar}
-                  source = {{uri: this.state.avartar}}
+                  source = {{uri: this.props.item.profile_photo_src
+                  }}
                 >
                 </Image>
                 {
-                  this.getUnreadNotice(this.state.hasUnread)
+                  this.getUnreadNotice(this.props.item.hasUnread)
                 }
               </View>
               <View style = {style.nameContainer}>
-                <Text style = {style.nameText}>{this.state.nickName}</Text>
-                <Text style = {style.contentText}>{this.state.newMsgContent}</Text>
+                <Text style = {style.nameText}>{this.props.item.nickname}</Text>
+                <Text style = {style.contentText}>{this.getContentText()}</Text>
               </View>
          </View>
           <View style = {style.dateAndStateContainer}>
-              <Text style = {style.dateText}>{this.state.lastMagTime}</Text>
+              <Text style = {style.dateText}>{this.getDayText(date2str(new Date(this.props.item.did_at)))}</Text>
               {
-                this.getOnlineStateView(this.state.isOnline)
+                this.getOnlineStateView(this.props.item.isOnline)
               }
           </View>
       </View>

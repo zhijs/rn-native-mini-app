@@ -34,3 +34,10 @@ export function getFriendList(data) {
     console.log("获取好友列表失败", e);
   });
 }
+
+
+export function getScore(data) {
+  return fetchJSON("/friend/score/show", {}, data).catch(e => {
+    console.log("获取亲密度失败", e);
+  });
+}

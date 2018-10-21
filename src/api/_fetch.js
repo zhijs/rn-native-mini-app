@@ -2,6 +2,9 @@ import axios from 'axios'
 export const Api = {
   Test: 'http://211.159.182.124'
 }
+export const Ip = {
+  Test: '211.159.182.124'
+}
 
 const XL_Api = {
   Test: 'http://sms-gateway.pay.xunlei.com'

@@ -5,55 +5,88 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from "react-native";
-import commonStyle from "../utils/common-style";
 import { Api } from "../api/_fetch";
 import { getLikeMeList, getFriendList } from "../api/friend";
-import { relative } from "path";
 import MatchItem from '../components/match/match-item'
+import webSocketCla from '../common/web-socket';
+
 export default class matchList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      myId: 11
+      myId: 47
     },
     this.timer = null;
+    this.webSocket = null;
   }
   //设置store
   setFrienddStore(dataArr, type) {
     let nowYear = new Date().getFullYear() + 1;
     let user = {};
+    let msgs = {};
     let userIds = [];
+    let chatIds = [];
     dataArr.forEach(item => {
       let itemYear = new Date(item.dob).getFullYear() + 1;
+
+      // 取出所有的消息
+      let msgIds = (item.msgs || []).map((msg) => {
+        msgs[`${msg.id}`] = msg;
+        return msg.id
+      })
+
+      // 防止消息被覆盖
+      if (msgIds.length === 0) {
+        if (this.props.friend.all[item.uid] && this.props.friend.all[item.uid].msgs) {
+          msgIds = this.props.friend.all[item.uid].msgs
+        }
+      }
       user[`${item.uid}`] = {
         uid: item.uid,
         nickname: item.nickname === "" ? "未知" : item.nickname,
         phone_number: item.phone_number,
         age: nowYear - itemYear || "18",
-        profile_photo_src:
-        item.profile_photo_src
-            ? "http://211.159.182.124/resource/image/1539702991.jpeg"
-            : `${Api.Test}${item.pic_srcs[0]}`,
+        profile_photo_src:  (item.profile_photo_src !== null &&  item.profile_photo_src !== "")
+            ? `${Api.Test}${item.profile_photo_src}`
+            : "http://211.159.182.124/resource/image/1539702991.jpeg",
         gender: item.gender || "male",
         audioSrc:
           item.audio_src === ""
             ? "http://211.159.182.124/resource/audio/1539532499.mp3"
             : `${Api.Test}${item.audio_src}`,
         pics: item.pic_srcs,
-        did_at: item.did_at || ''
+        did_at: item.did_at || '',
+        msgs: msgIds
       };
       if (!this.props.friend[type].includes(item.uid)) {
-        userIds.push(item.uid)
+        if (type === 'match' && item.msgs.length > 2) {
+          !this.props.friend.chat.includes(item.uid) && chatIds.push(item.uid)
+        } else if (type === 'match' && item.msgs.length < 2) {
+          userIds.push(item.uid)
+        } else {
+          userIds.push(item.uid)
+        }
       }
+
     });
+    this.props.setFriendAll(user);
     if (type === 'likeMe') {
       this.props.addLikeMe(userIds)
     } else {
+      console.log('设置消息', msgs)
+      this.props.setMessageAll(msgs)
+      console.log('设置匹配列表', userIds)
       this.props.addMatchFriend(userIds)
     }
-    this.props.setFriendAll(user);
+
+    if (chatIds.length !== 0) {
+      this.props.addChatFriend(chatIds)
+    }
+
+
   }
   getLikeMeData() {
     getLikeMeList({uid: this.state.myId})
@@ -67,12 +100,33 @@ export default class matchList extends Component {
   getMatchData() {
     getFriendList({uid: this.state.myId})
       .then((res) => {
+        console.log('match--', res)
         if (res.data && res.data.result === "ok") {
           this.setFrienddStore(res.data.accounts, 'match')
         }
       })
   }
+  
+  // ws 打开
+  handleWsOpen() {
+
+    console.log('ws open', this)
+    this.webSocket.send(`${this.state.myId}`)
+  }
+
+  handleWsMessage(e) {
+    console.log('handleWsMessage', e.data)
+  }
+  
+  handleWsError(e) {
+    console.log('handleWsMessage', e)
+  }
   componentWillMount() {
+    this.webSocket = webSocketCla.getInstance();
+    console.log('this.webSocket--------------', this.webSocket)
+    this.webSocket.onopen = this.handleWsOpen.bind(this)
+    this.webSocket.onmessage = this.handleWsMessage.bind(this);
+    this.webSocket.onerror = this.handleWsError.bind(this);
     this.getLikeMeData();
     this.getMatchData();
     // 定时获取列表信息
@@ -86,6 +140,16 @@ export default class matchList extends Component {
     const { navigate } = this.props.navigation;
     navigate('linkeMe');
   }
+
+  // 跳转到聊天页面
+  pageToChatDetail(uid) {
+    const { navigate } = this.props.navigation;
+    let user =  this.props.friend.all[uid];
+    console.log('pageToChatDetail--', {user, type: 'match'});
+    navigate('ChatDetail', {user, type: 'match'})
+  }
+
+
   render() {
     return (
       <View style={[style.container]}>
@@ -106,10 +170,24 @@ export default class matchList extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={style.matchContainer}>
-          <Text style={style.matchNum}> 1个配对</Text>
-          <MatchItem/>
-        </View>
+        <ScrollView style={style.matchContainer}>
+          <Text style={style.matchNum}> {this.props.friend.match.length}个配对</Text>
+          { 
+            this.props.friend.match.map((item) => {
+              return (
+                <TouchableOpacity
+                  onPress = {this.pageToChatDetail.bind(this, item)}
+                  key = {item}
+                >
+                  <MatchItem 
+                    item = {this.props.friend.all[`${item}`]}
+                    messageAll = {this.props.message.all}
+                  />
+                </TouchableOpacity>
+              )
+            })
+          }
+        </ScrollView>
       </View>
     );
   }
