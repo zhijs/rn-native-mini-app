@@ -26,6 +26,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setMessageAll: data => {
       dispatch({ type: actionType.SET_MSG_ALL, data });
     },
+    addFriendMsg:data => {
+      dispatch({ type: actionType.ADD_NEW_MSG, data });
+    },
   };
 };
 export default (MatchList = connect(mapStateToProps, mapDispatchToProps)(withNavigation(matchList)));

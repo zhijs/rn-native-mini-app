@@ -7,7 +7,7 @@ export default class getWebSocketInstance {
   static getInstance() {
     console.log("getWebSocketInstance", this.webSocket);
     if (webSocket === null) {
-      webSocket = new WebSocket(`ws://${Ip["Test"]}:6630/push/recv`);
+      webSocket = new WebSocket(`ws://${Ip["Test"]}/push/recv`);
     }
     return webSocket;
   }

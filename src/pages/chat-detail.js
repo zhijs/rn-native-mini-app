@@ -21,18 +21,19 @@ import Message from "../components/messge";
 import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
 import { Api } from "../api/_fetch";
+import ImagePicker from 'react-native-image-crop-picker';
 
 // 分数对应的爱心图片
 const score2SmallImgs = [
   `${Api.Test}/resource/small-heart/heart-small-0.png`,
-  `${Api.Test}/resource/small-heart/heart-small-10%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-20%-30%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-30%-40%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-50%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-60%-70%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-70%-80%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-90%.png`,
-  `${Api.Test}/resource/small-heart/heart-small-100%.png`
+  `${Api.Test}/resource/small-heart/heart-small-10.png`,
+  `${Api.Test}/resource/small-heart/heart-small-20-30.png`,
+  `${Api.Test}/resource/small-heart/heart-small-30-40.png`,
+  `${Api.Test}/resource/small-heart/heart-small-50.png`,
+  `${Api.Test}/resource/small-heart/heart-small-60-70.png`,
+  `${Api.Test}/resource/small-heart/heart-small-70-80.png`,
+  `${Api.Test}/resource/small-heart/heart-small-90.png`,
+  `${Api.Test}/resource/small-heart/heart-small-100.png`
 ];
 
 // 弹窗大爱心对应的图片
@@ -53,6 +54,10 @@ export default class ChatDeTail extends Component {
     super(props);
     const { params } = props.navigation.state;
     this.ws = webSocketCla.getInstance();
+    this.score2text = {
+      "20": '你问我答',
+      "40": '爆照时刻'
+    };
     this.state = {
       modalShow: true,
       myId: 47,
@@ -77,6 +82,11 @@ export default class ChatDeTail extends Component {
       this.setState({ activeTool: null });
     } else {
       this.setState({ activeTool: type });
+    }
+
+    // 选择图片
+    if (type === 'img' && this.score >= 40) {
+
     }
   }
   static navigationOptions = ({ navigation }) => {
@@ -128,22 +138,16 @@ export default class ChatDeTail extends Component {
     if (this.routerType === "match") {
       this.setState({ score: 0 }); // 设置分数为0
     } else {
-      // 请求亲密度
-      getScore({
-        from: this.state.myId,
-        to: this.state.otherUid
-      }).then(res => {
-        console.log("请求亲密度", res);
-        if (res.data && res.data.result === "ok") {
-          console.log("设置 store");
-          let index = this.getScoreImageIndex(res.data.score);
-          console.log("index----", index);
-          this.setState({
-            score: res.data.score,
-            // modalShow: res.data.diff > 0 ? true : false,
-            index: index
-          });
-        }
+      // 根据最后一条消息拿到亲密度
+      let msgs = this.props.friend.all[this.state.otherUid].msgs;
+
+      let score = msgs.length === 0 ? 0 : this.props.message.all[msgs[msgs.length - 1]].score
+      let diff =  msgs.length === 0 ? 0 : this.props.message.all[msgs[msgs.length - 1]].diff
+      let index = this.getScoreImageIndex(score);
+      this.setState({
+        score: score,
+        modalShow: diff > 0 ? true : false,
+        index: index
       });
     }
   }
@@ -360,7 +364,7 @@ export default class ChatDeTail extends Component {
         onPress={this.closeToolView.bind(this)}
       >
         <View style={style.heartContainer}>
-          <Image // source={score2SmallImgs[this.getScoreImageIndex.bind(this)]}
+          <Image 
             source={{ uri: score2SmallImgs[this.state.index] }}
             style={style.heartIcon}
           />
@@ -402,7 +406,7 @@ export default class ChatDeTail extends Component {
               >
                 <Image
                   style={style.toolIcon}
-                  source={require("../assets/images/chat-image-lock.png")}
+                  source={this.state.score >= 40 ? require("../assets/images/chat-image-lock.png") : require("../assets/images/chat-image.png")}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -486,7 +490,7 @@ const style = StyleSheet.create({
   },
   msgContainer: {
     padding: 10,
-    paddingBottom: 40
+    marginBottom: 100
   },
   chatTypeContainer: {
     position: "absolute",

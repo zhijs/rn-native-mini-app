@@ -80,8 +80,6 @@ export default class matchList extends Component {
     if (type === "likeMe") {
       this.props.addLikeMe(userIds);
     } else {
-      console.log("设置消息", msgs);
-      console.log("设置匹配列表", userIds);
       this.props.addMatchFriend(userIds);
     }
 
@@ -114,6 +112,17 @@ export default class matchList extends Component {
 
   handleWsMessage(e) {
     console.log("websockt 收到消息", e.data);
+    try{
+      let msg = JSON.parse(e.data);
+      let msgObj = {}
+      msgObj[`${msg.id}`] = msg;
+      this.props.setMessageAll(msgObj)
+      this.props.addFriendMsg({
+        uid: msg.from,
+        msgId: msg.id
+      })
+    }catch(e) {
+    }
   }
 
   handleWsError(e) {
@@ -121,7 +130,6 @@ export default class matchList extends Component {
   }
   componentWillMount() {
     this.webSocket = webSocketCla.getInstance();
-    console.log("this.webSocket--------------", this.webSocket);
     this.webSocket.onopen = this.handleWsOpen.bind(this);
     this.webSocket.onmessage = this.handleWsMessage.bind(this);
     this.webSocket.onerror = this.handleWsError.bind(this);
@@ -134,6 +142,11 @@ export default class matchList extends Component {
     }, 3 * 60 * 1000);
   }
 
+  componentWillUnmount() {
+    this.webSocket.close()
+    clearInterval(this.timer);
+    this.timer = null;
+  }
   pageToLikeList() {
     const { navigate } = this.props.navigation;
     navigate("linkeMe");
