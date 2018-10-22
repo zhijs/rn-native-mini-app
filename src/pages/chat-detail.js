@@ -2,351 +2,511 @@
  * 消息聊天界面
  */
 
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
-  Platform, 
-  StyleSheet, 
-  Text, 
-  View, 
-  Image, 
-  KeyboardAvoidingView, 
-  TextInput, 
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  TextInput,
   TouchableOpacity,
   ScrollView
-} from 'react-native';
-import commonStyle from '../utils/common-style'
+} from "react-native";
+import commonStyle from "../utils/common-style";
 import { sendMsg } from "../api/message";
-import { getScore } from '../api/friend'
-import Message from '../components/messge';
-import webSocketCla from '../common/web-socket';
+import { getScore } from "../api/friend";
+import Message from "../components/messge";
+import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
-export default class ChatDeTail extends Component {
+import { Api } from "../api/_fetch";
 
+// 分数对应的爱心图片
+const score2SmallImgs = [
+  `${Api.Test}/resource/small-heart/heart-small-0.png`,
+  `${Api.Test}/resource/small-heart/heart-small-10%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-20%-30%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-30%-40%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-50%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-60%-70%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-70%-80%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-90%.png`,
+  `${Api.Test}/resource/small-heart/heart-small-100%.png`
+];
+
+// 弹窗大爱心对应的图片
+const score2BigImgs = [
+  `${Api.Test}/resource/big-heart/heart-big-0.png`,
+  `${Api.Test}/resource/big-heart/heart-big-10.png`,
+  `${Api.Test}/resource/big-heart/heart-big-20-30.png`,
+  `${Api.Test}/resource/big-heart/heart-big-30-40.png`,
+  `${Api.Test}/resource/big-heart/heart-big-50.png`,
+  `${Api.Test}/resource/big-heart/heart-big-60-70.png`,
+  `${Api.Test}/resource/big-heart/heart-big-70-80.png`,
+  `${Api.Test}/resource/big-heart/heart-big-90.png`,
+  `${Api.Test}/resource/big-heart/heart-big-100.png`
+];
+
+export default class ChatDeTail extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     const { params } = props.navigation.state;
     this.ws = webSocketCla.getInstance();
     this.state = {
       modalShow: true,
       myId: 47,
-      score: 10,
       otherUser: null,
       routerType: params.type,
       score: 0,
       otherUid: params.user.uid,
-      activeTool: 'dice'
-    }
+      activeTool: null,
+      index: 0,
+      smallImg: score2SmallImgs[0],
+      bigImg: score2BigImgs[0]
+    };
   }
-  
+
   // 关闭工具栏
   closeToolView() {
-    this.setState({activeTool: null})
+    this.setState({ activeTool: null });
   }
   // 选择聊天方式
   chooseTools(type) {
     if (this.state.activeTool === type) {
-      this.setState({activeTool: null})
+      this.setState({ activeTool: null });
     } else {
-      this.setState({activeTool: type})
+      this.setState({ activeTool: type });
     }
   }
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    console.log('navigation--state', params)
+    console.log("navigation--state", params);
     return {
       headerTitle: () => {
-        return(
-          <Text style ={style.headerTitle}>{params.user.nickname}</Text>
-        )
+        return <Text style={style.headerTitle}>{params.user.nickname}</Text>;
       }
-    }
-  }
-
+    };
+  };
 
   // 发送骰子消息
   sendDiceMsg() {
-    console.log('websocket 发送消息', this.ws)
-    let num = parseInt(Math.random() * 10) % 6 + 1
+    console.log("websocket 发送消息", this.ws);
+    let num = (parseInt(Math.random() * 10) % 6) + 1;
     sendMsg({
       from: this.state.myId,
       to: this.state.otherUid,
-      msg_type: 'chat_game',
+      msg_type: "chat_game",
       msg_body: `{"dice": ${num}}`
-    }).then((res) => {
-      console.log('发送消息成功', res)
+    }).then(res => {
+      console.log("发送消息成功", res);
       if (res.data && res.data.result === "ok") {
         // 添加消息
-        if (!this.props.friend.all[this.state.otherUid].msgs.includes(res.data.msg.id)) {
+        if (
+          !this.props.friend.all[this.state.otherUid].msgs.includes(
+            res.data.msg.id
+          )
+        ) {
           let msg = {};
-          msg[`${res.data.msg.id}`] = res.data.msg
-          this.props.setMessageAll(msg)
+          msg[`${res.data.msg.id}`] = res.data.msg;
+          this.props.setMessageAll(msg);
           this.props.addFriendMsg({
             uid: this.state.otherUid,
             msgId: res.data.msg.id
-          })
+          });
         }
         // 添加聊天的朋友
         if (!this.props.friend.chat.includes(this.state.otherUid)) {
-          this.props.addChatFriend([this.state.otherUid])
+          this.props.addChatFriend([this.state.otherUid]);
         }
       }
-    })
-    this.setState({activeTool: null})
+    });
+    this.setState({ activeTool: null });
   }
   componentWillMount() {
     // 判断分数
-    if (this.routerType === 'match') {
-      this.setState({score: 0}) // 设置分数为0
+    if (this.routerType === "match") {
+      this.setState({ score: 0 }); // 设置分数为0
     } else {
       // 请求亲密度
       getScore({
         from: this.state.myId,
         to: this.state.otherUid
-      }).then((res) => {
-        console.log('请求亲密度', res)
-      })
+      }).then(res => {
+        console.log("请求亲密度", res);
+        if (res.data && res.data.result === "ok") {
+          console.log("设置 store");
+          let index = this.getScoreImageIndex(res.data.score);
+          console.log("index----", index);
+          this.setState({
+            score: res.data.score,
+            // modalShow: res.data.diff > 0 ? true : false,
+            index: index
+          });
+        }
+      });
     }
   }
 
   // 根据分数来判断是否是解锁文字聊天
   getTextInput(score = 0) {
-    console.log('getTextInput score..', score)
+    console.log("getTextInput score..", score);
     if (!score) {
       return (
-        <View style = {style.textLockContainer}>
-          <Image 
-            style = {style.lockImg}
-            source = {require('../assets/images/lock.png')}
-          >
-          </Image>
-          <Text style = {style.lockText}>文字聊天暂未解锁</Text>
+        <View style={style.textLockContainer}>
+          <Image
+            style={style.lockImg}
+            source={require("../assets/images/lock.png")}
+          />
+          <Text style={style.lockText}>文字聊天暂未解锁</Text>
         </View>
-      )
+      );
     } else {
       return (
         <TextInput
-          style = {style.msgInput}
+          style={style.msgInput}
           placeholder="聊一聊"
           underlineColorAndroid="transparent"
         />
-      )
+      );
     }
   }
 
   // 获取工具面板展示
   getToolView() {
-    if (this.state.activeTool === 'dice') {
+    if (this.state.activeTool === "dice") {
       return (
-        <View style = {style.piceToolContainer}>
-            <TouchableOpacity style = {style.toolItem}>
-               <Image
-                 style = {style.toolItemImg}
-                 source = {require('../assets/images/ask.png')} 
-               />
-               <Text style = {style.toolItemText}>随便问问</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style = {style.toolItem}
-              onPress = {this.sendDiceMsg.bind(this)}
-            >
-               <Image
-                 style = {style.toolItemImg}
-                 source = {require('../assets/images/tool-dice.png')} 
-               />
-               <Text style = {style.toolItemText}>掷骰子</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {style.toolItem}>
-               <Image
-                 style = {style.toolItemImg}
-                 source = {require('../assets/images/tool-five-row.png')} 
-               />
-               <Text style = {style.toolItemText}>五子棋</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {style.toolItem}>
-               <Image
-                 style = {style.toolItemImg}
-                 source = {require('../assets/images/draw-guess.png')} 
-               />
-               <Text style = {style.toolItemText}>你画我猜</Text>
-            </TouchableOpacity>
+        <View style={style.piceToolContainer}>
+          <TouchableOpacity style={style.toolItem}>
+            <Image
+              style={style.toolItemImg}
+              source={require("../assets/images/ask.png")}
+            />
+            <Text style={style.toolItemText}>随便问问</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={style.toolItem}
+            onPress={this.sendDiceMsg.bind(this)}
+          >
+            <Image
+              style={style.toolItemImg}
+              source={require("../assets/images/tool-dice.png")}
+            />
+            <Text style={style.toolItemText}>掷骰子</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={style.toolItem}>
+            <Image
+              style={style.toolItemImg}
+              source={require("../assets/images/tool-five-row.png")}
+            />
+            <Text style={style.toolItemText}>五子棋</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={style.toolItem}>
+            <Image
+              style={style.toolItemImg}
+              source={require("../assets/images/draw-guess.png")}
+            />
+            <Text style={style.toolItemText}>你画我猜</Text>
+          </TouchableOpacity>
         </View>
-      )
+      );
     }
-    return  null;
+    return null;
   }
 
   // 弹框关闭
   modalClose() {
-    this.setState({modalShow: false})
+    this.setState({ modalShow: false });
   }
 
   // 获取弹框内容
   getModalChild() {
-    return(
-      <View
-        style = {style.modalContainer}
-      >
-
+    return (
+      <View style={style.modalContainer}>
+        <View style={style.bigHeartContainer}>
+          <Image
+            source={{ uri: score2BigImgs[this.state.index] }}
+            style={style.bigHeartImg}
+          />
+          <Text style={style.heartScore}>{this.state.score}</Text>
+        </View>
+        <Text style={style.titleText}>恭喜你们！</Text>
+        <Text style={style.titleTipText}>
+          亲密度达
+          {this.state.score}
+          %，解锁你问我答
+        </Text>
+        <View style={style.featureCotainer}>
+          <View style={style.firstLineFeatureContianer}>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.boxFeatureIcon}
+                source={require("../assets/images/box-message-active.png")}
+              />
+              <Text style={style.featureText}>你问我答</Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.arrow}
+                source={require("../assets/images/box-arrow-right.png")}
+              />
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.boxFeatureIcon}
+                source={
+                  this.state.score >= 40
+                    ? require("../assets/images/box-img-active.png")
+                    : require("../assets/images/box-img.png")
+                }
+              />
+              <Text style={style.featureText}>爆照时刻</Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.arrow}
+                source={require("../assets/images/box-arrow-right.png")}
+              />
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.boxFeatureIcon}
+                source={
+                  this.state.score >= 60
+                    ? require("../assets/images/box-audio-active.png")
+                    : require("../assets/images/box-audio.png")
+                }
+              />
+              <Text style={style.featureText}>闻声识人</Text>
+            </View>
+          </View>
+          <View style={style.middleLineContainer}>
+            <Image
+              style={style.arrowDown}
+              source={require("../assets/images/box-arrow-down.png")}
+            />
+          </View>
+          <View style={style.endLineContainer}>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.boxFeatureIcon}
+                source={require("../assets/images/box-heart.png")}
+              />
+              <Text style={style.featureText}>心心相印</Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.arrow}
+                source={require("../assets/images/box-arrow-left.png")}
+              />
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.boxFeatureIcon}
+                source={require("../assets/images/box-garden.png")}
+              />
+              <Text style={style.featureText}>秘密花园</Text>
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.arrow}
+                source={require("../assets/images/box-arrow-left.png")}
+              />
+            </View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Image
+                style={style.boxFeatureIcon}
+                source={
+                  this.state.score >= 80
+                    ? require("../assets/images/box-video-active.png")
+                    : require("../assets/images/box-video.png")
+                }
+              />
+              <Text style={style.featureText}>来视频吧</Text>
+            </View>
+          </View>
+        </View>
       </View>
-    )
+    );
   }
+  // 获取分数对应的图片
+  getScoreImageIndex(score) {
+    if (score === 0) {
+      return 0;
+    } else if (score <= 10) {
+      return 1;
+    } else if (score <= 30) {
+      return 2;
+    } else if (score <= 40) {
+      return 3;
+    } else if (score <= 50) {
+      return 4;
+    } else if (score <= 70) {
+      return 5;
+    } else if (score <= 80) {
+      return 6;
+    } else if (score < 100) {
+      return 7;
+    } else {
+      return 8;
+    }
+  }
+
   render() {
     return (
       <TouchableOpacity
-        activeOpacity = {1}
-        style = {[commonStyle.pageBg, style.container]}
-        onPress = {this.closeToolView.bind(this)}
-      >  
-        <View style = {style.heartContainer}>
-           <Image
-             source = {require('../assets/images/score.png')}
-             style = {style.heartIcon}
-           />
-           <Text style = {style.scoreText}>{this.state.score}</Text>
+        activeOpacity={1}
+        style={[commonStyle.pageBg, style.container]}
+        onPress={this.closeToolView.bind(this)}
+      >
+        <View style={style.heartContainer}>
+          <Image // source={score2SmallImgs[this.getScoreImageIndex.bind(this)]}
+            source={{ uri: score2SmallImgs[this.state.index] }}
+            style={style.heartIcon}
+          />
+          <Text style={style.scoreText}>{this.state.score}</Text>
         </View>
         <MessageBox
-          modalClose = {this.modalClose.bind(this)}
-          visiable = {this.state.modalShow}
-          contentHeight = {'60%'}
-          childView = {this.getModalChild(null, this.state.matchUserName, this.state.matchUserImg)}
+          modalClose={this.modalClose.bind(this)}
+          visiable={this.state.modalShow}
+          contentHeight={"70%"}
+          childView={this.getModalChild(
+            null,
+            this.state.matchUserName,
+            this.state.matchUserImg
+          )}
         />
-        <ScrollView style = {style.msgContainer}>
-          {
-            
-            this.props.friend.all[this.state.otherUid].msgs.map((msgId) => {
-              return (
-                <Message
-                  key = {msgId} 
-                  msg = {this.props.message.all[msgId]}
-                />
-              )
-            })
-          }
+        <ScrollView style={style.msgContainer}>
+          {this.props.friend.all[this.state.otherUid].msgs.map(msgId => {
+            return <Message key={msgId} msg={this.props.message.all[msgId]} />;
+          })}
         </ScrollView>
-        <View style = {style.chatTypeContainer}>
-          <View 
-            style = {style.inputContainer}
-          >  
-            {
-              this.getTextInput(this.state.score)
-            }
+        <View style={style.chatTypeContainer}>
+          <View style={style.inputContainer}>
+            {this.getTextInput(this.state.score)}
           </View>
-           <View style = {style.toolPanelContainer}>
-             <View style = {style.toolPanel}>
-               <TouchableOpacity
-                 style = {style.toolContainer}
-                 onPress = {this.chooseTools.bind(this, 'audio')}
-               >
-                  <Image
-                    style = {style.toolIcon}
-                    source = {require('../assets/images/chat-audio-lock.png')}
-                  />
-               </TouchableOpacity>
-               <TouchableOpacity
-                 style = {style.toolContainer}
-                 onPress = {this.chooseTools.bind(this, 'img')}
-               >
-                  <Image
-                    style = {style.toolIcon}
-                    source = {require('../assets/images/chat-image-lock.png')}
-                  />
-               </TouchableOpacity>
-               <TouchableOpacity
-                 style = {style.toolContainer}
-                 onPress = {this.chooseTools.bind(this, 'dice')}
-               >
-                  <Image
-                    style = {style.toolIcon}
-                    source = {this.state.activeTool === 'dice' ? require('../assets/images/chat-dice-active.png') : require('../assets/images/chat-dice.png')}
-                  />
-               </TouchableOpacity>
-               <TouchableOpacity
-                 style = {style.toolContainer}
-                 onPress = {this.chooseTools.bind(this, 'phone')}
-               >
-                  <Image
-                    style = {style.toolIcon}
-                    source = {require('../assets/images/chat-phone-lock.png')}
-                  />
-               </TouchableOpacity>
-               <TouchableOpacity
-                 style = {style.toolContainer}
-                 onPress = {this.chooseTools.bind(this, 'video')}
-               >
-                  <Image
-                    style = {style.toolIcon}
-                    source = {require('../assets/images/chat-video-lock.png')}
-                  />
-               </TouchableOpacity>
-             </View>
-             <View style = {[style.toolView, {height: this.state.activeTool === 'dice' ? 120 : 0}]}>
-                 {
-                   this.getToolView()
-                 }
-             </View>
-           </View>
+          <View style={style.toolPanelContainer}>
+            <View style={style.toolPanel}>
+              <TouchableOpacity
+                style={style.toolContainer}
+                onPress={this.chooseTools.bind(this, "audio")}
+              >
+                <Image
+                  style={style.toolIcon}
+                  source={require("../assets/images/chat-audio-lock.png")}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={style.toolContainer}
+                onPress={this.chooseTools.bind(this, "img")}
+              >
+                <Image
+                  style={style.toolIcon}
+                  source={require("../assets/images/chat-image-lock.png")}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={style.toolContainer}
+                onPress={this.chooseTools.bind(this, "dice")}
+              >
+                <Image
+                  style={style.toolIcon}
+                  source={
+                    this.state.activeTool === "dice"
+                      ? require("../assets/images/chat-dice-active.png")
+                      : require("../assets/images/chat-dice.png")
+                  }
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={style.toolContainer}
+                onPress={this.chooseTools.bind(this, "phone")}
+              >
+                <Image
+                  style={style.toolIcon}
+                  source={require("../assets/images/chat-phone-lock.png")}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={style.toolContainer}
+                onPress={this.chooseTools.bind(this, "video")}
+              >
+                <Image
+                  style={style.toolIcon}
+                  source={require("../assets/images/chat-video-lock.png")}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                style.toolView,
+                { height: this.state.activeTool === "dice" ? 120 : 0 }
+              ]}
+            >
+              {this.getToolView()}
+            </View>
+          </View>
         </View>
       </TouchableOpacity>
-    )
+    );
   }
 }
 
 const style = StyleSheet.create({
   headerTitle: {
     flex: 1,
-    textAlign: 'center',
-    color: '#000000',
+    textAlign: "center",
+    color: "#000000",
     fontSize: 14,
-    fontWeight: '600'
+    fontWeight: "600"
   },
   container: {
-    position: 'relative',
+    position: "relative",
     flex: 1
   },
   heartContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 12,
     right: 20,
     width: 56,
     height: 56
   },
   heartIcon: {
-    position: 'absolute',
+    position: "absolute",
     width: 56,
     height: 56
   },
   scoreText: {
-    position: 'absolute',
-    color: '#ffffff',
+    position: "absolute",
+    color: "#ffffff",
     width: 56,
     height: 56,
-    textAlign: 'center',
-    lineHeight: 50,
-    
+    textAlign: "center",
+    lineHeight: 50
   },
   msgContainer: {
     padding: 10,
     paddingBottom: 40
   },
   chatTypeContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    width: '100%',
-    backgroundColor: '#ffffff'
+    width: "100%",
+    backgroundColor: "#ffffff"
   },
   inputContainer: {
     height: 50,
-    width: '100%',
+    width: "100%"
   },
   textLockContainer: {
-    width: '100%',
+    width: "100%",
     flex: 1,
-    borderColor: '#e3e3e3',
+    borderColor: "#e3e3e3",
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff'
+    justifyContent: "center",
+    flexDirection: "row",
+    backgroundColor: "#ffffff"
   },
   lockImg: {
     width: 20,
@@ -356,20 +516,20 @@ const style = StyleSheet.create({
   lockText: {
     lineHeight: 50
   },
-  msgInput:{
+  msgInput: {
     height: 42,
-    width: '100%',
-    borderColor: '#e3e3e3',
+    width: "100%",
+    borderColor: "#e3e3e3",
     borderTopWidth: 1,
     borderBottomWidth: 1,
     padding: 5,
     zIndex: 10,
-    backgroundColor: '#ffffff'
+    backgroundColor: "#ffffff"
   },
   toolPanel: {
     height: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   toolContainer: {
     padding: 10
@@ -380,13 +540,13 @@ const style = StyleSheet.create({
   },
   piceToolContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     // justifyContent: 'space-between',
-    height: '100%'
+    height: "100%"
   },
   toolView: {
     flex: 1,
-    justifyContent: 'space-around'
+    justifyContent: "space-around"
   },
   toolItem: {
     flex: 1,
@@ -401,11 +561,72 @@ const style = StyleSheet.create({
   toolItemText: {
     width: 75,
     padding: 5,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 12
   },
   // 弹窗相关
   modalContainer: {
-    
+    flex: 1
+  },
+  bigHeartContainer: {
+    position: "relative",
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  bigHeartImg: {
+    height: 90,
+    width: 90
+  },
+  heartScore: {
+    position: "absolute",
+    marginLeft: "auto",
+    top: 35
+  },
+  titleText: {
+    fontWeight: "700",
+    fontSize: 16,
+    textAlign: "center",
+    color: "#FF465E",
+    padding: 5
+  },
+  titleTipText: {
+    textAlign: "center",
+    fontSize: 12
+  },
+  featureCotainer: {
+    flex: 1,
+    margin: 10
+  },
+  firstLineFeatureContianer: {
+    flexDirection: "row"
+  },
+  boxFeatureIcon: {
+    height: 60,
+    width: 60,
+    padding: 5
+  },
+  arrow: {
+    width: 40,
+    height: 10,
+    marginLeft: 5
+  },
+  featureText: {
+    fontSize: 12,
+    width: 60,
+    textAlign: "center"
+  },
+  middleLineContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end"
+  },
+  arrowDown: {
+    width: 10,
+    height: 50,
+    marginRight: 11
+  },
+  endLineContainer: {
+    flex: 1,
+    flexDirection: "row"
   }
-})
+});

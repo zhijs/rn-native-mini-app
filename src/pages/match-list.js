@@ -10,16 +10,16 @@ import {
 } from "react-native";
 import { Api } from "../api/_fetch";
 import { getLikeMeList, getFriendList } from "../api/friend";
-import MatchItem from '../components/match/match-item'
-import webSocketCla from '../common/web-socket';
+import MatchItem from "../components/match/match-item";
+import webSocketCla from "../common/web-socket";
 
 export default class matchList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    (this.state = {
       myId: 47
-    },
-    this.timer = null;
+    }),
+      (this.timer = null);
     this.webSocket = null;
   }
   //设置store
@@ -33,15 +33,18 @@ export default class matchList extends Component {
       let itemYear = new Date(item.dob).getFullYear() + 1;
 
       // 取出所有的消息
-      let msgIds = (item.msgs || []).map((msg) => {
+      let msgIds = (item.msgs || []).map(msg => {
         msgs[`${msg.id}`] = msg;
-        return msg.id
-      })
+        return msg.id;
+      });
 
       // 防止消息被覆盖
       if (msgIds.length === 0) {
-        if (this.props.friend.all[item.uid] && this.props.friend.all[item.uid].msgs) {
-          msgIds = this.props.friend.all[item.uid].msgs
+        if (
+          this.props.friend.all[item.uid] &&
+          this.props.friend.all[item.uid].msgs
+        ) {
+          msgIds = this.props.friend.all[item.uid].msgs;
         }
       }
       user[`${item.uid}`] = {
@@ -49,7 +52,8 @@ export default class matchList extends Component {
         nickname: item.nickname === "" ? "未知" : item.nickname,
         phone_number: item.phone_number,
         age: nowYear - itemYear || "18",
-        profile_photo_src:  (item.profile_photo_src !== null &&  item.profile_photo_src !== "")
+        profile_photo_src:
+          item.profile_photo_src !== null && item.profile_photo_src !== ""
             ? `${Api.Test}${item.profile_photo_src}`
             : "http://211.159.182.124/resource/image/1539702991.jpeg",
         gender: item.gender || "male",
@@ -58,73 +62,67 @@ export default class matchList extends Component {
             ? "http://211.159.182.124/resource/audio/1539532499.mp3"
             : `${Api.Test}${item.audio_src}`,
         pics: item.pic_srcs,
-        did_at: item.did_at || '',
+        did_at: item.did_at || "",
         msgs: msgIds
       };
       if (!this.props.friend[type].includes(item.uid)) {
-        if (type === 'match' && item.msgs.length > 2) {
-          !this.props.friend.chat.includes(item.uid) && chatIds.push(item.uid)
-        } else if (type === 'match' && item.msgs.length < 2) {
-          userIds.push(item.uid)
+        if (type === "match" && item.msgs.length > 2) {
+          !this.props.friend.chat.includes(item.uid) && chatIds.push(item.uid);
+        } else if (type === "match" && item.msgs.length < 2) {
+          userIds.push(item.uid);
         } else {
-          userIds.push(item.uid)
+          userIds.push(item.uid);
         }
       }
-
     });
+    this.props.setMessageAll(msgs);
     this.props.setFriendAll(user);
-    if (type === 'likeMe') {
-      this.props.addLikeMe(userIds)
+    if (type === "likeMe") {
+      this.props.addLikeMe(userIds);
     } else {
-      console.log('设置消息', msgs)
-      this.props.setMessageAll(msgs)
-      console.log('设置匹配列表', userIds)
-      this.props.addMatchFriend(userIds)
+      console.log("设置消息", msgs);
+      console.log("设置匹配列表", userIds);
+      this.props.addMatchFriend(userIds);
     }
 
     if (chatIds.length !== 0) {
-      this.props.addChatFriend(chatIds)
+      this.props.addChatFriend(chatIds);
     }
-
-
   }
   getLikeMeData() {
-    getLikeMeList({uid: this.state.myId})
-      .then((res) => {
-        if (res.data && res.data.result === "ok") {
-          this.setFrienddStore(res.data.accounts, 'likeMe')
-        }
-      })
+    getLikeMeList({ uid: this.state.myId }).then(res => {
+      if (res.data && res.data.result === "ok") {
+        this.setFrienddStore(res.data.accounts, "likeMe");
+      }
+    });
   }
-  
+
   getMatchData() {
-    getFriendList({uid: this.state.myId})
-      .then((res) => {
-        console.log('match--', res)
-        if (res.data && res.data.result === "ok") {
-          this.setFrienddStore(res.data.accounts, 'match')
-        }
-      })
+    getFriendList({ uid: this.state.myId }).then(res => {
+      console.log("match--", res);
+      if (res.data && res.data.result === "ok") {
+        this.setFrienddStore(res.data.accounts, "match");
+      }
+    });
   }
-  
+
   // ws 打开
   handleWsOpen() {
-
-    console.log('ws open', this)
-    this.webSocket.send(`${this.state.myId}`)
+    console.log("ws open", this);
+    this.webSocket.send(`${this.state.myId}`);
   }
 
   handleWsMessage(e) {
-    console.log('handleWsMessage', e.data)
+    console.log("websockt 收到消息", e.data);
   }
-  
+
   handleWsError(e) {
-    console.log('handleWsMessage', e)
+    console.log("websockt 收到消息 出错", e);
   }
   componentWillMount() {
     this.webSocket = webSocketCla.getInstance();
-    console.log('this.webSocket--------------', this.webSocket)
-    this.webSocket.onopen = this.handleWsOpen.bind(this)
+    console.log("this.webSocket--------------", this.webSocket);
+    this.webSocket.onopen = this.handleWsOpen.bind(this);
     this.webSocket.onmessage = this.handleWsMessage.bind(this);
     this.webSocket.onerror = this.handleWsError.bind(this);
     this.getLikeMeData();
@@ -133,30 +131,29 @@ export default class matchList extends Component {
     this.timer = setInterval(() => {
       this.getLikeMeData();
       this.getMatchData();
-    }, 3 * 60 * 1000)
+    }, 3 * 60 * 1000);
   }
 
   pageToLikeList() {
     const { navigate } = this.props.navigation;
-    navigate('linkeMe');
+    navigate("linkeMe");
   }
 
   // 跳转到聊天页面
   pageToChatDetail(uid) {
     const { navigate } = this.props.navigation;
-    let user =  this.props.friend.all[uid];
-    console.log('pageToChatDetail--', {user, type: 'match'});
-    navigate('ChatDetail', {user, type: 'match'})
+    let user = this.props.friend.all[uid];
+    console.log("pageToChatDetail--", { user, type: "match" });
+    navigate("ChatDetail", { user, type: "match" });
   }
-
 
   render() {
     return (
       <View style={[style.container]}>
         <View style={style.linkeMeContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[{ flex: 1, flexDirection: "row" }]}
-            onPress = {this.pageToLikeList.bind(this)}
+            onPress={this.pageToLikeList.bind(this)}
           >
             <View style={[style.iconContainer]}>
               <Image
@@ -166,27 +163,33 @@ export default class matchList extends Component {
             </View>
             <View style={style.likeTextContainer}>
               <Text style={style.title}>谁喜欢我</Text>
-              <Text style={style.likeMeNum}>得到{this.props.friend.likeMe.length}人喜欢</Text>
+              <Text style={style.likeMeNum}>
+                得到
+                {this.props.friend.likeMe.length}
+                人喜欢
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
         <ScrollView style={style.matchContainer}>
-          <Text style={style.matchNum}> {this.props.friend.match.length}个配对</Text>
-          { 
-            this.props.friend.match.map((item) => {
-              return (
-                <TouchableOpacity
-                  onPress = {this.pageToChatDetail.bind(this, item)}
-                  key = {item}
-                >
-                  <MatchItem 
-                    item = {this.props.friend.all[`${item}`]}
-                    messageAll = {this.props.message.all}
-                  />
-                </TouchableOpacity>
-              )
-            })
-          }
+          <Text style={style.matchNum}>
+            {" "}
+            {this.props.friend.match.length}
+            个配对
+          </Text>
+          {this.props.friend.match.map(item => {
+            return (
+              <TouchableOpacity
+                onPress={this.pageToChatDetail.bind(this, item)}
+                key={item}
+              >
+                <MatchItem
+                  item={this.props.friend.all[`${item}`]}
+                  messageAll={this.props.message.all}
+                />
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
     );
@@ -194,18 +197,18 @@ export default class matchList extends Component {
 }
 const style = StyleSheet.create({
   contentBg: {
-   backgroundColor: '#ffffff'
+    backgroundColor: "#ffffff"
   },
   container: {
     flex: 1,
     marginBottom: 10,
-    paddingBottom: 8,
+    paddingBottom: 8
   },
   linkeMeContainer: {
     height: 70,
     padding: 10,
     marginBottom: 8,
-    backgroundColor: '#ffffff'
+    backgroundColor: "#ffffff"
   },
   likeIcon: {
     width: 50,
@@ -223,8 +226,8 @@ const style = StyleSheet.create({
     marginTop: 8
   },
   matchContainer: {
-    backgroundColor: '#ffffff',
-    marginTop: 10,
+    backgroundColor: "#ffffff",
+    marginTop: 10
   },
   matchNum: {
     paddingLeft: 16,
