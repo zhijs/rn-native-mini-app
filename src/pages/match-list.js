@@ -23,7 +23,7 @@ export default class matchList extends Component {
     this.webSocket = null;
   }
   //设置store
-  setFrienddStore(dataArr, type) {
+  setFrienddStore(dataArr = [], type) {
     let nowYear = new Date().getFullYear() + 1;
     let user = {};
     let msgs = {};
@@ -88,7 +88,7 @@ export default class matchList extends Component {
     }
   }
   getLikeMeData() {
-    getLikeMeList({ uid: this.state.myId }).then(res => {
+    getLikeMeList({ uid: this.props.user.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
         this.setFrienddStore(res.data.accounts, "likeMe");
       }
@@ -96,7 +96,7 @@ export default class matchList extends Component {
   }
 
   getMatchData() {
-    getFriendList({ uid: this.state.myId }).then(res => {
+    getFriendList({ uid: this.props.user.uid }).then(res => {
       console.log("match--", res);
       if (res.data && res.data.result === "ok") {
         this.setFrienddStore(res.data.accounts, "match");
@@ -107,32 +107,29 @@ export default class matchList extends Component {
   // ws 打开
   handleWsOpen() {
     console.log("ws open", this);
-    this.webSocket.send(`${this.state.myId}`);
+    this.webSocket.send(`${this.props.user.uid}`);
   }
 
   handleWsMessage(e) {
     console.log("websockt 收到消息", e.data);
-    try{
+    try {
       let msg = JSON.parse(e.data);
-      let msgObj = {}
+      let msgObj = {};
+      console.log("msg.id", msg.id === 0);
+      if (msg.id === 0) return;
       msgObj[`${msg.id}`] = msg;
-      this.props.setMessageAll(msgObj)
+      this.props.setMessageAll(msgObj);
       this.props.addFriendMsg({
         uid: msg.from,
         msgId: msg.id
-      })
-    }catch(e) {
-    }
+      });
+    } catch (e) {}
   }
 
   handleWsError(e) {
     console.log("websockt 收到消息 出错", e);
   }
   componentWillMount() {
-    this.webSocket = webSocketCla.getInstance();
-    this.webSocket.onopen = this.handleWsOpen.bind(this);
-    this.webSocket.onmessage = this.handleWsMessage.bind(this);
-    this.webSocket.onerror = this.handleWsError.bind(this);
     this.getLikeMeData();
     this.getMatchData();
     // 定时获取列表信息
@@ -140,10 +137,15 @@ export default class matchList extends Component {
       this.getLikeMeData();
       this.getMatchData();
     }, 3 * 60 * 1000);
+
+    this.webSocket = webSocketCla.getInstance();
+    this.webSocket.onopen = this.handleWsOpen.bind(this);
+    this.webSocket.onmessage = this.handleWsMessage.bind(this);
+    this.webSocket.onerror = this.handleWsError.bind(this);
   }
 
   componentWillUnmount() {
-    this.webSocket.close()
+    this.webSocket.close();
     clearInterval(this.timer);
     this.timer = null;
   }

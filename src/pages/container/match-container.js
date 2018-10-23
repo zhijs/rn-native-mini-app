@@ -19,6 +19,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addMatchFriend: data => {
       dispatch({ type: actionType.SET_MATCH_FRIEND, data });
+    },
+    deleteNewFriend: data => {
+      dispatch({ type: actionType.DELETE_NEW_FRIEND, data });
     }
   };
 };

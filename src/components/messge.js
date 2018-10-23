@@ -2,98 +2,98 @@
  * 聊天信息组件
  */
 
-import React, { Component } from 'react';
-import {
-  View,
-  Style,
-  StyleSheet,
-  Image,
-  Text
-} from 'react-native'
+import React, { Component } from "react";
+import { View, Style, StyleSheet, Image, Text } from "react-native";
 
 // 骰子映射图片
 const dicePath = [
-  require('../assets/images/sz1.png'),
-  require('../assets/images/sz2.png'),
-  require('../assets/images/sz3.png'),
-  require('../assets/images/sz4.png'),
-  require('../assets/images/sz5.png'),
-  require('../assets/images/sz6.png'),
+  require("../assets/images/sz1.png"),
+  require("../assets/images/sz2.png"),
+  require("../assets/images/sz3.png"),
+  require("../assets/images/sz4.png"),
+  require("../assets/images/sz5.png"),
+  require("../assets/images/sz6.png")
 ];
 export default class Message extends Component {
   constructor(props) {
-    super(props)
-    console.log('Message---', props)
+    super(props);
+    console.log("Message---", props);
     this.state = {
       myId: 47,
-      userAvatar: 'http://211.159.182.124/resource/image/1539702991.jpeg',
+      userAvatar: "http://211.159.182.124/resource/image/1539702991.jpeg",
       msg: {
         id: 2,
         from: 37,
         to: 1,
         msg_type: "chat_text",
-        msg_body: "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+        msg_body:
+          "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
         created_at: "2018-10-18T15:49:58+08:00"
       }
-    }
+    };
   }
-   
+
   // 根据消息类型获取对应的内容文本或者图片
   getMsgContent() {
-     if (this.props.msg.msg_type === 'chat_text' || this.props.msg.msg_type === 'auto_text') {
-       return (
-         <Text style = {[this.props.msg.from === this.state.myId ? style.myMsgContent : style.otherContent, {padding: 10}]}>{this.props.msg.msg_body}</Text>
-       )
-     } else {
-       let msgBody = {};
-       try{
-          msgBody = JSON.parse(this.props.msg.msg_body)
-       }catch(e){
-  
-       }
-        return (
-          <Image
-            style = {style.msgImgContent}
-            source = {dicePath[msgBody.dice - 1]}
-          />
-        )
-     }
+    if (
+      this.props.msg.msg_type === "chat_text" ||
+      this.props.msg.msg_type === "auto_text"
+    ) {
+      return (
+        <Text
+          style={[
+            this.props.msg.from === this.props.user.uid
+              ? style.myMsgContent
+              : style.otherContent,
+            { padding: 10 }
+          ]}
+        >
+          {this.props.msg.msg_body}
+        </Text>
+      );
+    } else {
+      let msgBody = {};
+      try {
+        msgBody = JSON.parse(this.props.msg.msg_body);
+      } catch (e) {}
+      return (
+        <Image
+          style={style.msgImgContent}
+          source={dicePath[msgBody.dice - 1]}
+        />
+      );
+    }
   }
   // 根据消息是发送的收到的类型使用不同的视图
   getMsgView() {
     // 自己发的消息
-    if (this.props.msg.from === this.state.myId) {
+    if (this.props.msg.from === this.props.user.uid) {
       return (
-        <View style = {[style.myMsg, style.msgContainer]}>
-           {
-             this.getMsgContent()
-           }
-           <Image
-             style = {style.userAvatar}
-            //  source = {{uri: this.state.userAvatar}}
-            source = {require('../assets/images/user.jpg')}
-           />
+        <View style={[style.myMsg, style.msgContainer]}>
+          {this.getMsgContent()}
+          <Image
+            style={style.userAvatar} //  source = {{uri: this.state.userAvatar}}
+            source={{ uri: this.props.user.profile_photo_src }}
+          />
         </View>
-      )
-    } else { // 对方发的消息
+      );
+    } else {
+      // 对方发的消息
       return (
-        <View style = {[style.otherMsg, style.msgContainer]}>
-            <Image
-              style = {style.userAvatar}
-              //  source = {{uri: this.state.userAvatar}}
-              source = {require('../assets/images/user.jpg')}
-            />
-            {
-              this.getMsgContent()
+        <View style={[style.otherMsg, style.msgContainer]}>
+          <Image
+            style={style.userAvatar}
+            source={
+              { uri: this.props.other.profile_photo_src } //  source = {{uri: this.state.userAvatar}}
             }
-          </View> 
-      )
+          />
+          {this.getMsgContent()}
+        </View>
+      );
     }
   }
   render() {
-    return(
-      this.getMsgView()
-    )
+    return this.getMsgView();
   }
 }
 
@@ -103,13 +103,12 @@ const style = StyleSheet.create({
     flex: 1
   },
   myMsg: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end"
   },
   otherMsg: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-
+    flexDirection: "row",
+    justifyContent: "flex-start"
   },
   userAvatar: {
     width: 52,
@@ -118,11 +117,11 @@ const style = StyleSheet.create({
   },
   myMsgContent: {
     flex: 1,
-    backgroundColor: '#ffe100',
+    backgroundColor: "#ffe100",
     borderRadius: 4,
     marginRight: 10,
     marginLeft: 20,
-    color: '#000000'
+    color: "#000000"
   },
   otherContent: {
     flex: 1,
@@ -130,12 +129,12 @@ const style = StyleSheet.create({
     marginRight: 70,
     padding: 10,
     borderRadius: 4,
-    color: '#9b9b9b',
-    backgroundColor: '#f9f9f9',
+    color: "#9b9b9b",
+    backgroundColor: "#f9f9f9"
   },
   msgImgContent: {
     width: 50,
     height: 50,
     margin: 8
   }
-})
+});

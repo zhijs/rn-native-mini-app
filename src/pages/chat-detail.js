@@ -15,7 +15,7 @@ import {
   ScrollView
 } from "react-native";
 import commonStyle from "../utils/common-style";
-import { sendMsg } from "../api/message";
+import { sendMsg, uploadFile } from "../api/message";
 import { getScore } from "../api/friend";
 import Message from "../components/messge";
 import webSocketCla from "../common/web-socket";
@@ -86,7 +86,16 @@ export default class ChatDeTail extends Component {
     }
 
     // 选择图片
-    if (type === "img" && this.score >= 40) {
+    if (type === "img" && this.state.source >= 40) {
+      imgs = [];
+      ImagePicker.openPicker({ multiple: true }).then(images => {
+        console.log("获取图片", images);
+        if (images !== null || images.length !== 0) {
+          // images.forEach((item) => {
+          //   uploadFile()
+          // })
+        }
+      });
     }
   }
   static navigationOptions = ({ navigation }) => {
@@ -104,7 +113,7 @@ export default class ChatDeTail extends Component {
     console.log("websocket 发送消息", this.ws);
     let num = (parseInt(Math.random() * 10) % 6) + 1;
     sendMsg({
-      from: this.state.myId,
+      from: this.props.user.uid,
       to: this.state.otherUid,
       msg_type: "chat_game",
       msg_body: `{"dice": ${num}}`
@@ -389,7 +398,14 @@ export default class ChatDeTail extends Component {
         />
         <ScrollView style={style.msgContainer}>
           {this.props.friend.all[this.state.otherUid].msgs.map(msgId => {
-            return <Message key={msgId} msg={this.props.message.all[msgId]} />;
+            return (
+              <Message
+                key={msgId}
+                other={this.props.friend.all[this.state.otherUid]}
+                msg={this.props.message.all[msgId]}
+                user={this.props.user}
+              />
+            );
           })}
         </ScrollView>
         <View style={style.chatTypeContainer}>

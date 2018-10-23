@@ -14,3 +14,9 @@ export function getHistoryMsg(data) {
     console.log("发送消息失败", e);
   });
 }
+
+export function uploadFile(data, header) {
+  return fetchJSON("/resource/upload", header, data).catch(e => {
+    console.log("发送图片失败", e);
+  });
+}

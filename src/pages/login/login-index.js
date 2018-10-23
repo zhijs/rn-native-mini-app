@@ -26,6 +26,7 @@ import PasswdInput from "./passwd-input";
 import UserInfo from "./user-info";
 import commonStyle from "../../utils/common-style";
 import SlideAnimation from "./animation-view";
+import { Api } from "../../api/_fetch";
 console.log(commonStyle);
 export default class LoginIndex extends Component {
   constructor(props) {
@@ -337,7 +338,7 @@ export default class LoginIndex extends Component {
     sign(data).then(res => {
       console.log("注册", res);
       if (res.data.result === "ok") {
-        data.is_registered = true
+        data.is_registered = true;
         data.uid = res.data.uid;
         this.props.sigin(data);
         this.props.pageAdd(1);
@@ -354,8 +355,9 @@ export default class LoginIndex extends Component {
       dob: this.state.birthDay
     };
     updateAccount(data).then(res => {
-      console.log('更新用户信息', res)
+      console.log("更新用户信息", res);
       if (res.data.result === "ok") {
+        data.profile_photo_src = res.data.profile_photo_src || "";
         this.props.sigin(data);
         navigate("Tab");
       }
@@ -368,16 +370,17 @@ export default class LoginIndex extends Component {
       phone_number: this.state.telNumber,
       password: this.state.passwd
     }).then(res => {
-      console.log("login----", res);
       if (res.data.result === "ok") {
         if (res.data.status === this.PWD_ERROR) {
           this.setState({ rightPwd: false });
         } else if (res.data.status === 0) {
+          console.log("登陆成功", res);
           this.props.logined({
             uid: res.data.uid,
             gender: res.data.gender,
             nickname: res.data.nickname,
-            dob: res.data.dob
+            dob: res.data.dob,
+            profile_photo_src: `${Api.Test}${res.data.profile_photo_src}` || ""
           });
           navigate("Tab");
         }

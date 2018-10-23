@@ -2,15 +2,9 @@
  * 匹配页面
  */
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity
-} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
-import { sendMsg } from '../api/message'
+import { sendMsg } from "../api/message";
 import commonStyle from "../utils/common-style";
 import Card from "../components/card";
 import SwipeCards from "react-native-swipe-cards";
@@ -26,19 +20,22 @@ export default class Match extends Component {
     this.state = {
       matchSuccess: false,
       modalShow: true,
-      matchUserName: '文艺小清新',
-      matchUserImg: 'http://211.159.182.124/resource/image/1539702991.jpeg'
-    }
+      matchUserName: "文艺小清新",
+      matchUid: 0,
+      matchUserImg: "http://211.159.182.124/resource/image/1539702991.jpeg"
+    };
     this.state = { myId: 47 };
   }
   componentWillMount() {
-    getFriend({ uid: this.state.myId }).then(res => {
+    getFriend({
+      uid: this.props.user.uid
+    }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("getFriends", res);
         let user = {};
         let newFriend = [];
         let nowYear = new Date().getFullYear() + 1;
-        res.data.info.forEach(item => {
+        (res.data.info || []).forEach(item => {
           let itemYear = new Date(item.dob).getFullYear() + 1;
           user[`${item.uid}`] = {
             uid: item.uid,
@@ -46,7 +43,7 @@ export default class Match extends Component {
             phone_number: item.phone_number,
             age: nowYear - itemYear || "18",
             profile_photo_src:
-            (item.pic_srcs === null || item.pic_srcs.length === 0 )
+              item.pic_srcs === null || item.pic_srcs.length === 0
                 ? "http://211.159.182.124/resource/image/1539702991.jpeg"
                 : `${Api.Test}${item.pic_srcs[0]}`,
             gender: item.gender || "male",
@@ -60,16 +57,20 @@ export default class Match extends Component {
             newFriend.push(item.uid);
           }
         });
-        this.props.addNewFriend(newFriend)
         this.props.setFriendAll(user);
+        this.props.addNewFriend(newFriend);
       }
     });
   }
   handleDisLike(card) {
     this.Card.sound.stop();
-    dislikeFriend({ from: this.state.myId, to: card.uid }).then(res => {
+    dislikeFriend({
+      from: this.props.user.uid,
+      to: card.uid
+    }).then(res => {
       if (res.data && res.data.result === "ok") {
         console.log("不喜欢成功");
+        this.props.deleteNewFriend(card.uid);
       }
     });
   }
@@ -80,89 +81,95 @@ export default class Match extends Component {
 
   handleLike(card) {
     this.Card.sound.stop();
-    likeFriend({ from: this.state.myId, to: card.uid }).then(res => {
+    likeFriend({
+      from: this.props.user.uid,
+      to: card.uid
+    }).then(res => {
       if (res.data && res.data.result === "ok") {
         if (res.data.is_friend) {
           this.setState({
             matchUserName: card.nickname,
             matchUserImg: card.profile_photo_src,
+            matchUid: card.uid,
             modalShow: true
-          })
+          });
+          this.props.deleteNewFriend(card.uid);
           if (!this.props.friend.match.includes(card.uid)) {
-            this.props.addMatchFriend([card.uid]); 
+            this.props.addMatchFriend([card.uid]);
           }
         }
       }
     });
   }
-  
+
   // 关闭浮层
   modalClose() {
-    this.setState({
-      modalShow: false
-    }) 
+    this.setState({ modalShow: false });
   }
 
   // 获取浮层内容元素
-  getModalChild(myImg, otherName, otherImg) {
-    return(
-     <View style = {style.matchSuccessContainer}>
-        <View style = {style.titleContainer}>
-           <Image
-             style = {style.titleBg}
-             source = {require('../assets/images/match-success-bg.png')}
-           />
+  getModalChild() {
+    return (
+      <View style={style.matchSuccessContainer}>
+        <View style={style.titleContainer}>
+          <Image
+            style={style.titleBg}
+            source={require("../assets/images/match-success-bg.png")}
+          />
         </View>
-        <Text style = {style.tips}>你与{otherName}互相喜欢了对方</Text>
-        <View style = {style.twoAvatarContainer}>
-            <Image
-              style = {[style.avatarItem, style.modalAvatarMy]}
-              source = {require('../assets/images/user.jpg')}
-            />
-            <Image
-              style = {[style.avatarItem, style.modalAvatarYou]}
-              source = {{uri: otherImg}}
-            />
+        <Text style={style.tips}>
+          你与
+          {this.state.matchUserName}
+          互相喜欢了对方
+        </Text>
+        <View style={style.twoAvatarContainer}>
+          <Image
+            style={[style.avatarItem, style.modalAvatarMy]}
+            source={{ uri: this.props.user.profile_photo_src }}
+          />
+          <Image
+            style={[style.avatarItem, style.modalAvatarYou]}
+            source={{ uri: this.state.matchUserImg }}
+          />
         </View>
-        <View style = {style.modalBtnContainer}>
-          <TouchableOpacity 
-            style = {[style.modalBtn, style.cancelBtnContainer]}
-            onPress = {() => {
-              this.setState({modalShow: false})
+        <View style={style.modalBtnContainer}>
+          <TouchableOpacity
+            style={[style.modalBtn, style.cancelBtnContainer]}
+            onPress={() => {
+              this.setState({ modalShow: false });
             }}
           >
-             <Text style = {style.modalBtnText}>再看看</Text>
+            <Text style={style.modalBtnText}>再看看</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style = {[style.modalBtn, style.comfirmBtnContainer]}
-            onPress = {() => {
+          <TouchableOpacity
+            style={[style.modalBtn, style.comfirmBtnContainer]}
+            onPress={() => {
               const { navigate } = this.props.navigation;
-              navigate('chat')
-              this.setState({modalShow: false})
+              navigate("chat");
+              this.setState({ modalShow: false });
             }}
           >
-             <Text style = {style.modalBtnText}>发消息</Text>
+            <Text style={style.modalBtnText}>发消息</Text>
           </TouchableOpacity>
         </View>
-     </View>
-    )  
+      </View>
+    );
   }
 
   render() {
     return (
       <View style={[commonStyle.pageBg, style.container]}>
         <MessageBox
-          modalClose = {this.modalClose.bind(this)}
-          visiable = {this.state.modalShow}
-          contentHeight = {'60%'}
-          childView = {this.getModalChild(null, this.state.matchUserName, this.state.matchUserImg)}
-        >
-        </MessageBox>
+          modalClose={this.modalClose.bind(this)}
+          visiable={this.state.modalShow}
+          contentHeight={"60%"}
+          childView={this.getModalChild()}
+        />
         <View style={style.header}>
           <View style={style.avatarContainer}>
             <Image
               style={style.myAvatar}
-              source={require("../assets/images/match-active.png")}
+              source={{ uri: this.props.user.profile_photo_src }}
             />
           </View>
           <View style={style.titleContainer}>
@@ -184,7 +191,9 @@ export default class Match extends Component {
             handleYup={this.handleLike.bind(this)}
             yupStyle={style.slideIcon}
             nopeStyle={style.slideIcon}
-            renderCard={cardData => <Card {...cardData} getCardChild = {this.getCardChild.bind(this)} />}
+            renderCard={cardData => (
+              <Card {...cardData} getCardChild={this.getCardChild.bind(this)} />
+            )}
           />
         </View>
       </View>
@@ -269,27 +278,27 @@ const style = StyleSheet.create({
   // 浮层样式
   matchSuccessContainer: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column"
   },
   titleContainer: {
-    width: '50%',
-    marginLeft: '25%',
+    width: "50%",
+    marginLeft: "25%",
     height: 30
   },
   titleBg: {
-    width: '100%',
+    width: "100%",
     height: 30
   },
   tips: {
-    color: '#818182',
+    color: "#818182",
     padding: 10,
-    textAlign: 'center'
+    textAlign: "center"
   },
   twoAvatarContainer: {
     margin: 25,
     height: 80,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 55
   },
   avatarItem: {
@@ -307,25 +316,25 @@ const style = StyleSheet.create({
     flex: 1
   },
   modalBtnContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
+    flexDirection: "row",
+    justifyContent: "space-around"
   },
   modalBtn: {
-    width: '40%',
+    width: "40%",
     height: 36,
     borderRadius: 3
   },
   cancelBtnContainer: {
-    borderColor: '#818182',
-    backgroundColor: '#f8f9fb',
+    borderColor: "#818182",
+    backgroundColor: "#f8f9fb",
     borderWidth: 1
   },
   comfirmBtnContainer: {
-    backgroundColor: '#ffe100'
+    backgroundColor: "#ffe100"
   },
-  modalBtnText:{
-    flex: 1, 
-    textAlign: 'center', 
+  modalBtnText: {
+    flex: 1,
+    textAlign: "center",
     lineHeight: 36
   }
 });

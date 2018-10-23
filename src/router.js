@@ -16,8 +16,8 @@ import Match from "./pages/container/match-container";
 import MatchList from "./pages/container/match-list-container";
 import Square from "./pages/container/square-container";
 import Upload from "./pages/container/upload-container";
-import linkeMe from "./pages/container/likeme-container"
-import linkeMeTitle from "./pages/container/likeme-title-container"
+import linkeMe from "./pages/container/likeme-container";
+import linkeMeTitle from "./pages/container/likeme-title-container";
 import { Image, StyleSheet } from "react-native";
 import commonStyle from "./utils/common-style";
 
@@ -27,7 +27,7 @@ const chatTab = createMaterialTopTabNavigator(
     matchList: {
       screen: MatchList,
       navigationOptions: {
-        tabBarLabel: "配对",
+        tabBarLabel: "配对"
       }
     },
     chat: {
@@ -125,7 +125,7 @@ const Tab = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: "chat",
+    initialRouteName: "Match",
     tabBarOptions: {
       showIcon: true,
       showLabel: true,
@@ -172,7 +172,7 @@ const AppNavigator = createStackNavigator(
     }
   },
   {
-    initialRouteName: "Tab"
+    initialRouteName: "LoginIndex"
   }
 );
 export default AppNavigator;
