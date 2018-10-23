@@ -12,7 +12,7 @@ export default class LoginIndex extends Component {
     return(
       <View style={style.header}>
         <View style={style.headerIcon}>
-          <Text style={style.headerText}>21</Text>
+          <Text style={style.headerText}>锁爱</Text>
         </View>
       </View>
     )

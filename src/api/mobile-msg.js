@@ -3,7 +3,7 @@ import DeviceInfo from "react-native-device-info";
 import { fetchXL } from "./_fetch";
 
 const bizNo = "200027";
-const content = "21验证码{}";
+const content = "锁爱验证码{}";
 const needCode = true;
 const expireSeconds = 60;
 const deviceId = DeviceInfo.getDeviceId();
