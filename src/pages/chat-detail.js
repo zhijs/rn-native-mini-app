@@ -21,7 +21,7 @@ import Message from "../components/messge";
 import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
 import { Api } from "../api/_fetch";
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from "react-native-image-crop-picker";
 
 // 分数对应的爱心图片
 const score2SmallImgs = [
@@ -55,8 +55,9 @@ export default class ChatDeTail extends Component {
     const { params } = props.navigation.state;
     this.ws = webSocketCla.getInstance();
     this.score2text = {
-      "20": '你问我答',
-      "40": '爆照时刻'
+      "20": "你问我答",
+      "40": "爆照时刻",
+      "60": "闻声识人"
     };
     this.state = {
       modalShow: true,
@@ -85,8 +86,7 @@ export default class ChatDeTail extends Component {
     }
 
     // 选择图片
-    if (type === 'img' && this.score >= 40) {
-
+    if (type === "img" && this.score >= 40) {
     }
   }
   static navigationOptions = ({ navigation }) => {
@@ -141,8 +141,14 @@ export default class ChatDeTail extends Component {
       // 根据最后一条消息拿到亲密度
       let msgs = this.props.friend.all[this.state.otherUid].msgs;
 
-      let score = msgs.length === 0 ? 0 : this.props.message.all[msgs[msgs.length - 1]].score
-      let diff =  msgs.length === 0 ? 0 : this.props.message.all[msgs[msgs.length - 1]].diff
+      let score =
+        msgs.length === 0
+          ? 0
+          : this.props.message.all[msgs[msgs.length - 1]].score;
+      let diff =
+        msgs.length === 0
+          ? 0
+          : this.props.message.all[msgs[msgs.length - 1]].diff;
       let index = this.getScoreImageIndex(score);
       this.setState({
         score: score,
@@ -238,7 +244,8 @@ export default class ChatDeTail extends Component {
         <Text style={style.titleTipText}>
           亲密度达
           {this.state.score}
-          %，解锁你问我答
+          %，解锁
+          {this.score2text[this.state.score]}
         </Text>
         <View style={style.featureCotainer}>
           <View style={style.firstLineFeatureContianer}>
@@ -364,7 +371,7 @@ export default class ChatDeTail extends Component {
         onPress={this.closeToolView.bind(this)}
       >
         <View style={style.heartContainer}>
-          <Image 
+          <Image
             source={{ uri: score2SmallImgs[this.state.index] }}
             style={style.heartIcon}
           />
@@ -406,7 +413,11 @@ export default class ChatDeTail extends Component {
               >
                 <Image
                   style={style.toolIcon}
-                  source={this.state.score >= 40 ? require("../assets/images/chat-image-lock.png") : require("../assets/images/chat-image.png")}
+                  source={
+                    this.state.score >= 40
+                      ? require("../assets/images/chat-image-lock.png")
+                      : require("../assets/images/chat-image.png")
+                  }
                 />
               </TouchableOpacity>
               <TouchableOpacity
