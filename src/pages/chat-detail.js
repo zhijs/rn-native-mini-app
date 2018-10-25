@@ -402,7 +402,6 @@ export default class ChatDeTail extends Component {
   render() {
     return (
       <View
-        activeOpacity={1}
         style={[commonStyle.pageBg, style.container]}
       >
         <TouchableOpacity 
@@ -427,6 +426,7 @@ export default class ChatDeTail extends Component {
         />
         <TouchableOpacity
           style = {{flex: 1}}
+          activeOpacity={1}
           onPress={this.closeToolView.bind(this)}
         >
           <ScrollView style={style.msgContainer}>

@@ -3,12 +3,12 @@
  */
 import thunkMiddleware from 'redux-thunk'
 import reduxPromise from 'redux-promise'
-import { createLogger } from 'redux-logger'
+// import { createLogger } from 'redux-logger'
 import { createStore, applyMiddleware } from 'redux'
 
 import rootReducer from './reducer/index'
 
-const loggerMiddleware = createLogger()
+// const loggerMiddleware = createLogger()
 
 export default function configureStore(preloadedState) {
   return createStore(
@@ -17,7 +17,7 @@ export default function configureStore(preloadedState) {
     applyMiddleware(
       thunkMiddleware,
       reduxPromise,
-      loggerMiddleware
+      // loggerMiddleware
     )
   )
 }
