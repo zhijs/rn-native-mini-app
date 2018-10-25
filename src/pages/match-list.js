@@ -12,14 +12,15 @@ import { Api } from "../api/_fetch";
 import { getLikeMeList, getFriendList } from "../api/friend";
 import MatchItem from "../components/match/match-item";
 import webSocketCla from "../common/web-socket";
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class matchList extends Component {
   constructor(props) {
     super(props);
-    (this.state = {
-      myId: 47
-    }),
-      (this.timer = null);
+    this.state = {
+      spinner: false
+    }
+    this.timer = null;
     this.webSocket = null;
   }
   //设置store
@@ -132,7 +133,9 @@ export default class matchList extends Component {
   }
   componentWillMount() {
     this.getLikeMeData();
+    this.setState({spinner: true});
     this.getMatchData();
+    this.setState({spinner: false});
     // 定时获取列表信息
     this.timer = setInterval(() => {
       this.getLikeMeData();
@@ -161,10 +164,19 @@ export default class matchList extends Component {
     let user = this.props.friend.all[uid];
     navigate("ChatDetail", { user, type: "match" });
   }
+  
+  getLoading() {
+    return this.refs['loading'];
+  }
 
   render() {
     return (
       <View style={[style.container]}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Loading...'}
+          textStyle={style.spinnerTextStyle}
+        />
         <View style={style.linkeMeContainer}>
           <TouchableOpacity
             style={[{flexDirection: "row" }]}
@@ -218,6 +230,9 @@ const style = StyleSheet.create({
     flex: 1,
     marginBottom: 10,
     paddingBottom: 8
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
   },
   linkeMeContainer: {
     height: 70,

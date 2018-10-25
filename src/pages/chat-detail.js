@@ -160,12 +160,7 @@ export default class ChatDeTail extends Component {
 
   componentWillMount() {
     // 判断分数
-    if (this.routerType === "match") {
-      this.setState({ score: 0 }); // 设置分数为0
-    } else {
-      // 根据最后一条消息拿到亲密度
-      this.getScore()
-    }
+    this.getScore()
   }
   
   // 文本框输入改变事件
@@ -183,7 +178,7 @@ export default class ChatDeTail extends Component {
       msg_body: this.state.inputText
     }
     this.sendeMsg(data)
-    this.setState({inputText: '', inputVlaue: ''})
+    this.setState({inputText: ''})
   }
   // 根据分数来判断是否是解锁文字聊天
   getTextInput() {
@@ -205,7 +200,7 @@ export default class ChatDeTail extends Component {
           placeholder="聊一聊"
           underlineColorAndroid="transparent"
           multiline = {false}
-          value = {this.state.inputVlaue}
+          value = {this.state.inputText}
           onSubmitEditing  = {this.handleSubmit.bind(this)}
           onChangeText = {this.handleTextChange.bind(this)}
         />
