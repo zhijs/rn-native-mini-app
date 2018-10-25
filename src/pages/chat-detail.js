@@ -60,7 +60,7 @@ export default class ChatDeTail extends Component {
       "60": "闻声识人"
     };
     this.state = {
-      modalShow: true,
+      modalShow: false,
       myId: 47,
       otherUser: null,
       routerType: params.type,
@@ -68,8 +68,7 @@ export default class ChatDeTail extends Component {
       otherUid: params.user.uid,
       activeTool: null,
       index: 0,
-      smallImg: score2SmallImgs[0],
-      bigImg: score2BigImgs[0]
+      inputText: ''
     };
   }
 
@@ -107,17 +106,21 @@ export default class ChatDeTail extends Component {
       }
     };
   };
+  
 
   // 发送骰子消息
   sendDiceMsg() {
-    console.log("websocket 发送消息", this.ws);
     let num = (parseInt(Math.random() * 10) % 6) + 1;
-    sendMsg({
+    let data = {
       from: this.props.user.uid,
       to: this.state.otherUid,
       msg_type: "chat_game",
       msg_body: `{"dice": ${num}}`
-    }).then(res => {
+    }
+    this.sendeMsg(data)
+  }
+  sendeMsg(data) {
+    sendMsg(data).then(res => {
       console.log("发送消息成功", res);
       if (res.data && res.data.result === "ok") {
         // 添加消息
@@ -142,34 +145,48 @@ export default class ChatDeTail extends Component {
     });
     this.setState({ activeTool: null });
   }
+  
+  // 获取最后一条消息
+  getLastMsg () {
+    let msgs = this.props.friend.all[this.state.otherUid].msgs;
+    return this.props.message.all[msgs[msgs.length - 1]]
+  }
+  // 获取分数
+  getScore() {
+    let msgContent = this.getLastMsg()
+    return msgContent.score || 0
+  }
+
   componentWillMount() {
     // 判断分数
     if (this.routerType === "match") {
       this.setState({ score: 0 }); // 设置分数为0
     } else {
       // 根据最后一条消息拿到亲密度
-      let msgs = this.props.friend.all[this.state.otherUid].msgs;
-
-      let score =
-        msgs.length === 0
-          ? 0
-          : this.props.message.all[msgs[msgs.length - 1]].score;
-      let diff =
-        msgs.length === 0
-          ? 0
-          : this.props.message.all[msgs[msgs.length - 1]].diff;
-      let index = this.getScoreImageIndex(score);
-      this.setState({
-        score: score,
-        modalShow: diff > 0 ? true : false,
-        index: index
-      });
+      this.getScore()
     }
   }
+  
+  // 文本框输入改变事件
+  handleTextChange (value) {
+    this.setState({inputText: value})
+  }
 
+  // 文本输入发送键监听
+  handleSubmit() {
+    if (this.state.inputText === '') return;
+    let data = {
+      from: this.props.user.uid,
+      to: this.state.otherUid,
+      msg_type: "chat_text",
+      msg_body: this.state.inputText
+    }
+    this.sendeMsg(data)
+    this.setState({inputText: '', inputVlaue: ''})
+  }
   // 根据分数来判断是否是解锁文字聊天
-  getTextInput(score = 0) {
-    console.log("getTextInput score..", score);
+  getTextInput() {
+    let score = this.getScore()
     if (!score) {
       return (
         <View style={style.textLockContainer}>
@@ -186,6 +203,10 @@ export default class ChatDeTail extends Component {
           style={style.msgInput}
           placeholder="聊一聊"
           underlineColorAndroid="transparent"
+          multiline = {false}
+          value = {this.state.inputVlaue}
+          onSubmitEditing  = {this.handleSubmit.bind(this)}
+          onChangeText = {this.handleTextChange.bind(this)}
         />
       );
     }
@@ -238,23 +259,29 @@ export default class ChatDeTail extends Component {
     this.setState({ modalShow: false });
   }
 
+  // 弹窗打开
+  openModal () {
+    this.setState({ modalShow: true });
+    this.closeToolView()
+  }
+
   // 获取弹框内容
   getModalChild() {
     return (
       <View style={style.modalContainer}>
         <View style={style.bigHeartContainer}>
           <Image
-            source={{ uri: score2BigImgs[this.state.index] }}
+            source={{ uri: score2BigImgs[this.getScoreImageIndex(this.getScore())] }}
             style={style.bigHeartImg}
           />
-          <Text style={style.heartScore}>{this.state.score}</Text>
+          <Text style={style.heartScore}>{this.getScore()}</Text>
         </View>
         <Text style={style.titleText}>恭喜你们！</Text>
         <Text style={style.titleTipText}>
           亲密度达
-          {this.state.score}
+          {this.getScore()}
           %，解锁
-          {this.score2text[this.state.score]}
+          {this.score2text[this.getScore()]}
         </Text>
         <View style={style.featureCotainer}>
           <View style={style.firstLineFeatureContianer}>
@@ -374,18 +401,20 @@ export default class ChatDeTail extends Component {
 
   render() {
     return (
-      <TouchableOpacity
+      <View
         activeOpacity={1}
         style={[commonStyle.pageBg, style.container]}
-        onPress={this.closeToolView.bind(this)}
       >
-        <View style={style.heartContainer}>
+        <TouchableOpacity 
+          style={style.heartContainer}
+          onPress = {this.openModal.bind(this)}
+        >
           <Image
-            source={{ uri: score2SmallImgs[this.state.index] }}
+            source={{ uri: score2SmallImgs[this.getScoreImageIndex(this.getScore())] }}
             style={style.heartIcon}
           />
-          <Text style={style.scoreText}>{this.state.score}</Text>
-        </View>
+          <Text style={style.scoreText}>{this.getScore()}</Text>
+        </TouchableOpacity>
         <MessageBox
           modalClose={this.modalClose.bind(this)}
           visiable={this.state.modalShow}
@@ -396,21 +425,26 @@ export default class ChatDeTail extends Component {
             this.state.matchUserImg
           )}
         />
-        <ScrollView style={style.msgContainer}>
-          {this.props.friend.all[this.state.otherUid].msgs.map(msgId => {
-            return (
-              <Message
-                key={msgId}
-                other={this.props.friend.all[this.state.otherUid]}
-                msg={this.props.message.all[msgId]}
-                user={this.props.user}
-              />
-            );
-          })}
-        </ScrollView>
+        <TouchableOpacity
+          style = {{flex: 1}}
+          onPress={this.closeToolView.bind(this)}
+        >
+          <ScrollView style={style.msgContainer}>
+            {this.props.friend.all[this.state.otherUid].msgs.map(msgId => {
+              return (
+                <Message
+                  key={msgId}
+                  other={this.props.friend.all[this.state.otherUid]}
+                  msg={this.props.message.all[msgId]}
+                  user={this.props.user}
+                />
+              );
+            })}
+          </ScrollView>
+        </TouchableOpacity>
         <View style={style.chatTypeContainer}>
           <View style={style.inputContainer}>
-            {this.getTextInput(this.state.score)}
+            {this.getTextInput(this.getScore())}
           </View>
           <View style={style.toolPanelContainer}>
             <View style={style.toolPanel}>
@@ -478,7 +512,7 @@ export default class ChatDeTail extends Component {
             </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -499,23 +533,25 @@ const style = StyleSheet.create({
     position: "absolute",
     top: 12,
     right: 20,
-    width: 56,
-    height: 56
+    width: 68,
+    height: 68,
+    zIndex: 2
   },
   heartIcon: {
     position: "absolute",
-    width: 56,
-    height: 56
+    width: 68,
+    height: 68
   },
   scoreText: {
     position: "absolute",
     color: "#ffffff",
-    width: 56,
-    height: 56,
+    width: 68,
+    height: 68,
     textAlign: "center",
-    lineHeight: 50
+    lineHeight: 60
   },
   msgContainer: {
+    flex: 1,
     padding: 10,
     marginBottom: 100
   },

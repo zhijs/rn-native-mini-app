@@ -22,11 +22,17 @@ export default class Match extends Component {
       modalShow: true,
       matchUserName: "文艺小清新",
       matchUid: 0,
-      matchUserImg: "http://211.159.182.124/resource/image/1539702991.jpeg"
+      matchUserImg: "http://211.159.182.124/resource/image/1539702991.jpeg",
+      needUpdateNew: 3
     };
     this.state = { myId: 47 };
   }
   componentWillMount() {
+    this.getFriends();
+  }
+
+  // 获取匹配的对象
+  getFriends () {
     getFriend({
       uid: this.props.user.uid
     }).then(res => {
@@ -62,6 +68,13 @@ export default class Match extends Component {
       }
     });
   }
+
+  // 检测是否需要重新拉取用户
+  checkGetNewFriends () {
+    if (this.props.friend.new < this.state.needUpdateNew) {
+      this.getFriends();
+    }
+  }
   handleDisLike(card) {
     this.Card.sound.stop();
     dislikeFriend({
@@ -71,8 +84,10 @@ export default class Match extends Component {
       if (res.data && res.data.result === "ok") {
         console.log("不喜欢成功");
         this.props.deleteNewFriend(card.uid);
+        this.checkGetNewFriends();
       }
     });
+    
   }
   getCardChild(card) {
     console.log("获取子对象", card.sound);
@@ -97,6 +112,7 @@ export default class Match extends Component {
           if (!this.props.friend.match.includes(card.uid)) {
             this.props.addMatchFriend([card.uid]);
           }
+          this.checkGetNewFriends();
         }
       }
     });
@@ -219,9 +235,9 @@ const style = StyleSheet.create({
     justifyContent: "flex-start"
   },
   myAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 50
+    width: 45,
+    height: 45,
+    borderRadius: 45
   },
   titleContainer: {
     flex: 1,

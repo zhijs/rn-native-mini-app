@@ -90,6 +90,7 @@ export default class matchList extends Component {
   getLikeMeData() {
     getLikeMeList({ uid: this.props.user.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
+        console.log('match-list-likeme--fetch', res)
         this.setFrienddStore(res.data.accounts, "likeMe");
       }
     });
@@ -97,8 +98,8 @@ export default class matchList extends Component {
 
   getMatchData() {
     getFriendList({ uid: this.props.user.uid }).then(res => {
-      console.log("match--", res);
       if (res.data && res.data.result === "ok") {
+        console.log('match-list-match--fetch', res)
         this.setFrienddStore(res.data.accounts, "match");
       }
     });
@@ -158,7 +159,6 @@ export default class matchList extends Component {
   pageToChatDetail(uid) {
     const { navigate } = this.props.navigation;
     let user = this.props.friend.all[uid];
-    console.log("pageToChatDetail--", { user, type: "match" });
     navigate("ChatDetail", { user, type: "match" });
   }
 
@@ -167,7 +167,7 @@ export default class matchList extends Component {
       <View style={[style.container]}>
         <View style={style.linkeMeContainer}>
           <TouchableOpacity
-            style={[{ flex: 1, flexDirection: "row" }]}
+            style={[{flexDirection: "row" }]}
             onPress={this.pageToLikeList.bind(this)}
           >
             <View style={[style.iconContainer]}>
@@ -221,16 +221,18 @@ const style = StyleSheet.create({
   },
   linkeMeContainer: {
     height: 70,
-    padding: 10,
     marginBottom: 8,
     backgroundColor: "#ffffff"
   },
   likeIcon: {
+    marginTop: 10,
+    marginLeft: 8,
     width: 50,
     height: 50
   },
   likeTextContainer: {
-    marginLeft: 15
+    marginLeft: 15,
+    padding: 10
   },
   title: {
     color: "#000000",
