@@ -99,6 +99,7 @@ export default class ChatDeTail extends Component {
   }
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
+    console.log('chat-detail---this', this)
     console.log("navigation--state", params);
     return {
       headerTitle: () => {
