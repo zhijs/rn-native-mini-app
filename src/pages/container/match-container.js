@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
   };
 };
-export default (ChatContainer = connect(
+export default (MatchContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(withNavigation(match)));

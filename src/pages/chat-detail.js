@@ -268,19 +268,18 @@ export default class ChatDeTail extends Component {
           />
           <Text style={style.heartScore}>{this.getScore()}</Text>
         </View>
-        <Text style={style.titleText}>恭喜你们！</Text>
+        <Text style={style.titleText}>{this.getScore() >= 20 ? '恭喜你们！' : '亲密度为0哦' }</Text>
         <Text style={style.titleTipText}>
-          亲密度达
-          {this.getScore()}
-          %，解锁
-          {this.score2text[this.getScore()]}
+        {
+          this.getScore() >= 20 ?  `亲密度达${this.getScore()} %，解锁${this.score2text[this.getScore()]}` : ''
+        }
         </Text>
         <View style={style.featureCotainer}>
           <View style={style.firstLineFeatureContianer}>
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Image
                 style={style.boxFeatureIcon}
-                source={require("../assets/images/box-message-active.png")}
+                source={this.getScore() >= 20 ? require("../assets/images/box-message-active.png") : require("../assets/images/box-message.png")}
               />
               <Text style={style.featureText}>你问我答</Text>
             </View>
@@ -416,24 +415,24 @@ export default class ChatDeTail extends Component {
             this.state.matchUserImg
           )}
         />
-        <TouchableOpacity
-          style = {{flex: 1}}
-          activeOpacity={1}
-          onPress={this.closeToolView.bind(this)}
-        >
           <ScrollView style={style.msgContainer}>
-            {this.props.friend.all[this.state.otherUid].msgs.map(msgId => {
-              return (
-                <Message
-                  key={msgId}
-                  other={this.props.friend.all[this.state.otherUid]}
-                  msg={this.props.message.all[msgId]}
-                  user={this.props.user}
-                />
-              );
-            })}
+            <TouchableOpacity
+              style = {{flex: 1}}
+              activeOpacity={1}
+              onPress={this.closeToolView.bind(this)}
+            >
+              {this.props.friend.all[this.state.otherUid].msgs.map(msgId => {
+                return (
+                  <Message
+                    key={msgId}
+                    other={this.props.friend.all[this.state.otherUid]}
+                    msg={this.props.message.all[msgId]}
+                    user={this.props.user}
+                  />
+                );
+              })}
+            </TouchableOpacity>
           </ScrollView>
-        </TouchableOpacity>
         <View style={style.chatTypeContainer}>
           <View style={style.inputContainer}>
             {this.getTextInput(this.getScore())}

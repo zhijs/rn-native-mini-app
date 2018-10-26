@@ -133,7 +133,8 @@ const style = StyleSheet.create({
   },
   nameContainer: {
     paddingLeft: 10,
-    height: "100%"
+    height: "100%",
+    padding: 5
   },
   nameText: {
     padding: 5,
@@ -143,7 +144,8 @@ const style = StyleSheet.create({
   },
   contentText: {
     padding: 5,
-    fontSize: 12
+    fontSize: 12,
+    flexGrow: 0
   },
   dateAndStateContainer: {
     marginRight: 10,

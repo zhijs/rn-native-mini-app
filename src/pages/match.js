@@ -56,7 +56,8 @@ export default class Match extends Component {
               item.audio_src === ""
                 ? "http://211.159.182.124/resource/audio/1539532499.mp3"
                 : `${Api.Test}${item.audio_src}`,
-            pics: item.pic_srcs
+            pics: item.pic_srcs,
+            msgs: []
           };
           if (!this.props.friend.new.includes(item.uid)) {
             newFriend.push(item.uid);
@@ -98,6 +99,7 @@ export default class Match extends Component {
       to: card.uid
     }).then(res => {
       if (res.data && res.data.result === "ok") {
+        this.props.deleteNewFriend(card.uid);
         if (res.data.is_friend) {
           this.setState({
             matchUserName: card.nickname,
@@ -105,7 +107,6 @@ export default class Match extends Component {
             matchUid: card.uid,
             modalShow: true
           });
-          this.props.deleteNewFriend(card.uid);
           if (!this.props.friend.match.includes(card.uid)) {
             this.props.addMatchFriend([card.uid]);
           }
@@ -119,7 +120,13 @@ export default class Match extends Component {
   modalClose() {
     this.setState({ modalShow: false });
   }
-
+  
+  // 跳转到聊天页面
+  pageToChatDetail() {
+    const { navigate } = this.props.navigation;
+    // let user = this.props.friend.all[this.state.matchUid];
+    navigate("chat");
+  }
   // 获取浮层内容元素
   getModalChild() {
     return (
@@ -148,19 +155,13 @@ export default class Match extends Component {
         <View style={style.modalBtnContainer}>
           <TouchableOpacity
             style={[style.modalBtn, style.cancelBtnContainer]}
-            onPress={() => {
-              this.setState({ modalShow: false });
-            }}
+            onPress={this.modalClose.bind(this)}
           >
             <Text style={style.modalBtnText}>再看看</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.modalBtn, style.comfirmBtnContainer]}
-            onPress={() => {
-              const { navigate } = this.props.navigation;
-              navigate("chat");
-              this.setState({ modalShow: false });
-            }}
+            onPress={this.pageToChatDetail.bind(this)}
           >
             <Text style={style.modalBtnText}>发消息</Text>
           </TouchableOpacity>

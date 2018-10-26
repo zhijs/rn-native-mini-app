@@ -86,7 +86,8 @@ export default class Message extends Component {
 const style = StyleSheet.create({
   msgContainer: {
     marginBottom: 25,
-    flex: 1
+    flex: 1,
+    padding: 10
   },
   myMsg: {
     flexDirection: "row",
@@ -102,7 +103,6 @@ const style = StyleSheet.create({
     borderRadius: 4
   },
   myMsgContent: {
-    flex: 1,
     backgroundColor: "#ffe100",
     borderRadius: 4,
     marginRight: 10,
@@ -110,7 +110,6 @@ const style = StyleSheet.create({
     color: "#000000"
   },
   otherContent: {
-    flex: 1,
     marginLeft: 15,
     marginRight: 70,
     padding: 10,

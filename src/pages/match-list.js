@@ -169,7 +169,6 @@ export default class matchList extends Component {
         <Spinner
           visible={this.state.spinner}
           textContent={'Loading...'}
-          textStyle={style.spinnerTextStyle}
         />
         <View style={style.linkeMeContainer}>
           <TouchableOpacity
@@ -225,9 +224,6 @@ const style = StyleSheet.create({
     marginBottom: 10,
     paddingBottom: 8
   },
-  spinnerTextStyle: {
-    color: '#FFF'
-  },
   linkeMeContainer: {
     height: 70,
     marginBottom: 8,
@@ -258,5 +254,8 @@ const style = StyleSheet.create({
   matchNum: {
     paddingLeft: 16,
     paddingTop: 10
+  },
+  spinnerTextStyle: {
+    color: '#FFFFFF'
   }
 });
