@@ -35,8 +35,6 @@ export default class UserInfoPage extends Component {
         date: new Date(),
         maxDate: this.maxDate
       });
-      console.log('select day');
-      console.log(action, year, month, day);
       if (action !== DatePickerAndroid.dismissedAction) {
         let monthStr = month > 8 ? month + 1 : `0${month + 1}`;
         let str = `${year}-${monthStr}-${day}`;
@@ -46,7 +44,6 @@ export default class UserInfoPage extends Component {
         this.props.birthDayChange(str)
       }
     } catch({code, message}) {
-      console.warn('Cannot open date picker', message);
     }
   }
   render() {

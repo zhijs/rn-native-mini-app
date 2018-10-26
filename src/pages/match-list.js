@@ -18,7 +18,7 @@ export default class matchList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      spinner: false
+      spinner: true
     }
     this.timer = null;
     this.webSocket = null;
@@ -91,7 +91,6 @@ export default class matchList extends Component {
   getLikeMeData() {
     getLikeMeList({ uid: this.props.user.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
-        console.log('match-list-likeme--fetch', res)
         this.setFrienddStore(res.data.accounts, "likeMe");
       }
     });
@@ -100,7 +99,6 @@ export default class matchList extends Component {
   getMatchData() {
     getFriendList({ uid: this.props.user.uid }).then(res => {
       if (res.data && res.data.result === "ok") {
-        console.log('match-list-match--fetch', res)
         this.setFrienddStore(res.data.accounts, "match");
       }
     });
@@ -108,16 +106,13 @@ export default class matchList extends Component {
 
   // ws 打开
   handleWsOpen() {
-    console.log("ws open", this);
     this.webSocket.send(`${this.props.user.uid}`);
   }
 
   handleWsMessage(e) {
-    console.log("websockt 收到消息", e.data);
     try {
       let msg = JSON.parse(e.data);
       let msgObj = {};
-      console.log("msg.id", msg.id === 0);
       if (msg.id === 0) return;
       msgObj[`${msg.id}`] = msg;
       this.props.setMessageAll(msgObj);
@@ -129,11 +124,10 @@ export default class matchList extends Component {
   }
 
   handleWsError(e) {
-    console.log("websockt 收到消息 出错", e);
+
   }
   componentWillMount() {
     this.getLikeMeData();
-    this.setState({spinner: true});
     this.getMatchData();
     this.setState({spinner: false});
     // 定时获取列表信息

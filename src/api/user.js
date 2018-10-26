@@ -4,7 +4,6 @@
 import { fetchJSON } from "./_fetch";
 
 export function sign(data) {
-  console.log("注册", data);
   // return Promise.resolve({ data: { result: "ok" } });
   return fetchJSON("/account/register", {}, data).catch(e => {
     console.log("注册出错", e);
@@ -13,7 +12,6 @@ export function sign(data) {
 
 export function checkRegister(data) {
   //return Promise.resolve({ data: { result: "ok", is_registered: false } });
-  console.log("检验是否注册", data);
   return fetchJSON("/account/is_registered", {}, data).catch(e => {
     console.log("检验是否注册", e);
   });

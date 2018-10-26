@@ -18,7 +18,6 @@ export default class Svg extends Component {
     } = this.props
     let svgXmlData = svgs[this.props.name];
     if (!svgXmlData) {
-      console.log(`${name} svg can not found`);
       throw new Error(`${name} svg can not found`);
     }
     return(

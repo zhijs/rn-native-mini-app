@@ -37,7 +37,6 @@ export default class Match extends Component {
       uid: this.props.user.uid
     }).then(res => {
       if (res.data && res.data.result === "ok") {
-        console.log("getFriends", res);
         let user = {};
         let newFriend = [];
         let nowYear = new Date().getFullYear() + 1;
@@ -82,7 +81,6 @@ export default class Match extends Component {
       to: card.uid
     }).then(res => {
       if (res.data && res.data.result === "ok") {
-        console.log("不喜欢成功");
         this.props.deleteNewFriend(card.uid);
         this.checkGetNewFriends();
       }
@@ -90,7 +88,6 @@ export default class Match extends Component {
     
   }
   getCardChild(card) {
-    console.log("获取子对象", card.sound);
     this.Card = card;
   }
 

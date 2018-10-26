@@ -17,51 +17,15 @@ import MatchItem from '../components/match/match-item'
 export default class matchList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      myId: 47
-    },
-    this.timer = null;
-    console.log('webaosket', `ws://${Ip['Test']}/push/recv`)
-    // this.ws = new WebSocket(`ws://${Ip['Test']}/push/recv`);
   }
 
-  // componentWillMount() {
-  //   this.ws.onopen = () => {
-  //     console.log('WebSocket open')
-  //   };
-
-  //   // 有消息到来
-  //   this.ws.onmessage = this.handleMsgCome
-
-  //   // 出错
-  //   this.ws.onerror = this.handleWsError
-
-  //   // 关闭
-  //   this.ws.onclose =  this.handleWsClose
-  // }
-  
-  // 消息到来
-  handleMsgCome(e) {
-    console.log('WebSocket 收到消息', e)
-  }
-
-  // webSocket 出错
-  handleWsError(e) {
-    console.log('WebSocket 出错', e.message)
-  }
-  
-  // websocket 关闭
-  handleWsClose(e) {
-    console.log('WebSocket 关闭', e)
-  }
   
   // 跳转到聊天页面
-  pageToChatDetail(uid) {
-    const { navigate } = this.props.navigation;
-    let user =  this.props.friend.all[uid];
-    console.log('pageToChatDetail--', {user, type: 'match'});
-    navigate('ChatDetail', {user, type: 'match'})
-  }
+  // pageToChatDetail(uid) {
+  //   const { navigate } = this.props.navigation;
+  //   let user =  this.props.friend.all[uid];
+  //   navigate('ChatDetail', {user, type: 'match'})
+  // }
 
   render() {
     return (
@@ -72,7 +36,11 @@ export default class matchList extends Component {
             this.props.friend.chat.map((uid) => {
               return (
                 <TouchableOpacity
-                  onPress = {this.pageToChatDetail.bind(this, uid)}
+                  onPress = {() => {
+                    const { navigate } = this.props.navigation;
+                    let user =  this.props.friend.all[uid];
+                    navigate('ChatDetail', {user, type: 'match'})
+                  }}
                   key = {uid}
                 >
                   <MatchItem 

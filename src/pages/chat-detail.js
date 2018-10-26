@@ -88,7 +88,6 @@ export default class ChatDeTail extends Component {
     if (type === "img" && this.state.source >= 40) {
       imgs = [];
       ImagePicker.openPicker({ multiple: true }).then(images => {
-        console.log("获取图片", images);
         if (images !== null || images.length !== 0) {
           // images.forEach((item) => {
           //   uploadFile()
@@ -99,8 +98,6 @@ export default class ChatDeTail extends Component {
   }
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-    console.log('chat-detail---this', this)
-    console.log("navigation--state", params);
     return {
       headerTitle: () => {
         return <Text style={style.headerTitle}>{params.user.nickname}</Text>;
@@ -122,7 +119,6 @@ export default class ChatDeTail extends Component {
   }
   sendeMsg(data) {
     sendMsg(data).then(res => {
-      console.log("发送消息成功", res);
       if (res.data && res.data.result === "ok") {
         // 添加消息
         if (

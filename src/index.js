@@ -8,7 +8,6 @@ import {Provider} from "react-redux";
 import configureStore from './store/index'
 import  {Root} from './pages/container/index'
 const store = configureStore({});
-console.log(Root)
 export default class App extends Component {
   render() {
     return (

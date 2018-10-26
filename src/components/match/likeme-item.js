@@ -111,7 +111,6 @@ export default class LikeView extends Component {
   
   // 获取所有要展示的头像
   getShowImgs(allUsers) {
-    console.log('getShowImgs', this.state)
     let users = [];
     if (allUsers.length > this.state.shwoMaxNum && this.state.hasCollapse) {
       users = allUsers.slice(0, this.state.shwoMaxNum);

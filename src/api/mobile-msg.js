@@ -7,7 +7,6 @@ const content = "锁爱验证码{}";
 const needCode = true;
 const expireSeconds = 60;
 const deviceId = DeviceInfo.getDeviceId();
-console.log("DeviceInfo", DeviceInfo);
 // 发送验证码
 export function sendCode(mobile) {
   let data = {
@@ -59,7 +58,6 @@ export function checkNumber(mobile) {
     }
   )
     .then(res => {
-      console.log("检验号码", res);
     })
     .catch(e => {
       console.log("e,,,,", e);
@@ -74,9 +72,7 @@ function getSignMsg(data) {
     arr.push(`${keys[i]}=${data[keys[i]]}`);
   }
   let stringA = arr.join("&");
-  console.log(stringA);
   let stringSignTemp = `${stringA}pAXF6T25oc9h`;
   let signMsg = md5(stringSignTemp).toUpperCase();
-  console.log("signMsg", signMsg);
   return `${stringA}&signMsg=${signMsg}`;
 }

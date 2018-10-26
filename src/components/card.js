@@ -13,15 +13,12 @@ export default class Card extends Component {
   constructor(props) {
     super(props);
     this.state = { duration: 0 };
-    console.log("Card", this.props);
     this.sound = new Sound(this.props.audioSrc, null, error => {
       if (!error) {
         let duration = this.sound.getDuration();
         this.setState({ duration: duration });
         this.sound.setNumberOfLoops(0);
-        console.log("this duration...", this.sound.getDuration());
       } else {
-        console.log("加载声音资源失败", error);
       }
     });
     this.props.getCardChild(this);
@@ -47,7 +44,6 @@ export default class Card extends Component {
     this.sound.stop();
   }
   componentWillUnmount() {
-    console.log("card componentWillUnmount");
     this.sound.pause();
   }
   render() {
@@ -84,7 +80,6 @@ export default class Card extends Component {
             <TouchableOpacity
               style={{ flex: 1, flexDirection: "row" }}
               onPress={() => {
-                console.log("播放声音", this.sound);
                 this.sound.play();
               }}
             >

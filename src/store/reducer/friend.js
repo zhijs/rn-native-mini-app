@@ -9,7 +9,6 @@ const initFriend = {
 };
 
 export default function friend(state = initFriend, action) {
-  console.log("friend........");
   let newState = Object.assign({}, state);
   switch (action.type) {
     case actionType.SET_FRIEND_ALL:

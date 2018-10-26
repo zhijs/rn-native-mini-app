@@ -18,7 +18,6 @@ const XL_Api = {
 export function fetchJSON(url, header = {}, data = {}) {
   let _url = `${Api.Test}${url}`
   let headers = Object.assign({}, header, {'Content-Type': 'application/json'})
-  console.log('请求接口....', _url);
   return axios.post(_url,
     data,
     headers
@@ -37,6 +36,5 @@ export function fetchXL(url, header = {}, data = {}) {
   return axios.post(_url, data,
     headers
   ).catch((e) => {
-    console.log('请求出错', e)
   })
 }

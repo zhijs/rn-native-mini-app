@@ -7,7 +7,6 @@ import { date2str } from "../../utils/tool";
 
 export default class MatchItem extends Component {
   constructor(props) {
-    console.log("MatchItem----", props);
     super(props);
     this.state = {
       avartar: "http://211.159.182.124/resource/image/1539770238.jpeg",

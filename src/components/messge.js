@@ -17,20 +17,6 @@ const dicePath = [
 export default class Message extends Component {
   constructor(props) {
     super(props);
-    console.log("Message---", props);
-    this.state = {
-      myId: 47,
-      userAvatar: "http://211.159.182.124/resource/image/1539702991.jpeg",
-      msg: {
-        id: 2,
-        from: 37,
-        to: 1,
-        msg_type: "chat_text",
-        msg_body:
-          "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
-        created_at: "2018-10-18T15:49:58+08:00"
-      }
-    };
   }
 
   // 根据消息类型获取对应的内容文本或者图片

@@ -6,7 +6,6 @@ import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 export default class LikeMeTitle extends Component {
   constructor(props) {
     super(props);
-    console.log('LikeMeTitle', this.props)
   }
   render() {
     return (
