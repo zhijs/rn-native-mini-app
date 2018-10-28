@@ -89,12 +89,24 @@ export default class ChatDeTail extends Component {
       ImagePicker.openPicker({ multiple: true }).then(images => {
         if (images !== null || images.length !== 0) {
           images.forEach((item) => {
+            let file = { uri: item.path, type: "multipart/form-data", name: item.name };
             let formData = new FormData();
-            formData.append('file', item.path, 'image')
-            console.log('fromdata', formData)
-            uploadFile(formData,  {'Content-Type': item.mime})
+            formData.append('file', file)
+            uploadFile(formData,  {'Content-Type': 'multipart/form-data'})
               .then((res) => {
-                console.log('发送图片')
+                if (res.data && res.data.result === "ok") {
+                  let data = {
+                    from: this.props.user.uid,
+                    to: this.state.otherUid,
+                    msg_type: "chat_image",
+                    msg_body: `${Api.Test}${res.data.src}`
+                  }
+                  sendMsg(data).then(res => {
+                    if (res.data && res.data.result === "ok") {
+                      this.addMsgData(res)
+                    }
+                  });
+                }
               })
           })
         }
@@ -125,26 +137,31 @@ export default class ChatDeTail extends Component {
   sendeMsg(data) {
     sendMsg(data).then(res => {
       if (res.data && res.data.result === "ok") {
-        // 添加消息
-        if (
-          !this.props.friend.all[this.state.otherUid].msgs.includes(
-            res.data.msg.id
-          )
-        ) {
-          let msg = {};
-          msg[`${res.data.msg.id}`] = res.data.msg;
-          this.props.setMessageAll(msg);
-          this.props.addFriendMsg({
-            uid: this.state.otherUid,
-            msgId: [res.data.msg.id]
-          });
-        }
-        // 添加聊天的朋友
-        if (!this.props.friend.chat.includes(this.state.otherUid)) {
-          this.props.addChatFriend([this.state.otherUid]);
-        }
+        this.addMsgData(res)
       }
     });
+  }
+  
+  // 发送消息成功后添加消息到store
+  addMsgData(res) {
+    // 添加消息
+    if (
+      !this.props.friend.all[this.state.otherUid].msgs.includes(
+        res.data.msg.id
+      )
+    ) {
+      let msg = {};
+      msg[`${res.data.msg.id}`] = res.data.msg;
+      this.props.setMessageAll(msg);
+      this.props.addFriendMsg({
+        uid: this.state.otherUid,
+        msgId: [res.data.msg.id]
+      });
+    }
+    // 添加聊天的朋友
+    if (!this.props.friend.chat.includes(this.state.otherUid)) {
+      this.props.addChatFriend([this.state.otherUid]);
+    }
     this.setState({ activeTool: null });
   }
   

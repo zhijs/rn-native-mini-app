@@ -65,7 +65,9 @@ export default class MatchItem extends Component {
       msgId = this.props.item.msgs[this.props.item.msgs.length - 1];
     }
     if (this.props.messageAll[msgId].msg_type === "chat_game") {
-      return "游戏结果";
+      return "[游戏结果]";
+    } else if(this.props.messageAll[msgId].msg_type === "chat_image"){
+      return "[图片]"
     } else {
       return this.props.messageAll[msgId].msg_body;
     }

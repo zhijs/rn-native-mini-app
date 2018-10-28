@@ -38,6 +38,14 @@ export default class Message extends Component {
         </Text>
       );
     } else {
+      if (this.props.msg.msg_type === "chat_image") {
+        return (
+          <Image
+            style={style.msgImg}
+            source={{uri: this.props.msg.msg_body}}
+        />
+        )
+      }
       let msgBody = {};
       try {
         msgBody = JSON.parse(this.props.msg.msg_body);
@@ -122,6 +130,11 @@ const style = StyleSheet.create({
   msgImgContent: {
     width: 50,
     height: 50,
+    margin: 8
+  },
+  msgImg: {
+    width: 70,
+    height: 70,
     margin: 8
   }
 });
