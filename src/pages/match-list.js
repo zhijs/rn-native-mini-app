@@ -118,7 +118,7 @@ export default class matchList extends Component {
       this.props.setMessageAll(msgObj);
       this.props.addFriendMsg({
         uid: msg.from,
-        msgId: msg.id
+        msgId: [msg.id]
       });
     } catch (e) {}
   }

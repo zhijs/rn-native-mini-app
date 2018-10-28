@@ -85,7 +85,7 @@ export default class MatchItem extends Component {
           </View>
           <View style={style.nameContainer}>
             <Text style={style.nameText}>{this.props.item.nickname}</Text>
-            <Text style={style.contentText}>{this.getContentText()}</Text>
+            <Text style={style.contentText} numberOfLines = {1} ellipsizeMode = {'tail'}>{this.getContentText()}</Text>
           </View>
         </View>
         <View style={style.dateAndStateContainer}>
@@ -109,7 +109,9 @@ const style = StyleSheet.create({
   },
   avatarNameContainer: {
     height: 60,
-    flexDirection: "row"
+    flexDirection: "row",
+    flexGrow: 0,
+    flexShrink: 1
   },
   avatarContainer: {
     position: "relative",
@@ -146,6 +148,7 @@ const style = StyleSheet.create({
     padding: 5,
     fontSize: 12,
     flexGrow: 0
+    
   },
   dateAndStateContainer: {
     marginRight: 10,

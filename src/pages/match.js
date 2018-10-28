@@ -99,6 +99,8 @@ export default class Match extends Component {
       to: card.uid
     }).then(res => {
       if (res.data && res.data.result === "ok") {
+        // console.log('喜欢成功', res.data)
+       
         this.props.deleteNewFriend(card.uid);
         if (res.data.is_friend) {
           this.setState({
@@ -107,6 +109,19 @@ export default class Match extends Component {
             matchUid: card.uid,
             modalShow: true
           });
+          let msgs = {};
+          let msgIds = [];
+          (res.data.msgs || []).forEach((msg) => {
+            if (this.props.message.all[`${msg.id}`] === undefined) {
+              msgIds.push(msg.id);
+              msgs[`${msg.id}`] = msg;
+            }
+          })
+          this.props.setMessageAll(msgs);
+          this.props.addFriendMsg({
+            uid: card.uid,
+            msgId: msgIds
+          })
           if (!this.props.friend.match.includes(card.uid)) {
             this.props.addMatchFriend([card.uid]);
           }
@@ -124,8 +139,9 @@ export default class Match extends Component {
   // 跳转到聊天页面
   pageToChatDetail() {
     const { navigate } = this.props.navigation;
-    // let user = this.props.friend.all[this.state.matchUid];
-    navigate("chat");
+    let user = this.props.friend.all[this.state.matchUid];
+    navigate("ChatDetail", { user, type: "match" });
+    this.modalClose();
   }
   // 获取浮层内容元素
   getModalChild() {

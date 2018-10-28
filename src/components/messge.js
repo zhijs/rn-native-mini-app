@@ -107,7 +107,8 @@ const style = StyleSheet.create({
     borderRadius: 4,
     marginRight: 10,
     marginLeft: 20,
-    color: "#000000"
+    color: "#000000",
+    flexShrink: 1
   },
   otherContent: {
     marginLeft: 15,
@@ -115,7 +116,8 @@ const style = StyleSheet.create({
     padding: 10,
     borderRadius: 4,
     color: "#9b9b9b",
-    backgroundColor: "#f9f9f9"
+    backgroundColor: "#f9f9f9",
+    flexShrink: 1
   },
   msgImgContent: {
     width: 50,

@@ -34,7 +34,7 @@ export default function friend(state = initFriend, action) {
       return newState;
 
     case actionType.ADD_NEW_MSG:
-      newState.all[action.data.uid].msgs.push(action.data.msgId);
+      newState.all[action.data.uid].msgs.push(...action.data.msgId);
       return newState;
     case actionType.DELETE_NEW_FRIEND:
       let newFriends = newState.new;

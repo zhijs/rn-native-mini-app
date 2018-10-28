@@ -16,7 +16,6 @@ import {
 } from "react-native";
 import commonStyle from "../utils/common-style";
 import { sendMsg, uploadFile } from "../api/message";
-import { getScore } from "../api/friend";
 import Message from "../components/messge";
 import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
@@ -85,13 +84,19 @@ export default class ChatDeTail extends Component {
     }
 
     // 选择图片
-    if (type === "img" && this.state.source >= 40) {
+    if (type === "img") {
       imgs = [];
       ImagePicker.openPicker({ multiple: true }).then(images => {
         if (images !== null || images.length !== 0) {
-          // images.forEach((item) => {
-          //   uploadFile()
-          // })
+          images.forEach((item) => {
+            let formData = new FormData();
+            formData.append('file', item.path, 'image')
+            console.log('fromdata', formData)
+            uploadFile(formData,  {'Content-Type': item.mime})
+              .then((res) => {
+                console.log('发送图片')
+              })
+          })
         }
       });
     }
@@ -131,7 +136,7 @@ export default class ChatDeTail extends Component {
           this.props.setMessageAll(msg);
           this.props.addFriendMsg({
             uid: this.state.otherUid,
-            msgId: res.data.msg.id
+            msgId: [res.data.msg.id]
           });
         }
         // 添加聊天的朋友
