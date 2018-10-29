@@ -60,7 +60,6 @@ export function checkNumber(mobile) {
     .then(res => {
     })
     .catch(e => {
-      console.log("e,,,,", e);
     });
 }
 

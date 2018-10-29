@@ -17,8 +17,6 @@ const XL_Api = {
  */
 export function fetchJSON(url, header = {}, data = {}) {
   let _url = `${Api.Test}${url}`
-  console.log(header);
-  console.log(data)
   let headers = Object.assign({}, header, {'Content-Type': 'application/json'})
   return axios.post(_url,
     data,

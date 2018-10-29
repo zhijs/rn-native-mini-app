@@ -27,7 +27,6 @@ import UserInfo from "./user-info";
 import commonStyle from "../../utils/common-style";
 import SlideAnimation from "./animation-view";
 import { Api } from "../../api/_fetch";
-console.log(commonStyle);
 export default class LoginIndex extends Component {
   constructor(props) {
     super(props);
@@ -98,7 +97,6 @@ export default class LoginIndex extends Component {
   }
   // 监听用户回退事件
   componentDidMount() {
-    console.log("props", this.props);
     BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
   }
 
@@ -108,7 +106,6 @@ export default class LoginIndex extends Component {
 
   // 用户点击回退按钮
   handleBackPress = () => {
-    console.log("点击了返回键");
     if (this.props.page.index === 0) {
       // 直接退出程序
       BackHandler.exitApp();
@@ -264,7 +261,6 @@ export default class LoginIndex extends Component {
     let count = 0;
     this.setState({ canResendCode: false });
     this.timer = setInterval(() => {
-      console.log("倒计时---");
       count++;
       this.setState({ remainTime: this.allTime - count });
       if (this.allTime === count) {
@@ -288,8 +284,6 @@ export default class LoginIndex extends Component {
     }
     this.setTimer();
     sendCode(this.state.telNumber).then(res => {
-      console.log("发送验证码", res);
-      console.log("code === 103", res.data.code === 103);
       if (res.data.code === 0) {
         if (this.pageData[this.props.page.index].name === "phone-input") {
           this.props.pageAdd(1);
@@ -336,7 +330,7 @@ export default class LoginIndex extends Component {
       password: this.state.passwd
     };
     sign(data).then(res => {
-      console.log("注册", res);
+      // console.log("注册", res);
       if (res.data.result === "ok") {
         data.is_registered = true;
         data.uid = res.data.uid;
@@ -355,7 +349,7 @@ export default class LoginIndex extends Component {
       dob: this.state.birthDay
     };
     updateAccount(data).then(res => {
-      console.log("更新用户信息", res);
+      // console.log("更新用户信息", res);
       if (res.data.result === "ok") {
         data.profile_photo_src = res.data.profile_photo_src || "";
         this.props.sigin(data);
@@ -374,7 +368,7 @@ export default class LoginIndex extends Component {
         if (res.data.status === this.PWD_ERROR) {
           this.setState({ rightPwd: false });
         } else if (res.data.status === 0) {
-          console.log("登陆成功", res);
+          // console.log("登陆成功", res);
           this.props.logined({
             uid: res.data.uid,
             gender: res.data.gender,
@@ -404,7 +398,6 @@ export default class LoginIndex extends Component {
     }
   }
   render() {
-    console.log("props----", this.props);
     return (
       <View style={[style.container, commonStyle.pageBg]}>
         <View style={this.pageData[this.props.page.index].pageStyle}>
@@ -439,7 +432,6 @@ export default class LoginIndex extends Component {
                   checkRegister({
                     phone_number: this.state.telNumber
                   }).then(res => {
-                    console.log("是否注册", res);
                     if (res.data && res.data.result === "ok") {
                       let is_registered = res.data.is_registered;
                       if (is_registered) {

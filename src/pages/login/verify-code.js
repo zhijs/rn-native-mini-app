@@ -47,7 +47,6 @@ export default class VerifyCode extends Component {
                         }
                         // 验证码输入完毕
                         if (i === arr.length - 1) {
-                          console.log('VerifyCodeArr', this.state.VerifyCodeArr);
                           if (this.state.VerifyCodeArr.every((value) => {
                             return value !== ''
                           })) {
@@ -57,7 +56,6 @@ export default class VerifyCode extends Component {
                       }}
                       onKeyPress= {({nativeEvent}) => {
                         // 这里监听验证码删除
-                        console.log('onKeyPress', nativeEvent)
 
                         if (i > 0 && nativeEvent!== undefined && nativeEvent.key === 'Backspace') {
                           let arr = this.state.VerifyCodeArr;

@@ -12,7 +12,8 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  BackHandler
 } from "react-native";
 import commonStyle from "../utils/common-style";
 import { sendMsg, uploadFile } from "../api/message";
@@ -58,6 +59,7 @@ export default class ChatDeTail extends Component {
       "40": "爆照时刻",
       "60": "闻声识人"
     };
+    this._scroll = null;
     this.state = {
       modalShow: false,
       myId: 47,
@@ -83,8 +85,8 @@ export default class ChatDeTail extends Component {
       this.setState({ activeTool: type });
     }
 
-    // 选择图片
-    if (type === "img") {
+    // 选择图片 
+    if (type === "img" && this.getScore() >= 40) {
       imgs = [];
       ImagePicker.openPicker({ multiple: true }).then(images => {
         if (images !== null || images.length !== 0) {
@@ -162,7 +164,16 @@ export default class ChatDeTail extends Component {
     if (!this.props.friend.chat.includes(this.state.otherUid)) {
       this.props.addChatFriend([this.state.otherUid]);
     }
-    this.setState({ activeTool: null });
+    this.setState({ 
+      activeTool: null,
+      modalShow: res.data.msg.diff > 0 ? true : false
+    }
+    );
+    // console.log('scroll', this._scroll)
+    setTimeout(() => {
+      this._scroll.scrollToEnd({animated: true})
+    }, 50);
+    // this._scroll.scrollTo({x: 0, y: 9999, animated: true})
   }
   
   // 获取最后一条消息
@@ -180,12 +191,26 @@ export default class ChatDeTail extends Component {
     // 判断分数
     this.getScore()
   }
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress.bind(this));
+    setTimeout(() => {
+      this._scroll.scrollToEnd({animated: true})
+    }, 50);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
+  }
+
+  handleBackPress () {
+    this.props.navigation.goBack()
+  }
   
   // 文本框输入改变事件
   handleTextChange (value) {
     this.setState({inputText: value})
   }
-
+  
   // 文本输入发送键监听
   handleSubmit() {
     if (this.state.inputText === '') return;
@@ -315,7 +340,7 @@ export default class ChatDeTail extends Component {
               <Image
                 style={style.boxFeatureIcon}
                 source={
-                  this.state.score >= 40
+                  this.getScore() >= 40
                     ? require("../assets/images/box-img-active.png")
                     : require("../assets/images/box-img.png")
                 }
@@ -437,7 +462,10 @@ export default class ChatDeTail extends Component {
             this.state.matchUserImg
           )}
         />
-          <ScrollView style={style.msgContainer}>
+          <ScrollView 
+            style={style.msgContainer}
+            ref={(scorll) => this._scroll = scorll }  
+          >
             <TouchableOpacity
               style = {{flex: 1}}
               activeOpacity={1}
@@ -477,7 +505,7 @@ export default class ChatDeTail extends Component {
                 <Image
                   style={style.toolIcon}
                   source={
-                    this.state.score >= 40
+                    this.getScore() < 40
                       ? require("../assets/images/chat-image-lock.png")
                       : require("../assets/images/chat-image.png")
                   }
@@ -536,6 +564,7 @@ const style = StyleSheet.create({
     textAlign: "center",
     color: "#000000",
     fontSize: 14,
+    marginRight: 10,
     fontWeight: "600"
   },
   container: {

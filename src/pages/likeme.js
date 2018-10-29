@@ -2,7 +2,7 @@
  * 谁喜欢了我界面
  */
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, ScrollView, BackHandler } from 'react-native';
 import LikeItem from '../components/match/likeme-item'
 import { date2str } from "../utils/tool";
 export default class LikeMe extends Component {
@@ -11,6 +11,17 @@ export default class LikeMe extends Component {
     this.state = {
       likeMeUsers: []
     }
+  }
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress.bind(this));
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
+  }
+
+  handleBackPress () {
+    this.props.navigation.goBack()
   }
 
   componentWillMount() {
