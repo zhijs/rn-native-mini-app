@@ -5,6 +5,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
 import { sendMsg } from "../api/message";
+import { logout, updateAccount } from "../api/user";
 import commonStyle from "../utils/common-style";
 import Card from "../components/card";
 import SwipeCards from "react-native-swipe-cards";
@@ -23,14 +24,22 @@ export default class Match extends Component {
       matchUserName: "文艺小清新",
       matchUid: 0,
       matchUserImg: "http://211.159.182.124/resource/image/1539702991.jpeg",
-      needUpdateNew: 3
+      needUpdateNew: 3,
+      processModal: false,
     };
     this.state = { myId: 47 };
   }
   componentWillMount() {
     this.getFriends();
   }
-
+  
+  // 执行退出操作
+  componentWillUnmount () {
+    logout({uid: this.props.user.uid})
+      .then((res) => {
+        // 退出登陆
+      })
+  }
   // 获取匹配的对象
   getFriends () {
     getFriend({
@@ -57,7 +66,8 @@ export default class Match extends Component {
                 ? "http://211.159.182.124/resource/audio/1539532499.mp3"
                 : `${Api.Test}${item.audio_src}`,
             pics: item.pic_srcs,
-            msgs: []
+            msgs: [],
+            online: item.online || false
           };
           if (!this.props.friend.new.includes(item.uid)) {
             newFriend.push(item.uid);
@@ -135,7 +145,13 @@ export default class Match extends Component {
   modalClose() {
     this.setState({ modalShow: false });
   }
-  
+  processModalClose () {
+    this.setState({ processModal: false });
+  }
+
+  showProcessModal() {
+    this.setState({ processModal: true });
+  }
   // 跳转到聊天页面
   pageToChatDetail() {
     const { navigate } = this.props.navigation;
@@ -185,7 +201,21 @@ export default class Match extends Component {
       </View>
     );
   }
-
+ 
+  //解锁流程
+  getModalProcess () {
+    return (
+      <View style = {style.processContainer}>
+        <Text style = {style.lockTitle}>互动解锁</Text>
+        <View style = {style.proceeImgContainer}>
+          <Image
+            style = {style.lockImage}
+            source = {require('../assets/images/lock-process.png')}
+          />
+          </View>
+      </View>
+    )
+  }
   render() {
     return (
       <View style={[commonStyle.pageBg, style.container]}>
@@ -194,6 +224,15 @@ export default class Match extends Component {
           visiable={this.state.modalShow}
           contentHeight={"60%"}
           childView={this.getModalChild()}
+        />
+         <MessageBox
+          modalClose={this.processModalClose.bind(this)}
+          visiable={this.state.processModal}
+          contentHeight={"100%"}
+          contentWidth = {"100%"}
+          marginLeft = {1}
+          marginTop = {1}
+          childView={this.getModalProcess()}
         />
         <View style={style.header}>
           <View style={style.avatarContainer}>
@@ -205,6 +244,15 @@ export default class Match extends Component {
           <View style={style.titleContainer}>
             <Text style={style.title}>匹配</Text>
           </View>
+          <TouchableOpacity 
+            style={style.keyImageContainer}
+            onPress={this.showProcessModal.bind(this)}
+          >
+            <Image
+              style={style.keyImage}
+              source={require('../assets/images/key.png')}
+            />
+          </TouchableOpacity>
         </View>
         <View style={style.content}>
           <SwipeCards
@@ -244,7 +292,6 @@ const style = StyleSheet.create({
     justifyContent: "space-between"
   },
   avatarContainer: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start"
   },
@@ -254,17 +301,28 @@ const style = StyleSheet.create({
     borderRadius: 45
   },
   titleContainer: {
-    flex: 1,
+    borderWidth: 1,
     flexDirection: "row",
-    justifyContent: "flex-start"
+    borderColor: '#000000'
   },
   title: {
+    width: 80,
     color: "#000000",
     lineHeight: 50,
     fontWeight: "700",
     fontSize: 20,
-    marginLeft: -10,
-    fontFamily: "PingFangSC-Semibold"
+    textAlign: 'center',
+    fontFamily: "PingFangSC-Semibold",
+  },
+  keyImageContainer: {
+    width: '30%',
+    justifyContent: "flex-end"
+  },
+  keyImage: {
+    width: 40,
+    height: 40,
+    marginTop: 5,
+    marginRight: 10
   },
   content: {
     flex: 1,
@@ -366,5 +424,26 @@ const style = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     lineHeight: 36
+  },
+  // 解锁流程图
+  processContainer: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  },
+  lockTitle: {
+    textAlign: 'center',
+    height: 20,
+    color: '#000000',
+    fontWeight: '600'
+  },
+  proceeImgContainer: {
+    padding: 5,
+    marginTop: 20
+  },
+  lockImage: {
+    width: '100%',
+    height: '100%'
   }
 });

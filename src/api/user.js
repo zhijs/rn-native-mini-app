@@ -23,7 +23,11 @@ export function login(data) {
     console.log("检验是否注册", e);
   });
 }
-
+export function logout(data) {
+  return fetchJSON("/account/logout", {}, data).catch(e => {
+    console.log("检验是否注册", e);
+  });
+}
 export function updateAccount(data) {
   return fetchJSON("/account/update", {}, data).catch(e => {
     console.log("更新用户资料", e);

@@ -75,7 +75,6 @@ export default class MatchItem extends Component {
   render() {
     return (
       <View style={style.container}>
-        <View style={style.avatarNameContainer}>
           <View style={style.avatarContainer}>
             <Image
               style={style.avatar}
@@ -89,13 +88,12 @@ export default class MatchItem extends Component {
             <Text style={style.nameText}>{this.props.item.nickname}</Text>
             <Text style={style.contentText} numberOfLines = {1} ellipsizeMode = {'tail'}>{this.getContentText()}</Text>
           </View>
-        </View>
-        <View style={style.dateAndStateContainer}>
-          <Text style={style.dateText}>
-            {this.getDayText(date2str(new Date(this.props.item.did_at)))}
-          </Text>
-          {this.getOnlineStateView(this.props.item.isOnline)}
-        </View>
+          <View style={style.dateAndStateContainer}>
+            <Text style={style.dateText}>
+              {this.getDayText(date2str(new Date(this.props.item.did_at)))}
+            </Text>
+            {this.getOnlineStateView(this.props.item.online)}
+          </View>
       </View>
     );
   }
@@ -107,19 +105,23 @@ const style = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: 1,
     padding: 6,
-    borderColor: "#f3f3f3"
+    borderColor: "#f3f3f3",
+    flex: 1
   },
-  avatarNameContainer: {
-    height: 60,
-    flexDirection: "row",
-    flexGrow: 0,
-    flexShrink: 1
-  },
+  // avatarNameContainer: {
+  //   flex: 1,
+  //   height: 60,
+  //   width: 60,
+  //   flexDirection: "row",
+  //   justifyContent: 'flex-start'
+  // },
   avatarContainer: {
     position: "relative",
     height: 60,
     width: 60,
-    marginLeft: 10
+    marginLeft: 10,
+    flexGrow: 0,
+    flex: 1
   },
   avatar: {
     height: 60,
@@ -136,24 +138,27 @@ const style = StyleSheet.create({
     backgroundColor: "#ff3030"
   },
   nameContainer: {
-    paddingLeft: 10,
-    height: "100%",
-    padding: 5
+    flex: 1,
+    padding: 5,
+    marginLeft: 60
   },
   nameText: {
+    flex: 1,
     padding: 5,
     fontSize: 14,
     fontWeight: "600",
     color: "#000000"
   },
   contentText: {
+    flex: 1,
+    width: '100%',
     padding: 5,
     fontSize: 12,
     flexGrow: 0
-    
   },
   dateAndStateContainer: {
     marginRight: 10,
+    width: 80,
     justifyContent: "center"
   },
   dateText: {
@@ -163,17 +168,20 @@ const style = StyleSheet.create({
   },
   lineStateContainer: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    paddingLeft: 10
   },
   onlineNotice: {
     width: 6,
     height: 6,
+    padding: 3,
     margin: "auto",
     backgroundColor: "#00d3be",
     borderRadius: 3
   },
   onlineText: {
     padding: 5,
+    textAlign:'center',
     fontSize: 12
   }
 });

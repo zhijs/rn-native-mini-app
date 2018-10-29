@@ -22,6 +22,7 @@ import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
 import { Api } from "../api/_fetch";
 import ImagePicker from "react-native-image-crop-picker";
+import { EventRegister } from 'react-native-event-listeners'
 
 // 分数对应的爱心图片
 const score2SmallImgs = [
@@ -169,11 +170,7 @@ export default class ChatDeTail extends Component {
       modalShow: res.data.msg.diff > 0 ? true : false
     }
     );
-    // console.log('scroll', this._scroll)
-    setTimeout(() => {
-      this._scroll.scrollToEnd({animated: true})
-    }, 50);
-    // this._scroll.scrollTo({x: 0, y: 9999, animated: true})
+    this.scrollToNewMsg();
   }
   
   // 获取最后一条消息
@@ -190,16 +187,17 @@ export default class ChatDeTail extends Component {
   componentWillMount() {
     // 判断分数
     this.getScore()
+    EventRegister.addEventListener('onmessage', this.handleMsgCome.bind(this))
   }
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.handleBackPress.bind(this));
-    setTimeout(() => {
-      this._scroll.scrollToEnd({animated: true})
-    }, 50);
+    this.scrollToNewMsg();
+   
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
+    EventRegister.removeEventListener(this.handleMsgCome)
   }
 
   handleBackPress () {
@@ -222,6 +220,23 @@ export default class ChatDeTail extends Component {
     }
     this.sendeMsg(data)
     this.setState({inputText: ''})
+  }
+
+  // 监听对方发来的消息，并决定是否弹窗
+  handleMsgCome (msg) {
+    if (msg.diff > 0) {
+      this.setState({
+        modalShow: true
+      })
+    }
+    this.scrollToNewMsg();
+  }
+
+  // 定位到最新消息出
+  scrollToNewMsg() {
+    setTimeout(() => {
+      this._scroll.scrollToEnd({animated: true})
+    }, 50);
   }
   // 根据分数来判断是否是解锁文字聊天
   getTextInput() {
@@ -357,7 +372,7 @@ export default class ChatDeTail extends Component {
               <Image
                 style={style.boxFeatureIcon}
                 source={
-                  this.state.score >= 60
+                  this.getScore() >= 60
                     ? require("../assets/images/box-audio-active.png")
                     : require("../assets/images/box-audio.png")
                 }
@@ -704,10 +719,12 @@ const style = StyleSheet.create({
   },
   featureCotainer: {
     flex: 1,
-    margin: 10
+    margin: 10,
+    justifyContent: 'flex-start',
   },
   firstLineFeatureContianer: {
-    flexDirection: "row"
+    flexDirection: "row",
+    height: 60
   },
   boxFeatureIcon: {
     height: 60,
@@ -726,6 +743,8 @@ const style = StyleSheet.create({
   },
   middleLineContainer: {
     flex: 1,
+    height: 50,
+    padding: 5,
     flexDirection: "row",
     justifyContent: "flex-end"
   },
@@ -735,6 +754,7 @@ const style = StyleSheet.create({
     marginRight: 11
   },
   endLineContainer: {
+    height: 60,
     flex: 1,
     flexDirection: "row"
   }

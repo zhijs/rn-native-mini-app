@@ -31,7 +31,13 @@ export default class MessageBox extends Component {
           style = {style.bg}
         >
           <View
-            style = {[style.modalContent, { height: this.props.contentHeight}]}
+            style = {[style.modalContent, { 
+              height: this.props.contentHeight, 
+              width: this.props.contentWidth ? this.props.contentWidth : '70%',
+              marginLeft: this.props.marginLeft !== undefined ? this.props.marginLeft : '15%',
+              marginTop: this.props.marginTop !== undefined ? this.props.marginTop : '15%'
+            }
+            ]}
           >
             <TouchableOpacity
               onPress = {() => {
@@ -64,8 +70,6 @@ const style = StyleSheet.create({
   modalContent: {
     width: '70%',
     height: '70%',
-    marginLeft: '15%',
-    marginTop: '15%',
     backgroundColor: '#ffffff',
     position: 'relative',
     borderRadius: 6

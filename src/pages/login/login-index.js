@@ -374,6 +374,7 @@ export default class LoginIndex extends Component {
             gender: res.data.gender,
             nickname: res.data.nickname,
             dob: res.data.dob,
+            old: res.data.old,
             profile_photo_src: `${Api.Test}${res.data.profile_photo_src}` || ""
           });
           navigate("Tab");

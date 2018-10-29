@@ -12,6 +12,7 @@ import { Api } from "../api/_fetch";
 import { getLikeMeList, getFriendList } from "../api/friend";
 import MatchItem from "../components/match/match-item";
 import webSocketCla from "../common/web-socket";
+import { EventRegister } from 'react-native-event-listeners'
 import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class matchList extends Component {
@@ -64,7 +65,8 @@ export default class matchList extends Component {
             : `${Api.Test}${item.audio_src}`,
         pics: item.pic_srcs,
         did_at: item.did_at || "",
-        msgs: msgIds
+        msgs: msgIds,
+        online: item.online || false
       };
       if (!this.props.friend[type].includes(item.uid)) {
         if (type === "match" && item.msgs.length > 2) {
@@ -120,6 +122,7 @@ export default class matchList extends Component {
         uid: msg.from,
         msgId: [msg.id]
       });
+      EventRegister.emit('onmessage', msg)
     } catch (e) {}
   }
 
