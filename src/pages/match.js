@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
 import { sendMsg } from "../api/message";
-import { logout, updateAccount } from "../api/user";
+import { logout } from "../api/user";
 import commonStyle from "../utils/common-style";
 import Card from "../components/card";
 import SwipeCards from "react-native-swipe-cards";

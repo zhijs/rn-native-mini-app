@@ -21,6 +21,7 @@ import Message from "../components/messge";
 import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
 import { Api } from "../api/_fetch";
+import { updateAccount } from "../api/user";
 import ImagePicker from "react-native-image-crop-picker";
 import { EventRegister } from 'react-native-event-listeners'
 
@@ -70,7 +71,8 @@ export default class ChatDeTail extends Component {
       otherUid: params.user.uid,
       activeTool: null,
       index: 0,
-      inputText: ''
+      inputText: '',
+      modalProcessShow: false
     };
   }
 
@@ -191,6 +193,17 @@ export default class ChatDeTail extends Component {
   }
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.handleBackPress.bind(this));
+    if (!this.props.user.old) {
+      this.setState({
+        modalProcessShow: true
+      })
+      // 更新用户信息
+      updateAccount({
+        uid: this.props.user.uid,
+        old: true
+      }).then((res) => {
+      })
+    }
     this.scrollToNewMsg();
    
   }
@@ -319,6 +332,12 @@ export default class ChatDeTail extends Component {
     this.closeToolView()
   }
 
+  processModalClose () {
+    this.setState({
+      modalProcessShow: false
+    })
+  }
+
   // 获取弹框内容
   getModalChild() {
     return (
@@ -429,6 +448,21 @@ export default class ChatDeTail extends Component {
       </View>
     );
   }
+
+   //解锁流程
+   getModalProcess () {
+    return (
+      <View style = {style.processContainer}>
+        <Text style = {style.lockTitle}>互动解锁</Text>
+        <View style = {style.proceeImgContainer}>
+          <Image
+            style = {style.lockImage}
+            source = {require('../assets/images/lock-process.png')}
+          />
+          </View>
+      </View>
+    )
+  }
   // 获取分数对应的图片
   getScoreImageIndex(score) {
     if (score === 0) {
@@ -476,6 +510,15 @@ export default class ChatDeTail extends Component {
             this.state.matchUserName,
             this.state.matchUserImg
           )}
+        />
+         <MessageBox
+          modalClose={this.processModalClose.bind(this)}
+          visiable={this.state.processModal}
+          contentHeight={"100%"}
+          contentWidth = {"100%"}
+          marginLeft = {1}
+          marginTop = {1}
+          childView={this.getModalProcess()}
         />
           <ScrollView 
             style={style.msgContainer}
@@ -757,5 +800,26 @@ const style = StyleSheet.create({
     height: 60,
     flex: 1,
     flexDirection: "row"
+  },
+  // 解锁流程图
+  processContainer: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  },
+  lockTitle: {
+    textAlign: 'center',
+    height: 20,
+    color: '#000000',
+    fontWeight: '600'
+  },
+  proceeImgContainer: {
+    padding: 5,
+    marginTop: 20
+  },
+  lockImage: {
+    width: '100%',
+    height: '100%'
   }
 });
