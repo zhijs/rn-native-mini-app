@@ -5,14 +5,16 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
 import { sendMsg } from "../api/message";
-import { logout } from "../api/user";
+import { login, logout } from "../api/user";
 import commonStyle from "../utils/common-style";
 import Card from "../components/card";
+import {meter2kilometer} from '../utils/tool'
 import SwipeCards from "react-native-swipe-cards";
 import DislikevView from "../components/match/dislike-view";
 import LikevView from "../components/match/like-view";
 import { Api } from "../api/_fetch";
 import MessageBox from "../components/message-box";
+import Geolocation from 'Geolocation';
 
 export default class Match extends Component {
   constructor(props) {
@@ -28,9 +30,21 @@ export default class Match extends Component {
       processModal: false,
     };
     this.state = { myId: 47 };
+    this.watchId = 0
   }
   componentWillMount() {
     this.getFriends();
+
+    this.watchId = Geolocation.watchPosition((result) => {
+      login({
+        lat: result.coords.latitude,
+        lon: result.coords.longitude,
+        phone_number: this.props.user.phone_number,
+        password: this.props.user.password
+      })
+    }, () => {
+
+    },{enableHighAccuracy: false, timeout: 5000, maximumAge: 3000})
   }
   
   // 执行退出操作
@@ -40,12 +54,14 @@ export default class Match extends Component {
         // 退出登陆
       })
   }
+ 
   // 获取匹配的对象
   getFriends () {
     getFriend({
       uid: this.props.user.uid
     }).then(res => {
       if (res.data && res.data.result === "ok") {
+        console.log('friend', res.data)
         let user = {};
         let newFriend = [];
         let nowYear = new Date().getFullYear() + 1;
@@ -67,7 +83,8 @@ export default class Match extends Component {
                 : `${Api.Test}${item.audio_src}`,
             pics: item.pic_srcs,
             msgs: [],
-            online: item.online || false
+            online: item.online || false,
+            distence: meter2kilometer(item.dis)
           };
           if (!this.props.friend.new.includes(item.uid)) {
             newFriend.push(item.uid);

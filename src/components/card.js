@@ -74,7 +74,7 @@ export default class Card extends Component {
               style={style.distanceIcon}
               source={require("../assets/images/location.png")}
             />
-            <Text style={style.distance}>300m</Text>
+            <Text style={style.distance}>{this.props.distence}</Text>
           </View>
           <View style={style.videoContainer}>
             <TouchableOpacity
@@ -169,77 +169,6 @@ const style = StyleSheet.create({
     justifyContent: "space-between"
   },
   distanceContainer: {
-    width: 60,
-    height: 16,
-    marginTop: 7,
-    flexDirection: "row",
-    justifyContent: "flex-start"
-  },
-  distanceIcon: {
-    width: 10,
-    height: 20,
-    marginLeft: 10
-  },
-  distance: {
-    marginLeft: 5,
-    color: "#e1e1e1"
-  },
-  videoContainer: {
-    borderColor: "#eaeaea",
-    padding: 5,
-    borderWidth: 1,
-    width: 100,
-    height: 30,
-    borderRadius: 5,
-    marginRight: 10,
-    justifyContent: "flex-end"
-  },
-  videoIcon: {
-    width: 25,
-    height: 20
-  },
-  videoTime: {
-    marginLeft: 10,
-    color: "#e1e1e1"
-  },
-  distanceContainer: {
-    width: 60,
-    height: 16,
-    marginTop: 7,
-    flexDirection: "row",
-    justifyContent: "flex-start"
-  },
-  distanceIcon: {
-    width: 10,
-    height: 20,
-    marginLeft: 10
-  },
-  distance: {
-    marginLeft: 5,
-    color: "#e1e1e1"
-  },
-  videoContainer: {
-    borderColor: "#eaeaea",
-    padding: 5,
-    borderWidth: 1,
-    width: 60,
-    height: 30,
-    borderRadius: 5,
-    marginRight: 10,
-    flexDirection: "row",
-    justifyContent: "flex-end"
-  },
-  videoIcon: {
-    width: 25,
-    height: 20
-  },
-  videoTime: {
-    marginLeft: 10,
-    color: "#e1e1e1"
-  },
-  distanceContainer: {
-    width: 60,
-    height: 16,
     marginTop: 7,
     flexDirection: "row",
     justifyContent: "flex-start"
@@ -251,7 +180,8 @@ const style = StyleSheet.create({
   },
   distance: {
     marginLeft: 5,
-    color: "#e1e1e1"
+    color: "#e1e1e1",
+    height: 30
   },
   videoContainer: {
     borderColor: "#eaeaea",

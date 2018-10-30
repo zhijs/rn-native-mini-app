@@ -11,8 +11,10 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
-  ToastAndroid
+  ToastAndroid,
+  PermissionsAndroid,
 } from "react-native";
+import Geolocation from 'Geolocation';
 import { date2str, checkTelNumber } from "../../utils/tool";
 import { checkNumber, sendCode, verifyCode } from "../../api/mobile-msg";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -27,6 +29,7 @@ import UserInfo from "./user-info";
 import commonStyle from "../../utils/common-style";
 import SlideAnimation from "./animation-view";
 import { Api } from "../../api/_fetch";
+import Spinner from 'react-native-loading-spinner-overlay';
 export default class LoginIndex extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +52,8 @@ export default class LoginIndex extends Component {
       canRegister: false,
       userName: "", // 用户名
       gender: "male", // 0-男性， 1-女性,
-      birthDay: ""
+      birthDay: "",
+      spinner: false
     };
     this.timer = null; // 用于验证码倒计时
 
@@ -103,7 +107,26 @@ export default class LoginIndex extends Component {
   componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
   }
-
+  
+  // 询问获得地理位置权限
+  async requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          'title': '地理位置信息权限',
+          'message': '该过程可能需要获取你的地理位置权限'
+        }
+      )
+      console.log('requestLocationPermission,', granted)
+      if (granted) {
+        return true
+      } else {
+        return false
+      }
+    } catch (err) {
+    }
+  }
   // 用户点击回退按钮
   handleBackPress = () => {
     if (this.props.page.index === 0) {
@@ -168,6 +191,7 @@ export default class LoginIndex extends Component {
     }
     this.setState({ birthDay: value, canRegister });
   }
+
 
   // 根据当前状态返回特定组件
   getPage(pageIndex, direction) {
@@ -358,15 +382,38 @@ export default class LoginIndex extends Component {
     });
   }
   // 登陆操作
-  handleLogin() {
+  async handleLogin() {
+    console.log('PermissionsAndroid', PermissionsAndroid)
+    this.setState({spinner: true})
+    let local = {
+      lat: 0,
+      lon: 0
+    };
+    this.requestLocationPermission().then((flag) => {
+    if (flag) {
+      Geolocation.getCurrentPosition((result) => {
+        local.lat = result.coords.latitude
+        local.lon = result.coords.longitude
+        this.sendLoginData(local);
+      }, (error)=> {
+        this.sendLoginData(local);
+      }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 3000})
+    }
+    }).catch((e) => {
+      this.sendLoginData(local);
+    })
+  }
+
+  sendLoginData(data = {}) {
     const { navigate } = this.props.navigation;
-    login({
+    let postData = Object.assign({
       phone_number: this.state.telNumber,
       password: this.state.passwd
-    }).then(res => {
+    }, data)
+    login(postData).then(res => {
       if (res.data.result === "ok") {
         if (res.data.status === this.PWD_ERROR) {
-          this.setState({ rightPwd: false });
+          this.setState({ rightPwd: false});
         } else if (res.data.status === 0) {
           // console.log("登陆成功", res);
           this.props.logined({
@@ -375,11 +422,14 @@ export default class LoginIndex extends Component {
             nickname: res.data.nickname,
             dob: res.data.dob,
             old: res.data.old,
+            password: this.state.passwd,
+            phone_number: this.state.telNumber,
             profile_photo_src: `${Api.Test}${res.data.profile_photo_src}` || ""
           });
           navigate("Tab");
         }
       }
+      this.setState({spinner: false})
     });
   }
 
@@ -401,6 +451,11 @@ export default class LoginIndex extends Component {
   render() {
     return (
       <View style={[style.container, commonStyle.pageBg]}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'正在登陆..'}
+          textStyle = {{color: '#ffffff', fontSize: 12}}
+        />
         <View style={this.pageData[this.props.page.index].pageStyle}>
           {this.getPage(this.props.page.index, this.props.page.direction)}
         </View>
