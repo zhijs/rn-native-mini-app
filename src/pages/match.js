@@ -221,7 +221,7 @@ export default class Match extends Component {
   //解锁流程
   getModalProcess () {
     return (
-      <ScrollView contentContainerStyle = {style.processContainer}>
+      <View style = {style.processContainer}>
         <Text style = {style.lockTitle}>互动解锁</Text>
         <View style = {style.proceeImgContainer}>
           <Image
@@ -229,7 +229,7 @@ export default class Match extends Component {
             source = {require('../assets/images/lock-process.png')}
           />
           </View>
-      </ScrollView>
+      </View>
     )
   }
   render() {
