@@ -61,7 +61,6 @@ export default class Match extends Component {
       uid: this.props.user.uid
     }).then(res => {
       if (res.data && res.data.result === "ok") {
-        console.log('friend', res.data)
         let user = {};
         let newFriend = [];
         let nowYear = new Date().getFullYear() + 1;

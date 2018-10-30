@@ -118,7 +118,6 @@ export default class LoginIndex extends Component {
           'message': '该过程可能需要获取你的地理位置权限'
         }
       )
-      console.log('requestLocationPermission,', granted)
       if (granted) {
         return true
       } else {
@@ -383,13 +382,12 @@ export default class LoginIndex extends Component {
   }
   // 登陆操作
   async handleLogin() {
-    console.log('PermissionsAndroid', PermissionsAndroid)
-    this.setState({spinner: true})
     let local = {
       lat: 0,
       lon: 0
     };
     this.requestLocationPermission().then((flag) => {
+    this.setState({spinner: true})
     if (flag) {
       Geolocation.getCurrentPosition((result) => {
         local.lat = result.coords.latitude
@@ -410,7 +408,9 @@ export default class LoginIndex extends Component {
       phone_number: this.state.telNumber,
       password: this.state.passwd
     }, data)
-    login(postData).then(res => {
+    login(postData).catch((e) => {
+      this.setState({spinner: false})
+    }).then(res => {
       if (res.data.result === "ok") {
         if (res.data.status === this.PWD_ERROR) {
           this.setState({ rightPwd: false});

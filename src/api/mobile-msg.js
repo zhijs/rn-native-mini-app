@@ -37,16 +37,10 @@ export function verifyCode(mobile, verifyCode) {
 
 // 号码检验
 export function checkNumber(mobile) {
-  console.log("检验号码");
   let data = {
     bizNo,
     mobile
   };
-  console.log({
-    bizNo,
-    mobile,
-    signMsg: getSignMsg(data)
-  });
   // return Promise.resolve({data: {code: 0}})
   return fetchXL(
     "/risk/mobile.json",
