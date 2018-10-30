@@ -789,7 +789,7 @@ const style = StyleSheet.create({
     height: 50,
     padding: 5,
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   arrowDown: {
     width: 10,
@@ -799,7 +799,7 @@ const style = StyleSheet.create({
   endLineContainer: {
     height: 60,
     flex: 1,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   // 解锁流程图
   processContainer: {

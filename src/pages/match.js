@@ -2,7 +2,7 @@
  * 匹配页面
  */
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView } from "react-native";
 import { getFriend, dislikeFriend, likeFriend } from "../api/friend";
 import { sendMsg } from "../api/message";
 import { login, logout } from "../api/user";
@@ -221,7 +221,7 @@ export default class Match extends Component {
   //解锁流程
   getModalProcess () {
     return (
-      <View style = {style.processContainer}>
+      <ScrollView contentContainerStyle = {style.processContainer}>
         <Text style = {style.lockTitle}>互动解锁</Text>
         <View style = {style.proceeImgContainer}>
           <Image
@@ -229,7 +229,7 @@ export default class Match extends Component {
             source = {require('../assets/images/lock-process.png')}
           />
           </View>
-      </View>
+      </ScrollView>
     )
   }
   render() {
@@ -444,6 +444,7 @@ const style = StyleSheet.create({
   // 解锁流程图
   processContainer: {
     width: '100%',
+    padding: 8,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start'
