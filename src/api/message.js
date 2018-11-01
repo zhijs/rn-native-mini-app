@@ -9,6 +9,11 @@ export function sendMsg(data) {
   });
 }
 
+export function updateMsg(data) {
+  return fetchJSON("/push/update ", {}, data).catch(e => {
+    console.log("发送消息失败", e);
+  });
+}
 export function getHistoryMsg(data) {
   return fetchJSON("/push/list", {}, data).catch(e => {
     console.log("发送消息失败", e);

@@ -118,7 +118,7 @@ export default class LoginIndex extends Component {
           'message': '该过程可能需要获取你的地理位置权限'
         }
       )
-      if (granted) {
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         return true
       } else {
         return false
@@ -382,21 +382,24 @@ export default class LoginIndex extends Component {
   }
   // 登陆操作
   async handleLogin() {
+    try {
+      const granted = await requestLocationPermission();
+    }
+    catch (e) {
+    }
     let local = {
       lat: 0,
       lon: 0
     };
-    this.requestLocationPermission().then((flag) => {
-    this.setState({spinner: true})
-    if (flag) {
-      Geolocation.getCurrentPosition((result) => {
-        local.lat = result.coords.latitude
-        local.lon = result.coords.longitude
-        this.sendLoginData(local);
-      }, (error)=> {
-        this.sendLoginData(local);
-      }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 3000})
-    }
+    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(() => {
+    Geolocation.getCurrentPosition((result) => {
+      this.setState({spinner: true})
+      local.lat = result.coords.latitude
+      local.lon = result.coords.longitude
+      this.sendLoginData(local);
+    }, (error)=> {
+      this.sendLoginData(local);
+    }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 3000})
     }).catch((e) => {
       this.sendLoginData(local);
     })
@@ -429,7 +432,9 @@ export default class LoginIndex extends Component {
           navigate("Tab");
         }
       }
-      this.setState({spinner: false})
+      if (this.state.spinner) {
+        this.setState({spinner: false})
+      }
     });
   }
 

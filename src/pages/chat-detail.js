@@ -16,7 +16,7 @@ import {
   BackHandler
 } from "react-native";
 import commonStyle from "../utils/common-style";
-import { sendMsg, uploadFile } from "../api/message";
+import { sendMsg, uploadFile,updateMsg } from "../api/message";
 import Message from "../components/messge";
 import webSocketCla from "../common/web-socket";
 import MessageBox from "../components/message-box";
@@ -61,7 +61,6 @@ export default class ChatDeTail extends Component {
       "40": "爆照时刻",
       "60": "闻声识人"
     };
-    this._scroll = null;
     this.state = {
       modalShow: false,
       myId: 47,
@@ -74,6 +73,7 @@ export default class ChatDeTail extends Component {
       inputText: '',
       modalProcessShow: false
     };
+    this.scrollTimer = null;
   }
 
   // 关闭工具栏
@@ -167,11 +167,26 @@ export default class ChatDeTail extends Component {
     if (!this.props.friend.chat.includes(this.state.otherUid)) {
       this.props.addChatFriend([this.state.otherUid]);
     }
+    // diff > 0, 且自己没弹窗时弹窗
+    let modalShow = false;
+
+    if (res.data.msg.diff && !res.data.msg.noticed_from ){
+      let modalShow = true;
+      updateMsg({
+        id: res.data.msg.id,
+        noticed_from: true
+      }).then((response) => {
+        if (response.data && response.data.result === "ok"){
+          let newMsg = {}
+          newMsg[`${res.data.msg.id}`] = Object.assign({}, res.data.msg, {noticed_from: true})
+          this.props.setMessageAll(newMsg);
+        }
+      })
+    }
     this.setState({ 
       activeTool: null,
-      modalShow: res.data.msg.diff > 0 ? true : false
-    }
-    );
+      modalShow: modalShow
+    });
     this.scrollToNewMsg();
   }
   
@@ -187,12 +202,35 @@ export default class ChatDeTail extends Component {
   }
 
   componentWillMount() {
-    // 判断分数
-    this.getScore()
-    EventRegister.addEventListener('onmessage', this.handleMsgCome.bind(this))
-  }
-  componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress.bind(this));
+    let msgs = this.props.friend.all[this.state.otherUid].msgs;
+    let msgContent = Object.assign({}, this.props.message.all[msgs[msgs.length - 1]])
+    let modalshow = false;
+    // 判断消息是否属于自己的
+    let myMsg = msgContent.from === this.props.user.uid ? true : false
+    if (msgContent.diff > 0 && 
+      ( 
+        (myMsg && !msgContent.noticed_from) || 
+        (!myMsg && !msgContent.noticed_to)
+      )){
+      modalshow = true;
+    }
+    if (modalshow) {
+      let data = {
+        id: msgContent.id,
+        noticed_from: myMsg ? true : false,
+        noticed_to: !myMsg ? true : false,
+      }
+      updateMsg(data).then((res) => {
+        if (res.data && res.data.result === "ok"){
+          let newMsg = {};
+          newMsg[`${msgContent.id}`] = Object.assign({}, msgContent, data);
+          this.props.setMessageAll(newMsg);
+        }
+      })
+    }
+    this.setState({
+      modalShow: modalshow
+    })
     if (!this.props.user.old) {
       this.setState({
         modalProcessShow: true
@@ -204,11 +242,19 @@ export default class ChatDeTail extends Component {
       }).then((res) => {
       })
     }
+    // 判断分数
+    this.getScore()
+    EventRegister.addEventListener('onmessage', this.handleMsgCome.bind(this))
+  }
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress.bind(this));
     this.scrollToNewMsg();
    
   }
 
   componentWillUnmount() {
+    console.log('componentWillUnmount');
+    clearTimeout(this.scrollTimer)
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
     EventRegister.removeEventListener(this.handleMsgCome)
   }
@@ -237,6 +283,8 @@ export default class ChatDeTail extends Component {
 
   // 监听对方发来的消息，并决定是否弹窗
   handleMsgCome (msg) {
+    console.log(this)
+    console.log('收到消息', msg)
     if (msg.diff > 0) {
       this.setState({
         modalShow: true
@@ -247,9 +295,9 @@ export default class ChatDeTail extends Component {
 
   // 定位到最新消息出
   scrollToNewMsg() {
-    setTimeout(() => {
-      this._scroll.scrollToEnd({animated: true})
-    }, 50);
+    this.scrollTimer = setTimeout(() => {
+      this.refs._scroll.scrollToEnd({animated: true})
+    }, 100);
   }
   // 根据分数来判断是否是解锁文字聊天
   getTextInput() {
@@ -513,7 +561,7 @@ export default class ChatDeTail extends Component {
         />
          <MessageBox
           modalClose={this.processModalClose.bind(this)}
-          visiable={this.state.processModal}
+          visiable={this.state.modalProcessShow}
           contentHeight={"100%"}
           contentWidth = {"100%"}
           marginLeft = {1}
@@ -522,7 +570,7 @@ export default class ChatDeTail extends Component {
         />
           <ScrollView 
             style={style.msgContainer}
-            ref={(scorll) => this._scroll = scorll }  
+            ref='_scroll'  
           >
             <TouchableOpacity
               style = {{flex: 1}}

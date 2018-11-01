@@ -114,20 +114,23 @@ export default class matchList extends Component {
   handleWsMessage(e) {
     try {
       let msg = JSON.parse(e.data);
+      console.log('收到消息， websocket ws', data)
       let msgObj = {};
       if (msg.id === 0) return;
       msgObj[`${msg.id}`] = msg;
       this.props.setMessageAll(msgObj);
-      this.props.addFriendMsg({
-        uid: msg.from,
-        msgId: [msg.id]
-      });
-      EventRegister.emit('onmessage', msg)
+      if (!this.props.friend.all[msg.from].msgs.includes(msg.id)) {
+        this.props.addFriendMsg({
+          uid: msg.from,
+          msgId: [msg.id]
+        });
+        EventRegister.emit('onmessage', msg)
+      }
     } catch (e) {}
   }
 
   handleWsError(e) {
-
+    console.log('ws handleWsError', e)
   }
   componentWillMount() {
     this.getLikeMeData();
@@ -146,6 +149,7 @@ export default class matchList extends Component {
   }
 
   componentWillUnmount() {
+    console.log('matlist- componentWillMount')
     this.webSocket.close();
     clearInterval(this.timer);
     this.timer = null;
