@@ -187,7 +187,7 @@ const style = StyleSheet.create({
     borderColor: "#eaeaea",
     padding: 5,
     borderWidth: 1,
-    width: 75,
+    width: 90,
     height: 30,
     borderRadius: 5,
     marginRight: 10,

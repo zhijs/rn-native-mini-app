@@ -11,6 +11,12 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    logined: (data) => {
+      dispatch({
+        type: actionType.LOGINED,
+        data
+      })
+    },
     addChatFriend: data => {
       dispatch({ type: actionType.SET_CHAT_FRIEND, data });
     },

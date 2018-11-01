@@ -168,9 +168,8 @@ export default class ChatDeTail extends Component {
     }
     // diff > 0, 且自己没弹窗时弹窗
     let modalShow = false;
-
     if (res.data.msg.diff && !res.data.msg.noticed_from ){
-      let modalShow = true;
+      modalShow = true;
       updateMsg({
         id: res.data.msg.id,
         noticed_from: true
@@ -239,6 +238,10 @@ export default class ChatDeTail extends Component {
         uid: this.props.user.uid,
         old: true
       }).then((res) => {
+        this.props.logined({
+          uid: this.props.user.uid,
+          old: true
+        })
       })
     }
     // 判断分数
