@@ -55,7 +55,6 @@ export default class ChatDeTail extends Component {
   constructor(props) {
     super(props);
     const { params } = props.navigation.state;
-    this.ws = webSocketCla.getInstance();
     this.score2text = {
       "20": "你问我答",
       "40": "爆照时刻",
@@ -218,7 +217,7 @@ export default class ChatDeTail extends Component {
       let data = {
         id: msgContent.id,
         noticed_from: myMsg ? true : false,
-        noticed_to: !myMsg ? true : false,
+        noticed_to: (!myMsg) ? true : false,
       }
       updateMsg(data).then((res) => {
         if (res.data && res.data.result === "ok"){
@@ -253,7 +252,7 @@ export default class ChatDeTail extends Component {
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount');
+    // console.log('componentWillUnmount');
     clearTimeout(this.scrollTimer)
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
     EventRegister.removeEventListener(this.handleMsgCome)
@@ -283,8 +282,8 @@ export default class ChatDeTail extends Component {
 
   // 监听对方发来的消息，并决定是否弹窗
   handleMsgCome (msg) {
-    console.log(this)
-    console.log('收到消息', msg)
+    // console.log(this)
+    // console.log('收到消息', msg)
     if (msg.diff > 0) {
       this.setState({
         modalShow: true
@@ -296,7 +295,7 @@ export default class ChatDeTail extends Component {
   // 定位到最新消息出
   scrollToNewMsg() {
     this.scrollTimer = setTimeout(() => {
-      this.refs._scroll.scrollToEnd({animated: true})
+      this.refs._scroll && this.refs._scroll.scrollToEnd({animated: true})
     }, 100);
   }
   // 根据分数来判断是否是解锁文字聊天

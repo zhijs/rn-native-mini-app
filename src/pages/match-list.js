@@ -14,7 +14,6 @@ import MatchItem from "../components/match/match-item";
 import webSocketCla from "../common/web-socket";
 import { EventRegister } from 'react-native-event-listeners'
 import Spinner from 'react-native-loading-spinner-overlay';
-
 export default class matchList extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +21,7 @@ export default class matchList extends Component {
       spinner: true
     }
     this.timer = null;
-    this.webSocket = null;
+    this.websocket = null
   }
   //设置store
   setFrienddStore(dataArr = [], type) {
@@ -108,13 +107,14 @@ export default class matchList extends Component {
 
   // ws 打开
   handleWsOpen() {
-    this.webSocket.send(`${this.props.user.uid}`);
+    // console.log('ws open')
+    this.websocket.send(`${this.props.user.uid}`);
   }
 
   handleWsMessage(e) {
     try {
       let msg = JSON.parse(e.data);
-      console.log('收到消息， websocket ws', data)
+      // console.log('收到消息， websocket ws', e.data)
       let msgObj = {};
       if (msg.id === 0) return;
       msgObj[`${msg.id}`] = msg;
@@ -126,33 +126,36 @@ export default class matchList extends Component {
         });
         EventRegister.emit('onmessage', msg)
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log('handleWsMessage error', e)
+    }
   }
 
   handleWsError(e) {
     console.log('ws handleWsError', e)
   }
   componentWillMount() {
+    this.websocket = webSocketCla.getInstance();
     this.getLikeMeData();
     this.getMatchData();
     this.setState({spinner: false});
     // 定时获取列表信息
     this.timer = setInterval(() => {
+      // console.log('定时器轮询')
       this.getLikeMeData();
       this.getMatchData();
     }, 3 * 60 * 1000);
-
-    this.webSocket = webSocketCla.getInstance();
-    this.webSocket.onopen = this.handleWsOpen.bind(this);
-    this.webSocket.onmessage = this.handleWsMessage.bind(this);
-    this.webSocket.onerror = this.handleWsError.bind(this);
+    this.websocket.onopen = this.handleWsOpen.bind(this);
+    this.websocket.onmessage = this.handleWsMessage.bind(this);
+    this.websocket.onerror = this.handleWsError.bind(this);
   }
 
   componentWillUnmount() {
-    console.log('matlist- componentWillMount')
-    this.webSocket.close();
+    // console.log('matlist- componentWillMount')
+    this.websocket.close();
     clearInterval(this.timer);
     this.timer = null;
+    this.websocket = null
   }
   pageToLikeList() {
     const { navigate } = this.props.navigation;
