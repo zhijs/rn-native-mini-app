@@ -347,7 +347,7 @@ export default class LoginIndex extends Component {
   }
 
   // 用户注册
-  async sigin() {
+  sigin() {
     let data = {
       phone_number: this.state.telNumber,
       password: this.state.passwd
@@ -358,12 +358,7 @@ export default class LoginIndex extends Component {
         data.is_registered = true;
         data.uid = res.data.uid;
         this.props.sigin(data);
-        try {
-          const flag = await this.handleLogin();
-          // this.props.pageAdd(1);
-        } catch (e) {
-          console.log('e')
-        }
+        this.props.pageAdd(1);
       }
     });
   }
@@ -381,13 +376,14 @@ export default class LoginIndex extends Component {
       if (res.data.result === "ok") {
         data.profile_photo_src = res.data.profile_photo_src || "";
         this.props.sigin(data);
-        navigate("Tab");
+        this.handleLogin();
       }
     });
   }
   // 登陆操作
   async handleLogin() {
     try {
+      // console.log('获取地理位置信息--------------')
       const granted = await requestLocationPermission();
     }
     catch (e) {
