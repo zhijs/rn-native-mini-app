@@ -347,7 +347,7 @@ export default class LoginIndex extends Component {
   }
 
   // 用户注册
-  sigin() {
+  async sigin() {
     let data = {
       phone_number: this.state.telNumber,
       password: this.state.passwd
@@ -358,7 +358,12 @@ export default class LoginIndex extends Component {
         data.is_registered = true;
         data.uid = res.data.uid;
         this.props.sigin(data);
-        this.props.pageAdd(1);
+        try {
+          const flag = await this.handleLogin();
+          // this.props.pageAdd(1);
+        } catch (e) {
+          console.log('e')
+        }
       }
     });
   }

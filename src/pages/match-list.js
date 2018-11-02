@@ -144,7 +144,7 @@ export default class matchList extends Component {
       // console.log('定时器轮询')
       this.getLikeMeData();
       this.getMatchData();
-    }, 3 * 60 * 1000);
+    }, 5 * 1000);
     this.websocket.onopen = this.handleWsOpen.bind(this);
     this.websocket.onmessage = this.handleWsMessage.bind(this);
     this.websocket.onerror = this.handleWsError.bind(this);
