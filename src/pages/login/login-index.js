@@ -392,16 +392,21 @@ export default class LoginIndex extends Component {
       lat: 0,
       lon: 0
     };
+    
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(() => {
+    // console.log('获取权限')
     Geolocation.getCurrentPosition((result) => {
+      // console.log('获取权限位置', result)
       this.setState({spinner: true})
       local.lat = result.coords.latitude
       local.lon = result.coords.longitude
       this.sendLoginData(local);
     }, (error)=> {
+      // console.log('获取位置失败', error)
       this.sendLoginData(local);
     }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 3000})
     }).catch((e) => {
+      // console.log('获取权限失败', e)
       this.sendLoginData(local);
     })
   }
