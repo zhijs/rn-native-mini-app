@@ -2,7 +2,7 @@ import md5 from "md5";
 import DeviceInfo from "react-native-device-info";
 import { fetchXL } from "./_fetch";
 
-const bizNo = "200027";
+// const bizNo = "200027";
 const content = "锁爱验证码{}";
 const needCode = true;
 const expireSeconds = 60;
@@ -59,13 +59,4 @@ export function checkNumber(mobile) {
 
 // 获取签明信息
 function getSignMsg(data) {
-  let keys = Object.keys(data).sort();
-  let arr = [];
-  for (let i = 0; i < keys.length; i++) {
-    arr.push(`${keys[i]}=${data[keys[i]]}`);
-  }
-  let stringA = arr.join("&");
-  let stringSignTemp = `${stringA}pAXF6T25oc9h`;
-  let signMsg = md5(stringSignTemp).toUpperCase();
-  return `${stringA}&signMsg=${signMsg}`;
 }
