@@ -18,7 +18,7 @@ https://www.jianshu.com/p/12674aa384a1
 
 3.clone 远程代码,并安装依赖
 ```javascript
-git clone https://gitlab.com/xl_mini/xl_mini_client.git
+git clone https://github.com/zhijs/rn-native-mini-app.git
 cd xl_mini_client
 npm install
 ```
