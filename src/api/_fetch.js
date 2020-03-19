@@ -1,13 +1,13 @@
 import axios from 'axios'
 export const Api = {
-  Test: 'http://211.159.182.124'
+  Test: 'http://192.168.63.144'
 }
 export const Ip = {
-  Test: '211.159.182.124'
+  Test: '192.168.63.144'
 }
 
 const XL_Api = {
-  Test: 'http://sms-gateway.pay.xunlei.com'
+  Test: 'http://192.168.63.144'
 }
 /**
  * 
