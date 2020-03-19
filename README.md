@@ -1,4 +1,4 @@
-### mini 项目脚手架
+### 基于 reat-native app
 
 
 ### 1.目录结构
